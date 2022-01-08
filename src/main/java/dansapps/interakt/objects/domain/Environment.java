@@ -2,11 +2,13 @@ package dansapps.interakt.objects.domain;
 
 import dansapps.interakt.objects.abs.Entity;
 import dansapps.interakt.objects.structural.TwoDimensionalGrid;
+import preponderous.ponder.misc.Savable;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
 import java.util.HashSet;
+import java.util.Map;
 
-public class Environment extends Entity {
+public class Environment extends Entity implements Savable {
     private TwoDimensionalGrid grid;
     private HashSet<LivingEntity> entities = new HashSet<>();
 
@@ -40,5 +42,16 @@ public class Environment extends Entity {
         sender.sendMessage("Number of entities: " + entities.size());
         sender.sendMessage("ID: " + getID());
         sender.sendMessage("Created: " + getCreationDate().toString());
+    }
+
+    @Override
+    public Map<String, String> save() {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public void load(Map<String, String> map) {
+        // TODO: implement
     }
 }
