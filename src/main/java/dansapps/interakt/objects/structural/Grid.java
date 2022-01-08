@@ -1,5 +1,7 @@
 package dansapps.interakt.objects.structural;
 
+import dansapps.interakt.objects.domain.Environment;
+
 import java.util.HashSet;
 
 /**
@@ -13,11 +15,16 @@ public class Grid {
     private int gridSlotHeight;
     private int gridSlotWidth;
 
-    public Grid(int columns, int rows, int gridSlotHeight, int gridSlotWidth) {
+    private Slot primarySlot;
+
+    private Environment parentEnvironment;
+
+    public Grid(int columns, int rows, int gridSlotHeight, int gridSlotWidth, Environment parentEnvironment) {
         this.columns = columns;
         this.rows = rows;
         this.gridSlotHeight = gridSlotHeight;
         this.gridSlotWidth = gridSlotWidth;
+        this.parentEnvironment = parentEnvironment;
     }
 
     private HashSet<Slot> slots = new HashSet<>();
@@ -62,13 +69,32 @@ public class Grid {
         this.slots = slots;
     }
 
+    public Slot getPrimarySlot() {
+        return primarySlot;
+    }
+
+    public void setPrimarySlot(Slot primarySlot) {
+        this.primarySlot = primarySlot;
+    }
+
+    public Environment getParentEnvironment() {
+        return parentEnvironment;
+    }
+
+    public void setParentEnvironment(Environment parentEnvironment) {
+        this.parentEnvironment = parentEnvironment;
+    }
+
     public void createGrid() {
         int xPosition = 0;
         int yPosition = 0;
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                Slot newSlot = new Slot(xPosition, yPosition, gridSlotWidth, gridSlotHeight);
+                Slot newSlot = new Slot(xPosition, yPosition, gridSlotWidth, gridSlotHeight, this);
                 addSlot(newSlot);
+                if (i == 0 && j == 0) {
+                    primarySlot = newSlot;
+                }
                 xPosition += gridSlotWidth;
             }
             yPosition += gridSlotHeight;
@@ -80,4 +106,6 @@ public class Grid {
         // TODO: ensure that no slots are added with the same x and y
         slots.add(slot);
     }
+
+
 }

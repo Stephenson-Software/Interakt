@@ -12,7 +12,8 @@ public class Environment extends AbstractEntity {
 
     public Environment(int ID, String name, int size) {
         super(ID, name);
-        grid = new Grid(size, size, 10, 10);
+        grid = new Grid(size, size, 10, 10, this);
+        grid.createGrid();
     }
 
     public Grid getGrid() {
@@ -21,6 +22,7 @@ public class Environment extends AbstractEntity {
 
     public void addEntity(Entity entity) {
         entities.add(entity);
+        entity.setSlot(getGrid().getPrimarySlot());
     }
 
     public void removeEntity(Entity entity) {
@@ -38,7 +40,5 @@ public class Environment extends AbstractEntity {
         sender.sendMessage("Number of entities: " + entities.size());
         sender.sendMessage("ID: " + getID());
         sender.sendMessage("Created: " + getCreationDate().toString());
-
-
     }
 }

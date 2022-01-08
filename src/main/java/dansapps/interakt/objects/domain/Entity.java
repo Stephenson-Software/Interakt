@@ -31,7 +31,7 @@ public class Entity extends AbstractEntity {
             sender.sendMessage("Location: N/A");
         }
         else {
-            sender.sendMessage("Location: (" + slot.getX() + ", " + slot.getY() + ")");
+            sender.sendMessage("Location: " + getSlot().getParentGrid().getParentEnvironment().getName() + " at (" + slot.getX() + ", " + slot.getY() + ")");
         }
         sender.sendMessage("ID: " + getID());
         sender.sendMessage("Created: " + getCreationDate().toString());

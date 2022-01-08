@@ -14,10 +14,16 @@ public class Slot {
     private int width;
     private int height;
 
+    private Grid parentGrid;
+
     private HashSet<Entity> entities = new HashSet<>();
 
-    public Slot(int xPosition, int yPosition, int width, int height) {
-
+    public Slot(int x, int y, int width, int height, Grid parentGrid) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.parentGrid = parentGrid;
     }
 
     public int getX() {
@@ -70,5 +76,13 @@ public class Slot {
 
     public boolean isEntityPresent(Entity entity) {
         return entities.contains(entity);
+    }
+
+    public Grid getParentGrid() {
+        return parentGrid;
+    }
+
+    public void setParentGrid(Grid parentGrid) {
+        this.parentGrid = parentGrid;
     }
 }

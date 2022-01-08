@@ -40,6 +40,10 @@ public class PlaceCommand extends AbstractCommand {
             sender.sendMessage("That entity wasn't found.");
             return false;
         }
+        if (entity.getSlot() != null) {
+            sender.sendMessage("That entity is already in an environment.");
+            return false;
+        }
         String environmentName = doubleQuoteArgs.get(1);
         Environment environment = PersistentData.getInstance().getEnvironment(environmentName);
         if (environment == null) {
@@ -47,6 +51,7 @@ public class PlaceCommand extends AbstractCommand {
             return false;
         }
         environment.addEntity(entity);
+        sender.sendMessage(entity.getName() + " was placed in the " + environment.getName() + " environment.");
         return true;
     }
 }
