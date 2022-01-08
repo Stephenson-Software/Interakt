@@ -3,7 +3,7 @@ package dansapps.interakt.utils;
 import dansapps.interakt.Interakt;
 
 /**
- * @author Daniel Stephenson
+ * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class Logger {

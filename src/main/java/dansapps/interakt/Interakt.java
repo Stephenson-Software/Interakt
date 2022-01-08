@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 /**
- * @author Daniel Stephenson
+ * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class Interakt extends AbstractPonderApplication {

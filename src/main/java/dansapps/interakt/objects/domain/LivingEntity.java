@@ -8,7 +8,7 @@ import preponderous.ponder.system.abs.AbstractCommandSender;
 import java.util.Map;
 
 /**
- * @author Daniel Stephenson
+ * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class LivingEntity extends Entity implements Savable {

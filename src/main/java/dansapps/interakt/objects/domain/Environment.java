@@ -8,6 +8,10 @@ import preponderous.ponder.system.abs.AbstractCommandSender;
 import java.util.HashSet;
 import java.util.Map;
 
+/**
+ * @author Daniel McCoy Stephenson
+ * @since January 7th, 2022
+ */
 public class Environment extends Entity implements Savable {
     private TwoDimensionalGrid grid;
     private HashSet<LivingEntity> entities = new HashSet<>();

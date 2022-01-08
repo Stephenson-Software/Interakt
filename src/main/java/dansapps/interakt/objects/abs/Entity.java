@@ -5,7 +5,7 @@ import preponderous.ponder.system.abs.AbstractCommandSender;
 import java.time.LocalDateTime;
 
 /**
- * @author Daniel Stephenson
+ * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public abstract class Entity {

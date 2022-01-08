@@ -3,7 +3,7 @@ package dansapps.interakt.objects.environments;
 import dansapps.interakt.objects.domain.Environment;
 
 /**
- * @author Daniel Stephenson
+ * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class Forest extends Environment {

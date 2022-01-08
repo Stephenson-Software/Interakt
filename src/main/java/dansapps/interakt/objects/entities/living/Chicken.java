@@ -3,7 +3,7 @@ package dansapps.interakt.objects.entities.living;
 import dansapps.interakt.objects.domain.LivingEntity;
 
 /**
- * @author Daniel Stephenson
+ * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class Chicken extends LivingEntity {

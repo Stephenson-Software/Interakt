@@ -4,7 +4,7 @@ import dansapps.interakt.objects.abs.Entity;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
 /**
- * @author Daniel Stephenson
+ * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class BerryBush extends Entity {

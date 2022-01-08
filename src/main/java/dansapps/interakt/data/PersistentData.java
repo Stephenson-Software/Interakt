@@ -6,7 +6,7 @@ import dansapps.interakt.objects.domain.Environment;
 import java.util.HashSet;
 
 /**
- * @author Daniel Stephenson
+ * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class PersistentData {
