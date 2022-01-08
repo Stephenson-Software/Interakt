@@ -1,7 +1,7 @@
 package dansapps.interakt.objects.domain;
 
 import dansapps.interakt.objects.abs.Entity;
-import dansapps.interakt.objects.structural.Slot;
+import dansapps.interakt.objects.structural.GridSlot;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
 /**
@@ -10,18 +10,18 @@ import preponderous.ponder.system.abs.AbstractCommandSender;
  */
 public class LivingEntity extends Entity {
 
-    private Slot slot;
+    private GridSlot gridSlot;
 
     public LivingEntity(int ID, String name) {
         super(ID, name);
     }
 
-    public Slot getSlot() {
-        return slot;
+    public GridSlot getSlot() {
+        return gridSlot;
     }
 
-    public void setSlot(Slot slot) {
-        this.slot = slot;
+    public void setSlot(GridSlot gridSlot) {
+        this.gridSlot = gridSlot;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class LivingEntity extends Entity {
             sender.sendMessage("Location: N/A");
         }
         else {
-            sender.sendMessage("Location: " + getSlot().getParentGrid().getParentEnvironment().getName() + " at (" + slot.getX() + ", " + slot.getY() + ")");
+            sender.sendMessage("Location: " + getSlot().getParentGrid().getParentEnvironment().getName() + " at (" + gridSlot.getX() + ", " + gridSlot.getY() + ")");
         }
         sender.sendMessage("ID: " + getID());
         sender.sendMessage("Created: " + getCreationDate().toString());

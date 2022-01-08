@@ -8,17 +8,17 @@ import java.util.HashSet;
  * @author Daniel Stephenson
  * @since January 7th, 2022
  */
-public class Slot {
+public class GridSlot {
     private int x;
     private int y;
     private int width;
     private int height;
 
-    private Grid parentGrid;
+    private TwoDimensionalGrid parentGrid;
 
     private HashSet<LivingEntity> entities = new HashSet<>();
 
-    public Slot(int x, int y, int width, int height, Grid parentGrid) {
+    public GridSlot(int x, int y, int width, int height, TwoDimensionalGrid parentGrid) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -78,11 +78,11 @@ public class Slot {
         return entities.contains(entity);
     }
 
-    public Grid getParentGrid() {
+    public TwoDimensionalGrid getParentGrid() {
         return parentGrid;
     }
 
-    public void setParentGrid(Grid parentGrid) {
+    public void setParentGrid(TwoDimensionalGrid parentGrid) {
         this.parentGrid = parentGrid;
     }
 }

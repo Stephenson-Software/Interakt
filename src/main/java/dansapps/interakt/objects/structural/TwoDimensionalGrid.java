@@ -8,18 +8,18 @@ import java.util.HashSet;
  * @author Daniel Stephenson
  * @since January 7th, 2022
  */
-public class Grid {
+public class TwoDimensionalGrid {
     private int columns;
     private int rows;
 
     private int gridSlotHeight;
     private int gridSlotWidth;
 
-    private Slot primarySlot;
+    private GridSlot primaryGridSlot;
 
     private Environment parentEnvironment;
 
-    public Grid(int columns, int rows, int gridSlotHeight, int gridSlotWidth, Environment parentEnvironment) {
+    public TwoDimensionalGrid(int columns, int rows, int gridSlotHeight, int gridSlotWidth, Environment parentEnvironment) {
         this.columns = columns;
         this.rows = rows;
         this.gridSlotHeight = gridSlotHeight;
@@ -27,7 +27,7 @@ public class Grid {
         this.parentEnvironment = parentEnvironment;
     }
 
-    private HashSet<Slot> slots = new HashSet<>();
+    private HashSet<GridSlot> gridSlots = new HashSet<>();
 
     public int getColumns() {
         return columns;
@@ -61,20 +61,20 @@ public class Grid {
         this.gridSlotWidth = gridSlotWidth;
     }
 
-    public HashSet<Slot> getSlots() {
-        return slots;
+    public HashSet<GridSlot> getSlots() {
+        return gridSlots;
     }
 
-    public void setSlots(HashSet<Slot> slots) {
-        this.slots = slots;
+    public void setSlots(HashSet<GridSlot> gridSlots) {
+        this.gridSlots = gridSlots;
     }
 
-    public Slot getPrimarySlot() {
-        return primarySlot;
+    public GridSlot getPrimarySlot() {
+        return primaryGridSlot;
     }
 
-    public void setPrimarySlot(Slot primarySlot) {
-        this.primarySlot = primarySlot;
+    public void setPrimarySlot(GridSlot primaryGridSlot) {
+        this.primaryGridSlot = primaryGridSlot;
     }
 
     public Environment getParentEnvironment() {
@@ -90,10 +90,10 @@ public class Grid {
         int yPosition = 0;
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                Slot newSlot = new Slot(xPosition, yPosition, gridSlotWidth, gridSlotHeight, this);
-                addSlot(newSlot);
+                GridSlot newGridSlot = new GridSlot(xPosition, yPosition, gridSlotWidth, gridSlotHeight, this);
+                addSlot(newGridSlot);
                 if (i == 0 && j == 0) {
-                    primarySlot = newSlot;
+                    primaryGridSlot = newGridSlot;
                 }
                 xPosition += gridSlotWidth;
             }
@@ -102,9 +102,9 @@ public class Grid {
         }
     }
 
-    public void addSlot(Slot slot) {
+    public void addSlot(GridSlot gridSlot) {
         // TODO: ensure that no slots are added with the same x and y
-        slots.add(slot);
+        gridSlots.add(gridSlot);
     }
 
 

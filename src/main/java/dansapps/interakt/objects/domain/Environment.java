@@ -1,22 +1,22 @@
 package dansapps.interakt.objects.domain;
 
 import dansapps.interakt.objects.abs.Entity;
-import dansapps.interakt.objects.structural.Grid;
+import dansapps.interakt.objects.structural.TwoDimensionalGrid;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
 import java.util.HashSet;
 
 public class Environment extends Entity {
-    private Grid grid;
+    private TwoDimensionalGrid grid;
     private HashSet<LivingEntity> entities = new HashSet<>();
 
     public Environment(int ID, String name, int size) {
         super(ID, name);
-        grid = new Grid(size, size, 10, 10, this);
+        grid = new TwoDimensionalGrid(size, size, 10, 10, this);
         grid.createGrid();
     }
 
-    public Grid getGrid() {
+    public TwoDimensionalGrid getGrid() {
         return grid;
     }
 
