@@ -17,7 +17,7 @@ public class InfoCommand extends AbstractCommand {
 
     @Override
     public boolean execute(AbstractCommandSender abstractCommandSender) {
-        abstractCommandSender.sendMessage("=== Example Ponder Application Info ===");
+        abstractCommandSender.sendMessage("=== Interakt Info ===");
         abstractCommandSender.sendMessage("Developer: Daniel Stephenson");
         abstractCommandSender.sendMessage("Developed with: Ponder");
         return true;
