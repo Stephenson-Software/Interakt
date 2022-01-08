@@ -1,7 +1,7 @@
 package dansapps.interakt.objects.domain;
 
-import dansapps.interakt.objects.structural.Slot;
 import dansapps.interakt.objects.abs.AbstractEntity;
+import dansapps.interakt.objects.structural.Slot;
 
 /**
  * @author Daniel Stephenson

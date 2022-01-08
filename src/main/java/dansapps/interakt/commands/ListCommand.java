@@ -6,10 +6,14 @@ import preponderous.ponder.system.abs.AbstractCommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewCommand extends AbstractCommand {
+/**
+ * @author Daniel Stephenson
+ * @since January 7th, 2022
+ */
+public class ListCommand extends AbstractCommand {
 
-    public ViewCommand() {
-        super(new ArrayList<>(List.of("view")), new ArrayList<>(List.of("interakt.view")));
+    public ListCommand() {
+        super(new ArrayList<>(List.of("list")), new ArrayList<>(List.of("interakt.list")));
     }
 
     @Override

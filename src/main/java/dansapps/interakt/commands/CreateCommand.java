@@ -1,10 +1,14 @@
 package dansapps.interakt.commands;
 
+import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.domain.Entity;
+import dansapps.interakt.objects.domain.Environment;
+import preponderous.ponder.misc.ArgumentParser;
 import preponderous.ponder.system.abs.AbstractCommand;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Daniel Stephenson
@@ -13,20 +17,46 @@ import java.util.Arrays;
 public class CreateCommand extends AbstractCommand {
 
     public CreateCommand() {
-        super(new ArrayList<>(Arrays.asList("create")), new ArrayList<>(Arrays.asList("interakt.create")));
+        super(new ArrayList<>(List.of("create")), new ArrayList<>(List.of("interakt.create")));
     }
 
     @Override
     public boolean execute(AbstractCommandSender sender) {
-        sender.sendMessage("This command isn't implemented yet.");
-        // TODO: implement
+        sender.sendMessage("Usage: create \"type\" \"name\"");
         return false;
     }
 
     @Override
     public boolean execute(AbstractCommandSender sender, String[] args) {
-        sender.sendMessage("This command isn't implemented yet.");
-        // TODO: implement
-        return false;
+        if (args.length < 2) {
+            sender.sendMessage("Not enough arguments.");
+            return false;
+        }
+        ArgumentParser argumentParser = new ArgumentParser();
+        ArrayList<String> doubleQuoteArgs = argumentParser.getArgumentsInsideDoubleQuotes(args);
+        if (doubleQuoteArgs.size() < 2) {
+            sender.sendMessage("Arguments must be designated in between quotation marks.");
+            return false;
+        }
+        String type = doubleQuoteArgs.get(0);
+        String name = doubleQuoteArgs.get(1);
+        int newID = -1; // TODO: implement generation system for this in factories
+
+        if (type.equalsIgnoreCase("entity")) {
+            Entity entity = new Entity(newID, name); // TODO: create factory for this
+            PersistentData.getInstance().addEntity(entity);
+            sender.sendMessage("Entity created.");
+            return true;
+        }
+        else if (type.equalsIgnoreCase("environment")) {
+            Environment environment = new Environment(newID, name, 10); // TODO: create factory for this
+            PersistentData.getInstance().addEnvironment(environment);
+            sender.sendMessage("Environment created.");
+            return true;
+        }
+        else {
+            sender.sendMessage("'" + type + "' is not a supported type. Supported types include entity and environment.");
+            return false;
+        }
     }
 }

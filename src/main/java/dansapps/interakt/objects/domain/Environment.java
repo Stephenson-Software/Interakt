@@ -1,7 +1,7 @@
 package dansapps.interakt.objects.domain;
 
-import dansapps.interakt.objects.structural.Grid;
 import dansapps.interakt.objects.abs.AbstractEntity;
+import dansapps.interakt.objects.structural.Grid;
 
 import java.util.HashSet;
 

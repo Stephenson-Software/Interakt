@@ -4,7 +4,7 @@ import preponderous.ponder.system.abs.AbstractCommand;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Daniel Stephenson
@@ -12,7 +12,7 @@ import java.util.Arrays;
  */
 public class InfoCommand extends AbstractCommand {
     public InfoCommand() {
-        super(new ArrayList<>(Arrays.asList("info")), new ArrayList<>(Arrays.asList("interakt.info")));
+        super(new ArrayList<>(List.of("info")), new ArrayList<>(List.of("interakt.info")));
     }
 
     @Override

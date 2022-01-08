@@ -4,7 +4,7 @@ import preponderous.ponder.system.abs.AbstractCommand;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Daniel Stephenson
@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class DeleteCommand extends AbstractCommand {
 
     public DeleteCommand() {
-        super(new ArrayList<>(Arrays.asList("delete")), new ArrayList<>(Arrays.asList("interakt.delete")));
+        super(new ArrayList<>(List.of("delete")), new ArrayList<>(List.of("interakt.delete")));
     }
 
     @Override

@@ -4,7 +4,7 @@ import preponderous.ponder.system.abs.AbstractCommand;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Daniel Stephenson
@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class QuitCommand extends AbstractCommand {
 
     public QuitCommand() {
-        super(new ArrayList<>(Arrays.asList("quit")), new ArrayList<>(Arrays.asList("interakt.quit")));
+        super(new ArrayList<>(List.of("quit")), new ArrayList<>(List.of("interakt.quit")));
     }
 
     @Override

@@ -2,7 +2,6 @@ package dansapps.interakt.data;
 
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
-import dansapps.interakt.objects.structural.Grid;
 
 import java.util.HashSet;
 
@@ -13,8 +12,8 @@ import java.util.HashSet;
 public class PersistentData {
     private static PersistentData instance;
 
-    private HashSet<Environment> environments = new HashSet<Environment>();
-    private HashSet<Entity> entities = new HashSet<Entity>();
+    private HashSet<Environment> environments = new HashSet<>();
+    private HashSet<Entity> entities = new HashSet<>();
 
     private PersistentData() {
 
@@ -43,12 +42,12 @@ public class PersistentData {
         this.entities = entities;
     }
 
-    public void addEnvironment(Environment grid) {
-        environments.add(grid);
+    public void addEnvironment(Environment environment) {
+        environments.add(environment);
     }
 
-    public void removeEnvironment(Grid grid) {
-        environments.remove(grid);
+    public void removeEnvironment(Environment environment) {
+        environments.remove(environment);
     }
 
     public void addEntity(Entity entity) {

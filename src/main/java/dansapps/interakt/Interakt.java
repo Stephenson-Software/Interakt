@@ -1,8 +1,8 @@
 package dansapps.interakt;
 
 import dansapps.interakt.commands.*;
-import dansapps.interakt.utils.Logger;
 import dansapps.interakt.misc.CommandSender;
+import dansapps.interakt.utils.Logger;
 import preponderous.ponder.system.abs.AbstractCommand;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 import preponderous.ponder.system.abs.AbstractPonderApplication;
@@ -168,6 +168,7 @@ public class Interakt extends AbstractPonderApplication {
         commands.add(new CreateCommand());
         commands.add(new DeleteCommand());
         commands.add(new ViewCommand());
+        commands.add(new ListCommand());
         setCommandService(new CommandService((commands)));
     }
 
