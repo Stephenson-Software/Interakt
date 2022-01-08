@@ -1,6 +1,6 @@
 package dansapps.interakt.objects.structural;
 
-import dansapps.interakt.objects.domain.Entity;
+import dansapps.interakt.objects.domain.LivingEntity;
 
 import java.util.HashSet;
 
@@ -16,7 +16,7 @@ public class Slot {
 
     private Grid parentGrid;
 
-    private HashSet<Entity> entities = new HashSet<>();
+    private HashSet<LivingEntity> entities = new HashSet<>();
 
     public Slot(int x, int y, int width, int height, Grid parentGrid) {
         this.x = x;
@@ -58,23 +58,23 @@ public class Slot {
         this.height = height;
     }
 
-    public HashSet<Entity> getEntities() {
+    public HashSet<LivingEntity> getEntities() {
         return entities;
     }
 
-    public void setEntities(HashSet<Entity> entities) {
+    public void setEntities(HashSet<LivingEntity> entities) {
         this.entities = entities;
     }
 
-    public void addEntity(Entity entity) {
+    public void addEntity(LivingEntity entity) {
         entities.add(entity);
     }
 
-    public void removeEntity(Entity entity) {
+    public void removeEntity(LivingEntity entity) {
         entities.remove(entity);
     }
 
-    public boolean isEntityPresent(Entity entity) {
+    public boolean isEntityPresent(LivingEntity entity) {
         return entities.contains(entity);
     }
 

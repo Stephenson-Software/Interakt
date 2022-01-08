@@ -1,8 +1,8 @@
-package dansapps.interakt.objects.entities;
+package dansapps.interakt.objects.entities.living;
 
-import dansapps.interakt.objects.domain.Entity;
+import dansapps.interakt.objects.domain.LivingEntity;
 
-public class Chicken extends Entity {
+public class Chicken extends LivingEntity {
 
     /**
      * @author Daniel Stephenson

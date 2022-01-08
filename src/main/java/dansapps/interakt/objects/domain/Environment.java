@@ -1,14 +1,14 @@
 package dansapps.interakt.objects.domain;
 
-import dansapps.interakt.objects.abs.AbstractEntity;
+import dansapps.interakt.objects.abs.Entity;
 import dansapps.interakt.objects.structural.Grid;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
 import java.util.HashSet;
 
-public class Environment extends AbstractEntity {
+public class Environment extends Entity {
     private Grid grid;
-    private HashSet<Entity> entities = new HashSet<>();
+    private HashSet<LivingEntity> entities = new HashSet<>();
 
     public Environment(int ID, String name, int size) {
         super(ID, name);
@@ -20,16 +20,16 @@ public class Environment extends AbstractEntity {
         return grid;
     }
 
-    public void addEntity(Entity entity) {
+    public void addEntity(LivingEntity entity) {
         entities.add(entity);
         entity.setSlot(getGrid().getPrimarySlot());
     }
 
-    public void removeEntity(Entity entity) {
+    public void removeEntity(LivingEntity entity) {
         entities.remove(entity);
     }
 
-    public boolean isEntityPresent(Entity entity) {
+    public boolean isEntityPresent(LivingEntity entity) {
         return entities.contains(entity);
     }
 

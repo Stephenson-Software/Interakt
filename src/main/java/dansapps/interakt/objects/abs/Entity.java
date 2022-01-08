@@ -8,12 +8,12 @@ import java.time.LocalDateTime;
  * @author Daniel Stephenson
  * @since January 7th, 2022
  */
-public abstract class AbstractEntity {
+public abstract class Entity {
     private int ID;
     private String name;
     private LocalDateTime creationDate;
 
-    public AbstractEntity(int ID, String name) {
+    public Entity(int ID, String name) {
         this.ID = ID;
         this.name = name;
         creationDate = LocalDateTime.now();

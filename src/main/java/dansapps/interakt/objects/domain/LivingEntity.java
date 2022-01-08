@@ -1,6 +1,6 @@
 package dansapps.interakt.objects.domain;
 
-import dansapps.interakt.objects.abs.AbstractEntity;
+import dansapps.interakt.objects.abs.Entity;
 import dansapps.interakt.objects.structural.Slot;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
@@ -8,11 +8,11 @@ import preponderous.ponder.system.abs.AbstractCommandSender;
  * @author Daniel Stephenson
  * @since January 7th, 2022
  */
-public class Entity extends AbstractEntity {
+public class LivingEntity extends Entity {
 
     private Slot slot;
 
-    public Entity(int ID, String name) {
+    public LivingEntity(int ID, String name) {
         super(ID, name);
     }
 

@@ -1,7 +1,7 @@
 package dansapps.interakt.commands;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.domain.Entity;
+import dansapps.interakt.objects.domain.LivingEntity;
 import dansapps.interakt.objects.domain.Environment;
 import preponderous.ponder.misc.ArgumentParser;
 import preponderous.ponder.system.abs.AbstractCommand;
@@ -43,7 +43,7 @@ public class CreateCommand extends AbstractCommand {
         int newID = -1; // TODO: implement generation system for this in factories
 
         if (type.equalsIgnoreCase("entity")) {
-            Entity entity = new Entity(newID, name); // TODO: create factory for this
+            LivingEntity entity = new LivingEntity(newID, name); // TODO: create factory for this
             PersistentData.getInstance().addEntity(entity);
             sender.sendMessage("Entity created.");
             return true;
