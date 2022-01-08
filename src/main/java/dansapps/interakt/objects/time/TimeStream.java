@@ -1,4 +1,4 @@
-package dansapps.interakt.objects.domain;
+package dansapps.interakt.objects.time;
 
 /**
  * @author Daniel Stephenson
