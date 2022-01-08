@@ -1,5 +1,8 @@
 package dansapps.interakt.commands;
 
+import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.domain.Entity;
+import dansapps.interakt.objects.domain.Environment;
 import preponderous.ponder.system.abs.AbstractCommand;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
@@ -18,15 +21,20 @@ public class ListCommand extends AbstractCommand {
 
     @Override
     public boolean execute(AbstractCommandSender sender) {
-        sender.sendMessage("This command isn't implemented yet.");
-        // TODO: implement
-        return false;
+        sender.sendMessage("=== Entities ===");
+        for (Entity entity : PersistentData.getInstance().getEntities()) {
+            sender.sendMessage(entity.getName());
+        }
+        sender.sendMessage("");
+        sender.sendMessage("=== Environments ===");
+        for (Environment environment : PersistentData.getInstance().getEnvironments()) {
+            sender.sendMessage(environment.getName());
+        }
+        return true;
     }
 
     @Override
     public boolean execute(AbstractCommandSender sender, String[] args) {
-        sender.sendMessage("This command isn't implemented yet.");
-        // TODO: implement
-        return false;
+        return execute(sender);
     }
 }

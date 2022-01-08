@@ -1,5 +1,7 @@
 package dansapps.interakt.objects.abs;
 
+import preponderous.ponder.system.abs.AbstractCommandSender;
+
 import java.time.LocalDateTime;
 
 /**
@@ -32,4 +34,6 @@ public abstract class AbstractEntity {
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
+
+    public abstract void sendInfo(AbstractCommandSender sender);
 }

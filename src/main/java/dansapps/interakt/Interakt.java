@@ -169,6 +169,7 @@ public class Interakt extends AbstractPonderApplication {
         commands.add(new DeleteCommand());
         commands.add(new ViewCommand());
         commands.add(new ListCommand());
+        commands.add(new PlaceCommand());
         setCommandService(new CommandService((commands)));
     }
 

@@ -57,4 +57,22 @@ public class PersistentData {
     public void removeEntity(Entity entity) {
 
     }
+
+    public Entity getEntity(String name) {
+        for (Entity entity : entities) {
+            if (entity.getName().equalsIgnoreCase(name)) {
+                return entity;
+            }
+        }
+        return null;
+    }
+
+    public Environment getEnvironment(String name) {
+        for (Environment environment : environments) {
+            if (environment.getName().equalsIgnoreCase(name)) {
+                return environment;
+            }
+        }
+        return null;
+    }
 }

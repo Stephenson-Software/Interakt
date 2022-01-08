@@ -24,6 +24,7 @@ public class HelpCommand extends AbstractCommand {
         sender.sendMessage("view - View an entity or environment.");
         sender.sendMessage("create - Create an entity or environment.");
         sender.sendMessage("delete - Delete an entity or environment.");
+        sender.sendMessage("place - Place an entity in an environment.");
         sender.sendMessage("info - View information about the application.");
         sender.sendMessage("quit - Quit the application.");
         return true;

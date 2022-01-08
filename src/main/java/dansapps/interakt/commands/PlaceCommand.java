@@ -10,15 +10,15 @@ import preponderous.ponder.system.abs.AbstractCommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewCommand extends AbstractCommand {
+public class PlaceCommand extends AbstractCommand {
 
-    public ViewCommand() {
-        super(new ArrayList<>(List.of("view")), new ArrayList<>(List.of("interakt.view")));
+    public PlaceCommand() {
+        super(new ArrayList<>(List.of("place")), new ArrayList<>(List.of("interakt.place")));
     }
 
     @Override
     public boolean execute(AbstractCommandSender sender) {
-        sender.sendMessage("Usage: view \"type\" \"name\"");
+        sender.sendMessage("Usage: place \"entity name\" \"environment name\"");
         return false;
     }
 
@@ -34,22 +34,19 @@ public class ViewCommand extends AbstractCommand {
             sender.sendMessage("Arguments must be designated in between quotation marks.");
             return false;
         }
-        String type = doubleQuoteArgs.get(0);
-        String name = doubleQuoteArgs.get(1);
-
-        if (type.equalsIgnoreCase("entity")) {
-            Entity entity = PersistentData.getInstance().getEntity(name);
-            entity.sendInfo(sender);
-            return true;
-        }
-        else if (type.equalsIgnoreCase("environment")) {
-            Environment environment = PersistentData.getInstance().getEnvironment(name);
-            environment.sendInfo(sender);
-            return true;
-        }
-        else {
-            sender.sendMessage("That type isn't supported.");
+        String entityName = doubleQuoteArgs.get(0);
+        Entity entity = PersistentData.getInstance().getEntity(entityName);
+        if (entity == null) {
+            sender.sendMessage("That entity wasn't found.");
             return false;
         }
+        String environmentName = doubleQuoteArgs.get(1);
+        Environment environment = PersistentData.getInstance().getEnvironment(environmentName);
+        if (environment == null) {
+            sender.sendMessage("That environment wasn't found.");
+            return false;
+        }
+        environment.addEntity(entity);
+        return true;
     }
 }

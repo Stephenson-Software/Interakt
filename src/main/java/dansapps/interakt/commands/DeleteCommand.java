@@ -1,5 +1,9 @@
 package dansapps.interakt.commands;
 
+import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.domain.Entity;
+import dansapps.interakt.objects.domain.Environment;
+import preponderous.ponder.misc.ArgumentParser;
 import preponderous.ponder.system.abs.AbstractCommand;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
@@ -18,15 +22,38 @@ public class DeleteCommand extends AbstractCommand {
 
     @Override
     public boolean execute(AbstractCommandSender sender) {
-        sender.sendMessage("This command isn't implemented yet.");
-        // TODO: implement
+        sender.sendMessage("Usage: delete \"type\" \"name\"");
         return false;
     }
 
     @Override
     public boolean execute(AbstractCommandSender sender, String[] args) {
-        sender.sendMessage("This command isn't implemented yet.");
-        // TODO: implement
-        return false;
+        if (args.length < 2) {
+            sender.sendMessage("Not enough arguments.");
+            return false;
+        }
+        ArgumentParser argumentParser = new ArgumentParser();
+        ArrayList<String> doubleQuoteArgs = argumentParser.getArgumentsInsideDoubleQuotes(args);
+        if (doubleQuoteArgs.size() < 2) {
+            sender.sendMessage("Arguments must be designated in between quotation marks.");
+            return false;
+        }
+        String type = doubleQuoteArgs.get(0);
+        String name = doubleQuoteArgs.get(1);
+
+        if (type.equalsIgnoreCase("entity")) {
+            Entity entity = PersistentData.getInstance().getEntity(name);
+            PersistentData.getInstance().removeEntity(entity);
+            return true;
+        }
+        else if (type.equalsIgnoreCase("environment")) {
+            Environment environment = PersistentData.getInstance().getEnvironment(name);
+            PersistentData.getInstance().removeEnvironment(environment);
+            return true;
+        }
+        else {
+            sender.sendMessage("That type isn't supported.");
+            return false;
+        }
     }
 }
