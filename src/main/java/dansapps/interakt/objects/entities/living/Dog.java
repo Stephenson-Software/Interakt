@@ -6,9 +6,9 @@ import dansapps.interakt.objects.domain.LivingEntity;
  * @author Daniel Stephenson
  * @since January 7th, 2022
  */
-public class GuineaPig extends LivingEntity {
+public class Dog extends LivingEntity {
 
-    public GuineaPig(int ID, String name) {
+    public Dog(int ID, String name) {
         super(ID, name);
     }
 }

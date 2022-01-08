@@ -7,14 +7,14 @@ import preponderous.ponder.system.abs.AbstractCommandSender;
  * @author Daniel Stephenson
  * @since January 7th, 2022
  */
-public class Tree extends Entity {
+public class Grass extends Entity {
 
-    public Tree(int ID, String name) {
+    public Grass(int ID, String name) {
         super(ID, name);
     }
 
     @Override
     public void sendInfo(AbstractCommandSender sender) {
-        // TODO: implement
+
     }
 }
