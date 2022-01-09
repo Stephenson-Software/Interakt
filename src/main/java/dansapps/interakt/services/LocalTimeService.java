@@ -14,7 +14,7 @@ public class LocalTimeService extends Thread {
     private static LocalTimeService instance;
 
     private TimeStream timeStream = new TimeStream();
-    private int timeSlotLength = 1000;
+    private int timeSlotLength = 5000;
 
     private LocalTimeService() {
 
@@ -56,9 +56,9 @@ public class LocalTimeService extends Thread {
     }
 
     private void elapse() {
-        Logger.getInstance().log("Time elapsing.");
         TimeSlot timeSlot = new TimeSlot(timeSlotLength);
         timeStream.addTimeSlot(timeSlot);
+        Logger.getInstance().log("Time elapsed. Number of elapsed slots: " + timeStream.getTimeSlots().size());
     }
 
     /**
