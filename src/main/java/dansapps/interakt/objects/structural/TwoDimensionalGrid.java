@@ -106,6 +106,4 @@ public class TwoDimensionalGrid {
         // TODO: ensure that no slots are added with the same x and y
         gridSlots.add(gridSlot);
     }
-
-
 }
