@@ -2,6 +2,7 @@ package dansapps.interakt;
 
 import dansapps.interakt.commands.*;
 import dansapps.interakt.misc.CommandSender;
+import dansapps.interakt.services.LocalStorageService;
 import dansapps.interakt.services.LocalTimeService;
 import dansapps.interakt.utils.Logger;
 import preponderous.ponder.system.abs.AbstractCommand;
@@ -103,6 +104,7 @@ public class Interakt extends AbstractPonderApplication {
         instance = this;
         Logger.getInstance().log("Initiating startup.");
         initializeCommandService();
+        LocalStorageService.getInstance().load();
         LocalTimeService.getInstance().start();
     }
 
@@ -112,6 +114,7 @@ public class Interakt extends AbstractPonderApplication {
     @Override
     public void onShutdown() {
         Logger.getInstance().log("Initiating shutdown.");
+        LocalStorageService.getInstance().save();
     }
 
     /**
