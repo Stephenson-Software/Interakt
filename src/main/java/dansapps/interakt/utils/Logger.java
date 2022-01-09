@@ -8,6 +8,7 @@ import dansapps.interakt.Interakt;
  */
 public class Logger {
     private static Logger instance;
+    private boolean localDebugFlag = true;
 
     private Logger() {
 
@@ -25,8 +26,20 @@ public class Logger {
      * @param message The message to log to the console.
      */
     public void log(String message) {
-        if (Interakt.getInstance().isDebugEnabled()) {
+        if (isLocalDebugFlagEnabled() || Interakt.getInstance().isDebugEnabled()) {
             System.out.println("[DEBUG] " + message);
         }
+    }
+
+    public static void setInstance(Logger instance) {
+        Logger.instance = instance;
+    }
+
+    public boolean isLocalDebugFlagEnabled() {
+        return localDebugFlag;
+    }
+
+    public void setLocalDebugFlagEnabled(boolean localDebugFlag) {
+        this.localDebugFlag = localDebugFlag;
     }
 }

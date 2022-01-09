@@ -2,6 +2,7 @@ package dansapps.interakt;
 
 import dansapps.interakt.commands.*;
 import dansapps.interakt.misc.CommandSender;
+import dansapps.interakt.services.LocalTimeService;
 import dansapps.interakt.utils.Logger;
 import preponderous.ponder.system.abs.AbstractCommand;
 import preponderous.ponder.system.abs.AbstractCommandSender;
@@ -102,6 +103,7 @@ public class Interakt extends AbstractPonderApplication {
         instance = this;
         Logger.getInstance().log("Initiating startup.");
         initializeCommandService();
+        LocalTimeService.getInstance().start();
     }
 
     /**
