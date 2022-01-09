@@ -13,7 +13,6 @@ public abstract class Entity {
     private int ID;
     private String name;
     private LocalDateTime creationDate;
-    private HashSet<Edible> diet = new HashSet<>();
 
     public Entity(int ID, String name) {
         this.ID = ID;
@@ -38,20 +37,4 @@ public abstract class Entity {
     }
 
     public abstract void sendInfo(AbstractCommandSender sender);
-
-    public HashSet<Edible> getDiet() {
-        return diet;
-    }
-
-    public void setDiet(HashSet<Edible> diet) {
-        this.diet = diet;
-    }
-
-    public void addToDiet(Edible edibleEntity) {
-        diet.add(edibleEntity);
-    }
-
-    public void removeFroMDiet(Edible edibleEntity) {
-        diet.remove(edibleEntity);
-    }
 }

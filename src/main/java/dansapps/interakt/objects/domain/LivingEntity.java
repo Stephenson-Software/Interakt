@@ -1,10 +1,12 @@
 package dansapps.interakt.objects.domain;
 
+import dansapps.interakt.objects.abs.Edible;
 import dansapps.interakt.objects.abs.Entity;
 import dansapps.interakt.objects.structural.GridSlot;
 import preponderous.ponder.misc.Savable;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -12,8 +14,8 @@ import java.util.Map;
  * @since January 7th, 2022
  */
 public class LivingEntity extends Entity implements Savable {
-
     private GridSlot gridSlot;
+    private HashSet<Edible> diet = new HashSet<>();
 
     public LivingEntity(int ID, String name) {
         super(ID, name);
@@ -38,6 +40,22 @@ public class LivingEntity extends Entity implements Savable {
         }
         sender.sendMessage("ID: " + getID());
         sender.sendMessage("Created: " + getCreationDate().toString());
+    }
+
+    public HashSet<Edible> getDiet() {
+        return diet;
+    }
+
+    public void setDiet(HashSet<Edible> diet) {
+        this.diet = diet;
+    }
+
+    public void addToDiet(Edible edibleEntity) {
+        diet.add(edibleEntity);
+    }
+
+    public void removeFroMDiet(Edible edibleEntity) {
+        diet.remove(edibleEntity);
     }
 
     @Override
