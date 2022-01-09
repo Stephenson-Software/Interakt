@@ -8,7 +8,7 @@ import dansapps.interakt.Interakt;
  */
 public class Logger {
     private static Logger instance;
-    private boolean localDebugFlag = true;
+    private boolean localDebugFlag = false;
 
     private Logger() {
 
