@@ -1,7 +1,6 @@
 package dansapps.interakt.objects.entities.living;
 
 import dansapps.interakt.objects.domain.LivingEntity;
-import dansapps.interakt.objects.entities.BerryBush;
 
 /**
  * @author Daniel McCoy Stephenson

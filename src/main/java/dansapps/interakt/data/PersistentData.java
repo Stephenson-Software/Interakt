@@ -1,7 +1,7 @@
 package dansapps.interakt.data;
 
-import dansapps.interakt.objects.domain.LivingEntity;
 import dansapps.interakt.objects.domain.Environment;
+import dansapps.interakt.objects.domain.LivingEntity;
 
 import java.util.HashSet;
 
