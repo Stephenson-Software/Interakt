@@ -42,7 +42,7 @@ public class ViewCommand extends AbstractCommand {
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("entity")) {
-            LivingEntity entity = PersistentData.getInstance().getEntity(name);
+            LivingEntity entity = (LivingEntity) PersistentData.getInstance().getEntity(name);
             entity.sendInfo(sender);
             return true;
         }

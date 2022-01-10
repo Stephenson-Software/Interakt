@@ -1,5 +1,6 @@
 package dansapps.interakt.commands;
 
+import dansapps.interakt.Interakt;
 import preponderous.ponder.system.abs.AbstractCommand;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
@@ -19,6 +20,7 @@ public class QuitCommand extends AbstractCommand {
     @Override
     public boolean execute(AbstractCommandSender sender) {
         sender.sendMessage("Goodbye!");
+        Interakt.getInstance().onShutdown();
         System.exit(0);
         return true;
     }

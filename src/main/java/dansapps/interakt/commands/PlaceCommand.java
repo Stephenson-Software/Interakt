@@ -39,7 +39,7 @@ public class PlaceCommand extends AbstractCommand {
             return false;
         }
         String entityName = doubleQuoteArgs.get(0);
-        LivingEntity entity = PersistentData.getInstance().getEntity(entityName);
+        LivingEntity entity = (LivingEntity) PersistentData.getInstance().getEntity(entityName);
         if (entity == null) {
             sender.sendMessage("That entity wasn't found.");
             return false;

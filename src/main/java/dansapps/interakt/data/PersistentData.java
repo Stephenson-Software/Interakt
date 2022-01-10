@@ -1,7 +1,7 @@
 package dansapps.interakt.data;
 
+import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
-import dansapps.interakt.objects.domain.LivingEntity;
 
 import java.util.HashSet;
 
@@ -13,7 +13,7 @@ public class PersistentData {
     private static PersistentData instance;
 
     private HashSet<Environment> environments = new HashSet<>();
-    private HashSet<LivingEntity> entities = new HashSet<>();
+    private HashSet<Entity> entities = new HashSet<>();
 
     private PersistentData() {
 
@@ -34,11 +34,11 @@ public class PersistentData {
         this.environments = environments;
     }
 
-    public HashSet<LivingEntity> getEntities() {
+    public HashSet<Entity> getEntities() {
         return entities;
     }
 
-    public void setEntities(HashSet<LivingEntity> entities) {
+    public void setEntities(HashSet<Entity> entities) {
         this.entities = entities;
     }
 
@@ -50,16 +50,16 @@ public class PersistentData {
         environments.remove(environment);
     }
 
-    public void addEntity(LivingEntity entity) {
+    public void addEntity(Entity entity) {
         entities.add(entity);
     }
 
-    public void removeEntity(LivingEntity entity) {
+    public void removeEntity(Entity entity) {
 
     }
 
-    public LivingEntity getEntity(String name) {
-        for (LivingEntity entity : entities) {
+    public Entity getEntity(String name) {
+        for (Entity entity : entities) {
             if (entity.getName().equalsIgnoreCase(name)) {
                 return entity;
             }

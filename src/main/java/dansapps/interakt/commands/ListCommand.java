@@ -1,6 +1,7 @@
 package dansapps.interakt.commands;
 
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
 import dansapps.interakt.objects.domain.LivingEntity;
 import preponderous.ponder.system.abs.AbstractCommand;
@@ -22,7 +23,7 @@ public class ListCommand extends AbstractCommand {
     @Override
     public boolean execute(AbstractCommandSender sender) {
         sender.sendMessage("=== Entities ===");
-        for (LivingEntity entity : PersistentData.getInstance().getEntities()) {
+        for (Entity entity : PersistentData.getInstance().getEntities()) {
             sender.sendMessage(entity.getName());
         }
         sender.sendMessage("");
