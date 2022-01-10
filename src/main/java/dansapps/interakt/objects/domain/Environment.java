@@ -1,6 +1,5 @@
 package dansapps.interakt.objects.domain;
 
-import dansapps.interakt.objects.abs.Entity;
 import dansapps.interakt.objects.structural.TwoDimensionalGrid;
 import preponderous.ponder.misc.Savable;
 import preponderous.ponder.system.abs.AbstractCommandSender;
@@ -20,6 +19,11 @@ public class Environment extends Entity implements Savable {
         super(ID, name);
         grid = new TwoDimensionalGrid(size, size, 10, 10, this);
         grid.createGrid();
+    }
+
+    public Environment(Map<String, String> data) {
+        super(data);
+        this.load(data);
     }
 
     public TwoDimensionalGrid getGrid() {

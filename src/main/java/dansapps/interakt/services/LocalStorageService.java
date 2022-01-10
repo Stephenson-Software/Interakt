@@ -1,6 +1,11 @@
 package dansapps.interakt.services;
 
+import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.domain.Entity;
+import dansapps.interakt.objects.domain.Environment;
 import preponderous.ponder.misc.JsonWriterReader;
+
+import java.util.*;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -35,18 +40,40 @@ public class LocalStorageService {
     }
 
     private void saveEntities() {
-        // TODO: implement
+        List<Map<String, String>> links = new ArrayList<>();
+        for (Entity entity : PersistentData.getInstance().getEntities()){
+            links.add(entity.save());
+        }
+        jsonWriterReader.writeOutFiles(links, ENTITIES_FILE_NAME);
     }
 
     private void saveEnvironments() {
-        // TODO: implement
+        List<Map<String, String>> environments = new ArrayList<>();
+        for (Environment environment : PersistentData.getInstance().getEnvironments()){
+            environments.add(environment.save());
+        }
+        jsonWriterReader.writeOutFiles(environments, ENVIRONMENTS_FILE_NAME);
     }
 
     private void loadEntities() {
-        // TODO: implement
+        PersistentData.getInstance().getEntities().clear();
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ENTITIES_FILE_NAME);
+        HashSet<Entity> entities = new HashSet<>();
+        for (Map<String, String> entityData : data){
+            Entity entity = new Entity(entityData);
+            entities.add(entity);
+        }
+        PersistentData.getInstance().setEntities(entities);
     }
 
     private void loadEnvironments() {
-        // TODO: implement
+        PersistentData.getInstance().getEnvironments().clear();
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ENVIRONMENTS_FILE_NAME);
+        HashSet<Environment> environments = new HashSet<>();
+        for (Map<String, String> environmentData : data){
+            Environment environment = new Environment(environmentData);
+            environments.add(environment);
+        }
+        PersistentData.getInstance().setEnvironments(environments);
     }
 }

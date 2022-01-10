@@ -1,7 +1,8 @@
 package dansapps.interakt.objects.domain;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dansapps.interakt.objects.abs.Edible;
-import dansapps.interakt.objects.abs.Entity;
 import dansapps.interakt.objects.structural.GridSlot;
 import preponderous.ponder.misc.Savable;
 import preponderous.ponder.system.abs.AbstractCommandSender;
@@ -14,11 +15,16 @@ import java.util.Map;
  * @since January 7th, 2022
  */
 public class LivingEntity extends Entity implements Savable {
-    private GridSlot gridSlot;
-    private HashSet<Edible> diet = new HashSet<>();
+    private GridSlot gridSlot; // TODO: make persistent
+    private HashSet<Edible> diet = new HashSet<>(); // TODO: make persistent
 
     public LivingEntity(int ID, String name) {
         super(ID, name);
+    }
+
+    public LivingEntity(Map<String, String> data) {
+        super(data);
+        this.load(data);
     }
 
     public GridSlot getSlot() {
@@ -60,12 +66,18 @@ public class LivingEntity extends Entity implements Savable {
 
     @Override
     public Map<String, String> save() {
-        // TODO: implement
-        return null;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Map<String, String> saveMap = super.save();
+        // TODO: make other fields persistent
+
+        return saveMap;
     }
 
     @Override
     public void load(Map<String, String> map) {
-        // TODO: implement
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        // TODO: make other fields persistent
     }
 }

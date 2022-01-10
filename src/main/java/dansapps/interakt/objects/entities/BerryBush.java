@@ -1,7 +1,7 @@
 package dansapps.interakt.objects.entities;
 
 import dansapps.interakt.objects.abs.Edible;
-import dansapps.interakt.objects.abs.Entity;
+import dansapps.interakt.objects.domain.Entity;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
 /**
