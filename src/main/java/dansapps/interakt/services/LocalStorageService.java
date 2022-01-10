@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class LocalStorageService {
     private static LocalStorageService instance;
-    private final static String FILE_PATH = "./Interakt/";
+    private final static String FILE_PATH = "/Interakt/";
     private final static String ENTITIES_FILE_NAME = "entities.json";
     private final static String ENVIRONMENTS_FILE_NAME = "environments.json";
     private final JsonWriterReader jsonWriterReader = new JsonWriterReader();

@@ -56,7 +56,7 @@ public class Entity implements Savable {
         Map<String, String> saveMap = new HashMap<>();
         saveMap.put("ID", gson.toJson(ID));
         saveMap.put("name", gson.toJson(name));
-        saveMap.put("creationDate", gson.toJson(creationDate));
+        // saveMap.put("creationDate", gson.toJson(creationDate)); // TODO: fix
 
         return saveMap;
     }
@@ -67,6 +67,6 @@ public class Entity implements Savable {
 
         ID = Integer.parseInt(gson.fromJson(data.get("ID"), String.class));
         name = gson.fromJson(data.get("name"), String.class);
-        creationDate = LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class));
+        // creationDate = LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)); // TODO: fix
     }
 }

@@ -12,8 +12,8 @@ import java.util.Map;
  * @since January 7th, 2022
  */
 public class Environment extends Entity implements Savable {
-    private TwoDimensionalGrid grid;
-    private HashSet<LivingEntity> entities = new HashSet<>();
+    private TwoDimensionalGrid grid; // TODO: make persistent
+    private HashSet<LivingEntity> entities = new HashSet<>(); // TODO: make persistent
 
     public Environment(int ID, String name, int size) {
         super(ID, name);
@@ -50,16 +50,5 @@ public class Environment extends Entity implements Savable {
         sender.sendMessage("Number of entities: " + entities.size());
         sender.sendMessage("ID: " + getID());
         sender.sendMessage("Created: " + getCreationDate().toString());
-    }
-
-    @Override
-    public Map<String, String> save() {
-        // TODO: implement
-        return null;
-    }
-
-    @Override
-    public void load(Map<String, String> map) {
-        // TODO: implement
     }
 }
