@@ -1,9 +1,13 @@
+/*
+  Copyright (c) 2022 Daniel McCoy Stephenson
+  Apache License 2.0
+ */
 package dansapps.interakt.objects.domain;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dansapps.interakt.objects.abs.Edible;
-import dansapps.interakt.objects.structural.GridSlot;
+import dansapps.interakt.objects.structural.Location;
 import preponderous.ponder.misc.Savable;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
@@ -15,7 +19,7 @@ import java.util.Map;
  * @since January 7th, 2022
  */
 public class LivingEntity extends Entity implements Savable {
-    private GridSlot gridSlot; // TODO: make persistent
+    private Location gridSlot; // TODO: make persistent
     private HashSet<Edible> diet = new HashSet<>(); // TODO: make persistent
 
     public LivingEntity(int ID, String name) {
@@ -27,11 +31,11 @@ public class LivingEntity extends Entity implements Savable {
         this.load(data);
     }
 
-    public GridSlot getSlot() {
+    public Location getSlot() {
         return gridSlot;
     }
 
-    public void setSlot(GridSlot gridSlot) {
+    public void setSlot(Location gridSlot) {
         this.gridSlot = gridSlot;
     }
 

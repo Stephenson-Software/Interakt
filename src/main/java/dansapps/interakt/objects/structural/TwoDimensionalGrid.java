@@ -1,3 +1,7 @@
+/*
+  Copyright (c) 2022 Daniel McCoy Stephenson
+  Apache License 2.0
+ */
 package dansapps.interakt.objects.structural;
 
 import dansapps.interakt.objects.domain.Environment;
@@ -15,7 +19,7 @@ public class TwoDimensionalGrid {
     private int gridSlotHeight;
     private int gridSlotWidth;
 
-    private GridSlot primaryGridSlot;
+    private Location primaryGridSlot;
 
     private Environment parentEnvironment;
 
@@ -27,7 +31,7 @@ public class TwoDimensionalGrid {
         this.parentEnvironment = parentEnvironment;
     }
 
-    private HashSet<GridSlot> gridSlots = new HashSet<>();
+    private HashSet<Location> gridSlots = new HashSet<>();
 
     public int getColumns() {
         return columns;
@@ -61,19 +65,19 @@ public class TwoDimensionalGrid {
         this.gridSlotWidth = gridSlotWidth;
     }
 
-    public HashSet<GridSlot> getSlots() {
+    public HashSet<Location> getSlots() {
         return gridSlots;
     }
 
-    public void setSlots(HashSet<GridSlot> gridSlots) {
+    public void setSlots(HashSet<Location> gridSlots) {
         this.gridSlots = gridSlots;
     }
 
-    public GridSlot getPrimarySlot() {
+    public Location getPrimarySlot() {
         return primaryGridSlot;
     }
 
-    public void setPrimarySlot(GridSlot primaryGridSlot) {
+    public void setPrimarySlot(Location primaryGridSlot) {
         this.primaryGridSlot = primaryGridSlot;
     }
 
@@ -90,7 +94,7 @@ public class TwoDimensionalGrid {
         int yPosition = 0;
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                GridSlot newGridSlot = new GridSlot(xPosition, yPosition, gridSlotWidth, gridSlotHeight, this);
+                Location newGridSlot = new Location(xPosition, yPosition, gridSlotWidth, gridSlotHeight, this);
                 addSlot(newGridSlot);
                 if (i == 0 && j == 0) {
                     primaryGridSlot = newGridSlot;
@@ -102,7 +106,7 @@ public class TwoDimensionalGrid {
         }
     }
 
-    public void addSlot(GridSlot gridSlot) {
+    public void addSlot(Location gridSlot) {
         // TODO: ensure that no slots are added with the same x and y
         gridSlots.add(gridSlot);
     }
