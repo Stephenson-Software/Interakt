@@ -1,9 +1,12 @@
+/*
+  Copyright (c) 2022 Daniel McCoy Stephenson
+  Apache License 2.0
+ */
 package dansapps.interakt.commands;
 
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
-import dansapps.interakt.objects.domain.LivingEntity;
 import preponderous.ponder.system.abs.AbstractCommand;
 import preponderous.ponder.system.abs.AbstractCommandSender;
 
