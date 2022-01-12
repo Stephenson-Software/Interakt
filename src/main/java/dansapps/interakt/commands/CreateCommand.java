@@ -44,16 +44,15 @@ public class CreateCommand extends ApplicationCommand {
         }
         String type = doubleQuoteArgs.get(0);
         String name = doubleQuoteArgs.get(1);
-        int newID = -1; // TODO: implement generation system for this in factories
 
         if (type.equalsIgnoreCase("entity")) {
-            LivingEntity entity = new LivingEntity(newID, name); // TODO: create factory for this
+            LivingEntity entity = new LivingEntity(name); // TODO: create factory for this
             PersistentData.getInstance().addEntity(entity);
             sender.sendMessage("Entity created.");
             return true;
         }
         else if (type.equalsIgnoreCase("environment")) {
-            Environment environment = new Environment(newID, name, 10); // TODO: create factory for this
+            Environment environment = new Environment(name, 10); // TODO: create factory for this
             PersistentData.getInstance().addEnvironment(environment);
             sender.sendMessage("Environment created.");
             return true;

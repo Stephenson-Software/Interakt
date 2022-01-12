@@ -7,28 +7,32 @@ package dansapps.interakt.objects.structural;
 import dansapps.interakt.objects.domain.Environment;
 
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class TwoDimensionalGrid {
+    private final UUID uuid;
     private int columns;
     private int rows;
-
     private int locationHeight;
     private int locationWidth;
+    private UUID primaryLocationUUID;
+    private UUID parentEnvironmentUUID;
 
-    private Location primaryLocation;
-
-    private Environment parentEnvironment;
-
-    public TwoDimensionalGrid(int columns, int rows, int locationHeight, int locationWidth, Environment parentEnvironment) {
+    public TwoDimensionalGrid(int columns, int rows, int locationHeight, int locationWidth,UUID parentEnvironmentUUID) {
+        uuid = UUID.randomUUID();
         this.columns = columns;
         this.rows = rows;
         this.locationHeight = locationHeight;
         this.locationWidth = locationWidth;
-        this.parentEnvironment = parentEnvironment;
+        this.parentEnvironmentUUID = parentEnvironmentUUID;
+    }
+
+    public UUID getUUID() {
+        return uuid;
     }
 
     private HashSet<Location> locations = new HashSet<>();
@@ -73,20 +77,20 @@ public class TwoDimensionalGrid {
         this.locations = gridLocations;
     }
 
-    public Location getPrimaryLocation() {
-        return primaryLocation;
+    public UUID getPrimaryLocationUUID() {
+        return primaryLocationUUID;
     }
 
-    public void setPrimaryLocation(Location primaryGridLocation) {
-        this.primaryLocation = primaryGridLocation;
+    public void setPrimaryLocationUUID(UUID primaryLocationUUID) {
+        this.primaryLocationUUID = primaryLocationUUID;
     }
 
-    public Environment getParentEnvironment() {
-        return parentEnvironment;
+    public UUID getParentEnvironmentUUID() {
+        return parentEnvironmentUUID;
     }
 
-    public void setParentEnvironment(Environment parentEnvironment) {
-        this.parentEnvironment = parentEnvironment;
+    public void setParentEnvironmentUUID(UUID parentEnvironmentUUID) {
+        this.parentEnvironmentUUID = parentEnvironmentUUID;
     }
 
     public void createGrid() {
@@ -97,7 +101,7 @@ public class TwoDimensionalGrid {
                 Location newGridLocation = new Location(xPosition, yPosition, locationWidth, locationHeight, this);
                 addLocation(newGridLocation);
                 if (i == 0 && j == 0) {
-                    primaryLocation = newGridLocation;
+                    primaryLocationUUID = newGridLocation.getUUID();
                 }
                 xPosition += locationWidth;
             }

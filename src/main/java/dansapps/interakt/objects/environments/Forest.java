@@ -12,7 +12,7 @@ import dansapps.interakt.objects.domain.Environment;
  */
 public class Forest extends Environment {
 
-    public Forest(int ID, String name, int size) {
-        super(ID, name, size);
+    public Forest(String name, int size) {
+        super(name, size);
     }
 }

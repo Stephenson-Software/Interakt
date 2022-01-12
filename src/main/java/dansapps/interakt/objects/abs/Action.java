@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 public abstract class Action {
     private String name;
-    private LocalDateTime timestamp;
+    private final LocalDateTime timestamp;
 
     public Action(String name) {
         this.name = name;

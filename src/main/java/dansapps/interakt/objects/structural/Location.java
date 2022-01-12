@@ -9,12 +9,14 @@ import preponderous.ponder.misc.abs.Savable;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class Location implements Savable {
+    private final UUID uuid;
     private int x;
     private int y;
     private int width;
@@ -24,11 +26,16 @@ public class Location implements Savable {
     private HashSet<LivingEntity> entities = new HashSet<>();
 
     public Location(int x, int y, int width, int height, TwoDimensionalGrid parentGrid) {
+        uuid = UUID.randomUUID();
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.parentGrid = parentGrid;
+    }
+
+    public UUID getUUID() {
+        return uuid;
     }
 
     public int getX() {

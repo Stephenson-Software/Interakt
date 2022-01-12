@@ -13,19 +13,20 @@ import preponderous.ponder.system.abs.CommandSender;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class Entity implements Savable {
-    private int ID;
+    private UUID uuid;
     private String name;
     private LocalDateTime creationDate;
-    private Location location; // TODO: make persistent
+    private UUID locationUUID; // TODO: make persistent
 
-    public Entity(int ID, String name) {
-        this.ID = ID;
+    public Entity(String name) {
+        uuid = UUID.randomUUID();
         this.name = name;
         creationDate = LocalDateTime.now();
     }
@@ -34,8 +35,8 @@ public class Entity implements Savable {
         this.load(data);
     }
 
-    public int getID() {
-        return ID;
+    public UUID getUUID() {
+        return uuid;
     }
 
     public String getName() {
@@ -50,16 +51,28 @@ public class Entity implements Savable {
         return creationDate;
     }
 
-    public Location getLocation() {
-        return location;
+    public UUID getLocationUUID() {
+        return locationUUID;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocationUUID(UUID locationUUID) {
+        this.locationUUID = locationUUID;
     }
 
     public void sendInfo(CommandSender sender) {
-        // TODO: implement
+        sender.sendMessage("=== Details of " + getName() + " ===");
+        sender.sendMessage("UUID: " + getUUID());
+        sender.sendMessage("Created: " + getCreationDate().toString());
+        if (getLocationUUID() == null) {
+            sender.sendMessage("Location: N/A");
+        }
+        else {
+            Location location = getLocation(getLocationUUID());
+            if (location == null) {
+                return;
+            }
+            sender.sendMessage("Location: " + getEnvironment(location.getParentGrid().getParentEnvironmentUUID()).getName() + " at (" + location.getX() + ", " + location.getY() + ")");
+        }
     }
 
     @Override
@@ -67,7 +80,7 @@ public class Entity implements Savable {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         Map<String, String> saveMap = new HashMap<>();
-        saveMap.put("ID", gson.toJson(ID));
+        saveMap.put("uuid", gson.toJson(uuid));
         saveMap.put("name", gson.toJson(name));
         // saveMap.put("creationDate", gson.toJson(creationDate)); // TODO: fix
 
@@ -78,8 +91,18 @@ public class Entity implements Savable {
     public void load(Map<String, String> data) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        ID = Integer.parseInt(gson.fromJson(data.get("ID"), String.class));
+        uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
         name = gson.fromJson(data.get("name"), String.class);
         // creationDate = LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)); // TODO: fix
+    }
+
+    private Location getLocation(UUID locationUUID) {
+        // TODO: implement
+        return null;
+    }
+
+    private Environment getEnvironment(UUID environmentUUID) {
+        // TODO: implement
+        return null;
     }
 }
