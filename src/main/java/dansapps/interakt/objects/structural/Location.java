@@ -5,14 +5,16 @@
 package dansapps.interakt.objects.structural;
 
 import dansapps.interakt.objects.domain.LivingEntity;
+import preponderous.ponder.misc.abs.Savable;
 
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class Location {
+public class Location implements Savable {
     private int x;
     private int y;
     private int width;
@@ -87,5 +89,16 @@ public class Location {
 
     public boolean isEntityPresent(LivingEntity entity) {
         return entities.contains(entity);
+    }
+
+    @Override
+    public Map<String, String> save() {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public void load(Map<String, String> map) {
+        // TODO: implement
     }
 }

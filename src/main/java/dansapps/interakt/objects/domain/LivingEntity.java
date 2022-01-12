@@ -7,7 +7,7 @@ package dansapps.interakt.objects.domain;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dansapps.interakt.objects.abs.Edible;
-import dansapps.interakt.objects.structural.GridSlot;
+import dansapps.interakt.objects.structural.Location;
 import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
 
@@ -19,7 +19,6 @@ import java.util.Map;
  * @since January 7th, 2022
  */
 public class LivingEntity extends Entity implements Savable {
-    private Location gridSlot; // TODO: make persistent
     private HashSet<Edible> diet = new HashSet<>(); // TODO: make persistent
 
     public LivingEntity(int ID, String name) {
@@ -31,22 +30,14 @@ public class LivingEntity extends Entity implements Savable {
         this.load(data);
     }
 
-    public Location getSlot() {
-        return gridSlot;
-    }
-
-    public void setSlot(Location gridSlot) {
-        this.gridSlot = gridSlot;
-    }
-
     @Override
     public void sendInfo(CommandSender sender) {
         sender.sendMessage("=== Details of " + getName() + " ===");
-        if (getSlot() == null) {
+        if (getLocation() == null) {
             sender.sendMessage("Location: N/A");
         }
         else {
-            sender.sendMessage("Location: " + getSlot().getParentGrid().getParentEnvironment().getName() + " at (" + gridSlot.getX() + ", " + gridSlot.getY() + ")");
+            sender.sendMessage("Location: " + getLocation().getParentGrid().getParentEnvironment().getName() + " at (" + getLocation().getX() + ", " + getLocation().getY() + ")");
         }
         sender.sendMessage("ID: " + getID());
         sender.sendMessage("Created: " + getCreationDate().toString());

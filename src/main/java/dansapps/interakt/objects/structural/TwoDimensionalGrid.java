@@ -16,22 +16,22 @@ public class TwoDimensionalGrid {
     private int columns;
     private int rows;
 
-    private int gridSlotHeight;
-    private int gridSlotWidth;
+    private int locationHeight;
+    private int locationWidth;
 
-    private Location primaryGridSlot;
+    private Location primaryLocation;
 
     private Environment parentEnvironment;
 
-    public TwoDimensionalGrid(int columns, int rows, int gridSlotHeight, int gridSlotWidth, Environment parentEnvironment) {
+    public TwoDimensionalGrid(int columns, int rows, int locationHeight, int locationWidth, Environment parentEnvironment) {
         this.columns = columns;
         this.rows = rows;
-        this.gridSlotHeight = gridSlotHeight;
-        this.gridSlotWidth = gridSlotWidth;
+        this.locationHeight = locationHeight;
+        this.locationWidth = locationWidth;
         this.parentEnvironment = parentEnvironment;
     }
 
-    private HashSet<Location> gridSlots = new HashSet<>();
+    private HashSet<Location> locations = new HashSet<>();
 
     public int getColumns() {
         return columns;
@@ -49,36 +49,36 @@ public class TwoDimensionalGrid {
         this.rows = rows;
     }
 
-    public int getGridSlotHeight() {
-        return gridSlotHeight;
+    public int getLocationHeight() {
+        return locationHeight;
     }
 
-    public void setGridSlotHeight(int gridSlotHeight) {
-        this.gridSlotHeight = gridSlotHeight;
+    public void setLocationHeight(int locationHeight) {
+        this.locationHeight = locationHeight;
     }
 
-    public int getGridSlotWidth() {
-        return gridSlotWidth;
+    public int getLocationWidth() {
+        return locationWidth;
     }
 
-    public void setGridSlotWidth(int gridSlotWidth) {
-        this.gridSlotWidth = gridSlotWidth;
+    public void setLocationWidth(int locationWidth) {
+        this.locationWidth = locationWidth;
     }
 
-    public HashSet<Location> getSlots() {
-        return gridSlots;
+    public HashSet<Location> getLocations() {
+        return locations;
     }
 
-    public void setSlots(HashSet<Location> gridSlots) {
-        this.gridSlots = gridSlots;
+    public void setLocations(HashSet<Location> gridLocations) {
+        this.locations = gridLocations;
     }
 
-    public Location getPrimarySlot() {
-        return primaryGridSlot;
+    public Location getPrimaryLocation() {
+        return primaryLocation;
     }
 
-    public void setPrimarySlot(Location primaryGridSlot) {
-        this.primaryGridSlot = primaryGridSlot;
+    public void setPrimaryLocation(Location primaryGridLocation) {
+        this.primaryLocation = primaryGridLocation;
     }
 
     public Environment getParentEnvironment() {
@@ -94,20 +94,20 @@ public class TwoDimensionalGrid {
         int yPosition = 0;
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                Location newGridSlot = new Location(xPosition, yPosition, gridSlotWidth, gridSlotHeight, this);
-                addSlot(newGridSlot);
+                Location newGridLocation = new Location(xPosition, yPosition, locationWidth, locationHeight, this);
+                addLocation(newGridLocation);
                 if (i == 0 && j == 0) {
-                    primaryGridSlot = newGridSlot;
+                    primaryLocation = newGridLocation;
                 }
-                xPosition += gridSlotWidth;
+                xPosition += locationWidth;
             }
-            yPosition += gridSlotHeight;
+            yPosition += locationHeight;
             xPosition = 0;
         }
     }
 
-    public void addSlot(Location gridSlot) {
-        // TODO: ensure that no slots are added with the same x and y
-        gridSlots.add(gridSlot);
+    public void addLocation(Location gridLocation) {
+        // TODO: ensure that no locations are added with the same x and y
+        locations.add(gridLocation);
     }
 }

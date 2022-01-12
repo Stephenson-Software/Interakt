@@ -36,7 +36,7 @@ public class Environment extends Entity implements Savable {
 
     public void addEntity(LivingEntity entity) {
         entities.add(entity);
-        entity.setSlot(getGrid().getPrimarySlot());
+        entity.setLocation(getGrid().getPrimaryLocation());
     }
 
     public void removeEntity(LivingEntity entity) {
@@ -50,7 +50,7 @@ public class Environment extends Entity implements Savable {
     @Override
     public void sendInfo(CommandSender sender) {
         sender.sendMessage("===  Details of " + getName() + " ===");
-        sender.sendMessage("Number of slots: " + grid.getSlots().size());
+        sender.sendMessage("Number of slots: " + grid.getLocations().size());
         sender.sendMessage("Number of entities: " + entities.size());
         sender.sendMessage("ID: " + getID());
         sender.sendMessage("Created: " + getCreationDate().toString());

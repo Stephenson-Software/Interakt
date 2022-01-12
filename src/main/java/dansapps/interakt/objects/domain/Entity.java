@@ -6,6 +6,7 @@ package dansapps.interakt.objects.domain;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dansapps.interakt.objects.structural.Location;
 import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
 
@@ -21,6 +22,7 @@ public class Entity implements Savable {
     private int ID;
     private String name;
     private LocalDateTime creationDate;
+    private Location location; // TODO: make persistent
 
     public Entity(int ID, String name) {
         this.ID = ID;
@@ -46,6 +48,14 @@ public class Entity implements Savable {
 
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public void sendInfo(CommandSender sender) {

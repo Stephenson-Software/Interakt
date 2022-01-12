@@ -48,7 +48,7 @@ public class PlaceCommand extends ApplicationCommand {
             sender.sendMessage("That entity wasn't found.");
             return false;
         }
-        if (entity.getSlot() != null) {
+        if (entity.getLocation() != null) {
             sender.sendMessage("That entity is already in an environment.");
             return false;
         }
