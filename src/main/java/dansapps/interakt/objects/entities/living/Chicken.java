@@ -12,7 +12,7 @@ import dansapps.interakt.objects.domain.LivingEntity;
  */
 public class Chicken extends LivingEntity {
 
-    public Chicken(int ID, String name) {
-        super(ID, name);
+    public Chicken(String name) {
+        super(name);
     }
 }

@@ -13,7 +13,7 @@ import dansapps.interakt.objects.domain.Entity;
  */
 public class BerryBush extends Entity implements Edible {
 
-    public BerryBush(int ID, String name) {
-        super(ID, name);
+    public BerryBush(String name) {
+        super(name);
     }
 }

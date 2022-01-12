@@ -58,7 +58,7 @@ public class PersistentData {
     }
 
     public void removeEntity(Entity entity) {
-
+        entities.remove(entity);
     }
 
     public Entity getEntity(String name) {
