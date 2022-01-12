@@ -7,8 +7,8 @@ package dansapps.interakt.commands;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
-import preponderous.ponder.system.abs.AbstractCommand;
-import preponderous.ponder.system.abs.AbstractCommandSender;
+import preponderous.ponder.system.abs.ApplicationCommand;
+import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +17,14 @@ import java.util.List;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class ListCommand extends AbstractCommand {
+public class ListCommand extends ApplicationCommand {
 
     public ListCommand() {
         super(new ArrayList<>(List.of("list")), new ArrayList<>(List.of("interakt.list")));
     }
 
     @Override
-    public boolean execute(AbstractCommandSender sender) {
+    public boolean execute(CommandSender sender) {
         sender.sendMessage("=== Entities ===");
         for (Entity entity : PersistentData.getInstance().getEntities()) {
             sender.sendMessage(entity.getName());
@@ -38,7 +38,7 @@ public class ListCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(AbstractCommandSender sender, String[] args) {
+    public boolean execute(CommandSender sender, String[] args) {
         return execute(sender);
     }
 }

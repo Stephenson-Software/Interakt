@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class LocalTimeService extends Thread {
     private static LocalTimeService instance;
-
     private TimeStream timeStream = new TimeStream();
     private int timeSlotLength = 5000;
 
