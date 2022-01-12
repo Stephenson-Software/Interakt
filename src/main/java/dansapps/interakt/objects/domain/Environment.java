@@ -1,8 +1,8 @@
 package dansapps.interakt.objects.domain;
 
 import dansapps.interakt.objects.structural.TwoDimensionalGrid;
-import preponderous.ponder.misc.Savable;
-import preponderous.ponder.system.abs.AbstractCommandSender;
+import preponderous.ponder.misc.abs.Savable;
+import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class Environment extends Entity implements Savable {
     }
 
     @Override
-    public void sendInfo(AbstractCommandSender sender) {
+    public void sendInfo(CommandSender sender) {
         sender.sendMessage("===  Details of " + getName() + " ===");
         sender.sendMessage("Number of slots: " + grid.getSlots().size());
         sender.sendMessage("Number of entities: " + entities.size());

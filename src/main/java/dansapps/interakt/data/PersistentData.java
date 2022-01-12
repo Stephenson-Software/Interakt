@@ -11,7 +11,6 @@ import java.util.HashSet;
  */
 public class PersistentData {
     private static PersistentData instance;
-
     private HashSet<Environment> environments = new HashSet<>();
     private HashSet<Entity> entities = new HashSet<>();
 

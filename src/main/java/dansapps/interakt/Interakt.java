@@ -1,13 +1,13 @@
 package dansapps.interakt;
 
 import dansapps.interakt.commands.*;
-import dansapps.interakt.misc.CommandSender;
+import dansapps.interakt.misc.CommandSenderImpl;
 import dansapps.interakt.services.LocalStorageService;
 import dansapps.interakt.services.LocalTimeService;
 import dansapps.interakt.utils.Logger;
-import preponderous.ponder.system.abs.AbstractCommand;
-import preponderous.ponder.system.abs.AbstractCommandSender;
-import preponderous.ponder.system.abs.AbstractPonderApplication;
+import preponderous.ponder.system.abs.ApplicationCommand;
+import preponderous.ponder.system.abs.CommandSender;
+import preponderous.ponder.system.abs.PonderApplication;
 import preponderous.ponder.system.services.CommandService;
 
 import java.util.HashSet;
@@ -17,9 +17,8 @@ import java.util.Scanner;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class Interakt extends AbstractPonderApplication {
+public class Interakt extends PonderApplication {
     private static Interakt instance;
-
     private boolean debug = false;
     private boolean running = true;
 
@@ -47,7 +46,7 @@ public class Interakt extends AbstractPonderApplication {
      * @param user The user of the application.
      * @return Whether the program exited successfully.
      */
-    public boolean run(AbstractCommandSender user) {
+    public boolean run(CommandSenderImpl user) {
         Logger.getInstance().log("Running application.");
 
         // declare variables to be used in loop
@@ -125,7 +124,7 @@ public class Interakt extends AbstractPonderApplication {
      * @return Whether the execution of command was successful.
      */
     @Override
-    public boolean onCommand(AbstractCommandSender sender, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, String label, String[] args) {
         Logger.getInstance().log("Interpreting command " + label);
         return getCommandService().interpretCommand(sender, label, args);
     }
@@ -166,7 +165,7 @@ public class Interakt extends AbstractPonderApplication {
      * Initializes the command service with the application's commands.
      */
     private void initializeCommandService() {
-        HashSet<AbstractCommand> commands = new HashSet<>();
+        HashSet<ApplicationCommand> commands = new HashSet<>();
         commands.add(new HelpCommand());
         commands.add(new InfoCommand());
         commands.add(new QuitCommand());
@@ -208,7 +207,7 @@ public class Interakt extends AbstractPonderApplication {
      */
     public static void main(String[] args) {
         Interakt application = new Interakt();
-        CommandSender sender = new CommandSender();
+        CommandSenderImpl sender = new CommandSenderImpl();
         application.run(sender);
     }
 }

@@ -7,6 +7,7 @@ import dansapps.interakt.objects.abs.Action;
  * @since January 8th, 2022
  */
 public class Eat extends Action {
+
     public Eat() {
         super("Eat");
     }

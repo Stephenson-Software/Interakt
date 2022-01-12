@@ -1,7 +1,7 @@
 package dansapps.interakt.commands;
 
-import preponderous.ponder.system.abs.AbstractCommand;
-import preponderous.ponder.system.abs.AbstractCommandSender;
+import preponderous.ponder.system.abs.ApplicationCommand;
+import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,14 @@ import java.util.List;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class HelpCommand extends AbstractCommand {
+public class HelpCommand extends ApplicationCommand {
 
     public HelpCommand() {
         super(new ArrayList<>(List.of("help")), new ArrayList<>(List.of("interakt.help")));
     }
 
     @Override
-    public boolean execute(AbstractCommandSender sender) {
+    public boolean execute(CommandSender sender) {
         sender.sendMessage("=== Example Ponder Application Commands ===");
         sender.sendMessage("help - View a list of useful commands.");
         sender.sendMessage("list - List entities and environments.");
@@ -31,7 +31,7 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(AbstractCommandSender sender, String[] args) {
+    public boolean execute(CommandSender sender, String[] args) {
         return execute(sender);
     }
 }

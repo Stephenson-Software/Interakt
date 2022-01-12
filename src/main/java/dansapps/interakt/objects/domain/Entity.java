@@ -2,12 +2,11 @@ package dansapps.interakt.objects.domain;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import preponderous.ponder.misc.Savable;
-import preponderous.ponder.system.abs.AbstractCommandSender;
+import preponderous.ponder.misc.abs.Savable;
+import preponderous.ponder.system.abs.CommandSender;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -45,7 +44,7 @@ public class Entity implements Savable {
         return creationDate;
     }
 
-    public void sendInfo(AbstractCommandSender sender) {
+    public void sendInfo(CommandSender sender) {
         // TODO: implement
     }
 
