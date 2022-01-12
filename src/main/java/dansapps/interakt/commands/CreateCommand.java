@@ -8,8 +8,8 @@ import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.domain.Environment;
 import dansapps.interakt.objects.domain.LivingEntity;
 import preponderous.ponder.misc.ArgumentParser;
-import preponderous.ponder.system.abs.AbstractCommand;
-import preponderous.ponder.system.abs.AbstractCommandSender;
+import preponderous.ponder.system.abs.ApplicationCommand;
+import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,20 +18,20 @@ import java.util.List;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class CreateCommand extends AbstractCommand {
+public class CreateCommand extends ApplicationCommand {
 
     public CreateCommand() {
         super(new ArrayList<>(List.of("create")), new ArrayList<>(List.of("interakt.create")));
     }
 
     @Override
-    public boolean execute(AbstractCommandSender sender) {
+    public boolean execute(CommandSender sender) {
         sender.sendMessage("Usage: create \"type\" \"name\"");
         return false;
     }
 
     @Override
-    public boolean execute(AbstractCommandSender sender, String[] args) {
+    public boolean execute(CommandSender sender, String[] args) {
         if (args.length < 2) {
             sender.sendMessage("Not enough arguments.");
             return false;

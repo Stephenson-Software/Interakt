@@ -7,9 +7,9 @@ package dansapps.interakt.objects.domain;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dansapps.interakt.objects.abs.Edible;
-import dansapps.interakt.objects.structural.Location;
-import preponderous.ponder.misc.Savable;
-import preponderous.ponder.system.abs.AbstractCommandSender;
+import dansapps.interakt.objects.structural.GridSlot;
+import preponderous.ponder.misc.abs.Savable;
+import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class LivingEntity extends Entity implements Savable {
     }
 
     @Override
-    public void sendInfo(AbstractCommandSender sender) {
+    public void sendInfo(CommandSender sender) {
         sender.sendMessage("=== Details of " + getName() + " ===");
         if (getSlot() == null) {
             sender.sendMessage("Location: N/A");
