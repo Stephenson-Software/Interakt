@@ -7,6 +7,7 @@ package dansapps.interakt.objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import dansapps.interakt.data.PersistentData;
 import preponderous.ponder.misc.abs.Savable;
 
 import java.lang.reflect.Type;
@@ -101,6 +102,7 @@ public class Grid implements Savable {
 
     public void addLocation(Location gridLocation) {
         // TODO: ensure that no locations are added with the same x and y
+        PersistentData.getInstance().addLocation(gridLocation);
         locationUUIDs.add(gridLocation.getUUID());
     }
 

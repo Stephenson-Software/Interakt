@@ -7,6 +7,7 @@ package dansapps.interakt.objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import dansapps.interakt.data.PersistentData;
 import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
 
@@ -38,6 +39,7 @@ public class Environment implements Savable {
         creationDate = LocalDateTime.now();
         Grid grid = new Grid(size, size, getUUID());
         grid.createGrid();
+        PersistentData.getInstance().addGrid(grid);
         gridUUID = grid.getUUID();
     }
 

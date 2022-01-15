@@ -109,12 +109,20 @@ public class PersistentData {
         this.grids = grids;
     }
 
+    public void addGrid(Grid grid) {
+
+    }
+
     public HashSet<Location> getLocations() {
         return locations;
     }
 
     public void setLocations(HashSet<Location> locations) {
         this.locations = locations;
+    }
+
+    public void addLocation(Location gridLocation) {
+
     }
 
     public ArrayList<TimeSlot> getTimeSlots() {
@@ -131,5 +139,13 @@ public class PersistentData {
 
     public void removeTimeSlot(TimeSlot timeSlot) {
         timeSlots.remove(timeSlot);
+    }
+
+    public void clearData() {
+        entities.clear();
+        environments.clear();
+        grids.clear();
+        locations.clear();
+        timeSlots.clear();
     }
 }
