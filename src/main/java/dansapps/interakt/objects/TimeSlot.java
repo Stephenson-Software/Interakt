@@ -46,7 +46,7 @@ public class TimeSlot implements Savable {
     }
 
     public boolean isActive() {
-        return LocalDateTime.now().isAfter(timestamp.plusSeconds(milliseconds/1000));
+        return LocalDateTime.now().isBefore(timestamp.plusSeconds(milliseconds/1000));
     }
 
     @Override
