@@ -25,11 +25,11 @@ public class Location implements Savable {
     private UUID parentGridUUID;
     private HashSet<Entity> entities = new HashSet<>();
 
-    public Location(int x, int y, Grid parentGrid) {
+    public Location(int x, int y, UUID gridUUID) {
         uuid = UUID.randomUUID();
         this.x = x;
         this.y = y;
-        this.parentGridUUID = parentGrid.getUUID();
+        this.parentGridUUID = gridUUID;
     }
 
     public Location(Map<String, String> data) {
