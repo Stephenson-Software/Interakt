@@ -46,23 +46,44 @@ public class PlaceCommand extends InteraktCommand {
         }
 
         String entityName = doubleQuoteArgs.get(0);
-        Entity entity = (Entity) PersistentData.getInstance().getEntity(entityName);
-        if (entity == null) {
+        Entity entity;
+        try {
+            entity = PersistentData.getInstance().getEntity(entityName);
+        }
+        catch (Exception e) {
             sender.sendMessage("That entity wasn't found.");
             return false;
         }
-        if (entity.getEnvironmentUUID() != null) {
+
+        if (entityIsAlreadyInAnEnvironment(entity)) {
             sender.sendMessage("That entity is already in an environment.");
             return false;
         }
-        String environmentName = doubleQuoteArgs.get(1);
-        Environment environment = PersistentData.getInstance().getEnvironment(environmentName);
-        if (environment == null) {
+
+        Environment environment;
+        try {
+            environment = getEnvironment(doubleQuoteArgs, sender);
+        } catch (Exception e) {
             sender.sendMessage("That environment wasn't found.");
             return false;
         }
+
         environment.addEntity(entity);
         sender.sendMessage(entity.getName() + " was placed in the " + environment.getName() + " environment.");
         return true;
+    }
+
+    private Environment getEnvironment(ArrayList<String> doubleQuoteArgs, CommandSender sender) throws Exception {
+        String environmentName = doubleQuoteArgs.get(1);
+        try {
+            return PersistentData.getInstance().getEnvironment(environmentName);
+        } catch (Exception e) {
+            sender.sendMessage("That environment wasn't found.");
+            throw new Exception();
+        }
+    }
+
+    private boolean entityIsAlreadyInAnEnvironment(Entity entity) {
+        return entity.getEnvironmentUUID() != null;
     }
 }

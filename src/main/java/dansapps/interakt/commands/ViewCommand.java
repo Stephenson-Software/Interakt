@@ -49,12 +49,24 @@ public class ViewCommand extends InteraktCommand {
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("entity")) {
-            Entity entity = (Entity) PersistentData.getInstance().getEntity(name);
+            Entity entity;
+            try {
+                entity = PersistentData.getInstance().getEntity(name);
+            } catch (Exception e) {
+                sender.sendMessage("That entity wasn't found.");
+                return false;
+            }
             entity.sendInfo(sender);
             return true;
         }
         else if (type.equalsIgnoreCase("environment")) {
-            Environment environment = PersistentData.getInstance().getEnvironment(name);
+            Environment environment;
+            try {
+                environment = PersistentData.getInstance().getEnvironment(name);
+            } catch (Exception e) {
+                sender.sendMessage("That environment wasn't found.");
+                return false;
+            }
             environment.sendInfo(sender);
             return true;
         }

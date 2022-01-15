@@ -85,7 +85,6 @@ public class Interakt extends PonderApplication {
      * @return The inputted string.
      */
     private String getInput() {
-        // get input
         if (!getScanner().hasNext()) {
             return null;
         }
@@ -207,5 +206,10 @@ public class Interakt extends PonderApplication {
         Interakt application = new Interakt();
         CommandSenderImpl sender = new CommandSenderImpl();
         application.run(sender);
+    }
+
+    public void shutdownApplication() {
+        Interakt.getInstance().onShutdown();
+        System.exit(0);
     }
 }

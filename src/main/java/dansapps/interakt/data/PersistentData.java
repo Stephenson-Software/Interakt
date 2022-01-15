@@ -49,13 +49,13 @@ public class PersistentData {
         entities.remove(entity);
     }
 
-    public Entity getEntity(String name) {
+    public Entity getEntity(String name) throws Exception {
         for (Entity entity : entities) {
             if (entity.getName().equalsIgnoreCase(name)) {
                 return entity;
             }
         }
-        return null;
+        throw new Exception();
     }
 
     public Entity getEntity(UUID entityUUID) {
@@ -83,13 +83,13 @@ public class PersistentData {
         environments.remove(environment);
     }
 
-    public Environment getEnvironment(String name) {
+    public Environment getEnvironment(String name) throws Exception {
         for (Environment environment : environments) {
             if (environment.getName().equalsIgnoreCase(name)) {
                 return environment;
             }
         }
-        return null;
+        throw new Exception();
     }
 
     public Environment getEnvironment(UUID environmentUUID) {

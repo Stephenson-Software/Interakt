@@ -24,8 +24,7 @@ public class QuitCommand extends InteraktCommand {
     @Override
     public boolean execute(CommandSender sender) {
         sender.sendMessage("Goodbye!");
-        Interakt.getInstance().onShutdown();
-        System.exit(0);
+        Interakt.getInstance().shutdownApplication();
         return true;
     }
 
