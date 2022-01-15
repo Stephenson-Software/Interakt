@@ -61,7 +61,7 @@ public class LocalTimeService extends Thread {
 
     private void makeEntitiesPerformMoveAction() {
         for (Entity entity : PersistentData.getInstance().getEntities()) {
-            entity.performMoveAction();
+            entity.attemptToPerformMoveAction();
         }
     }
 

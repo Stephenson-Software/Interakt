@@ -73,6 +73,7 @@ public class Location implements Savable {
 
     public void addEntity(Entity entity) {
         entities.add(entity);
+        entity.setLocationUUID(entity.getUUID());
     }
 
     public void removeEntity(Entity entity) {
@@ -81,6 +82,19 @@ public class Location implements Savable {
 
     public boolean isEntityPresent(Entity entity) {
         return entities.contains(entity);
+    }
+
+    public Location getRandomAdjacentLocation() throws Exception {
+        Random random = new Random();
+        Grid grid = getParentGrid();
+        int direction = random.nextInt(4);
+        return switch (direction) {
+            case 0 -> getUp(grid);
+            case 1 -> getRight(grid);
+            case 2 -> getDown(grid);
+            case 3 -> getLeft(grid);
+            default -> throw new Exception();
+        };
     }
 
     @Override
@@ -109,17 +123,9 @@ public class Location implements Savable {
         entities = gson.fromJson(data.get("entities"), hashsetTypeUUID);
     }
 
-    public Location getRandomAdjacentLocation() throws Exception {
-        Random random = new Random();
-        Grid grid = getParentGrid();
-        int direction = random.nextInt(4);
-        return switch (direction) {
-            case 0 -> getUp(grid);
-            case 1 -> getRight(grid);
-            case 2 -> getDown(grid);
-            case 3 -> getLeft(grid);
-            default -> throw new Exception();
-        };
+    @Override
+    public String toString() {
+        return "(" + getX() + ", " + getY() + ")";
     }
 
     private Grid getParentGrid() throws Exception {

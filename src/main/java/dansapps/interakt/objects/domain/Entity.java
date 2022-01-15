@@ -74,14 +74,25 @@ public class Entity implements Savable {
         sender.sendMessage("=== Details of " + getName() + " ===");
         sender.sendMessage("UUID: " + getUUID());
         sender.sendMessage("Created: " + getCreationDate().toString());
+        sendEnvironmentInfo(sender);
+        sendLocationInfo(sender);
+    }
+
+    private void sendEnvironmentInfo(CommandSender sender) {
         if (getEnvironmentUUID() == null) {
-            sender.sendMessage("Location: N/A");
+            sender.sendMessage("Environment: N/A");
         }
         else {
-            if (getEnvironment() == null) {
-                return;
-            }
             sender.sendMessage("Environment: " + getEnvironment().getName());
+        }
+    }
+
+    private void sendLocationInfo(CommandSender sender) {
+        try {
+            Location location = getLocation();
+            sender.sendMessage("Location: " + location);
+        } catch (Exception e) {
+            sender.sendMessage("Location: N/A");
         }
     }
 
@@ -93,14 +104,15 @@ public class Entity implements Savable {
         return PersistentData.getInstance().getLocation(getLocationUUID());
     }
 
-    public void performMoveAction() {
+    public void attemptToPerformMoveAction() {
+        MoveAction.execute(this);
+        Location location;
         try {
-            MoveAction.execute(this);
-            Location location = getLocation();
-            Logger.getInstance().log(getName() + " moved to " + location.getX() + ", " + location.getY() + " in " + getEnvironment().getName());
+            location = getLocation();
         } catch (Exception e) {
-            Logger.getInstance().log(getName() + " attempted to move, but was not able to.");
+            return;
         }
+        Logger.getInstance().log(getName() + " moved to " + location.getX() + ", " + location.getY() + " in " + getEnvironment().getName());
     }
 
     @Override
@@ -112,6 +124,7 @@ public class Entity implements Savable {
         saveMap.put("name", gson.toJson(name));
         saveMap.put("creationDate", gson.toJson(creationDate.toString()));
         saveMap.put("environmentUUID", gson.toJson(environmentUUID));
+        saveMap.put("locationUUID", gson.toJson(locationUUID));
 
         return saveMap;
     }
@@ -123,8 +136,22 @@ public class Entity implements Savable {
         uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
         name = gson.fromJson(data.get("name"), String.class);
         creationDate = LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class));
+        attemptToLoadEnvironment(gson, data);
+        attemptToLoadLocation(gson, data);
+    }
+
+    private void attemptToLoadEnvironment(Gson gson, Map<String, String> data) {
         try {
             environmentUUID = UUID.fromString(gson.fromJson(data.get("environmentUUID"), String.class));
+        }
+        catch(Exception ignored) {
+
+        }
+    }
+
+    private void attemptToLoadLocation(Gson gson, Map<String, String> data) {
+        try {
+            locationUUID = UUID.fromString(gson.fromJson(data.get("locationUUID"), String.class));
         }
         catch(Exception ignored) {
 
