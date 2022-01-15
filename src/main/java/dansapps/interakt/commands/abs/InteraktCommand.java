@@ -5,6 +5,10 @@ import preponderous.ponder.system.abs.ApplicationCommand;
 
 import java.util.ArrayList;
 
+/**
+ * @author Daniel McCoy Stephenson
+ * @since January 14th, 2022
+ */
 public abstract class InteraktCommand extends ApplicationCommand {
 
     public InteraktCommand(ArrayList<String> names, ArrayList<String> permissions) {
