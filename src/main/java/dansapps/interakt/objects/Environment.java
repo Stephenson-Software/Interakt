@@ -31,14 +31,10 @@ public class Environment implements Savable {
     private HashSet<UUID> entities = new HashSet<>();
 
     public Environment(String name) {
-        this(name, 10);
-    }
-
-    public Environment(String name, int size) {
         uuid = UUID.randomUUID();
         this.name = name;
         creationDate = LocalDateTime.now();
-        gridUUID = GridFactory.getInstance().createGrid(size, getUUID());
+        gridUUID = GridFactory.getInstance().createGrid(getUUID());
     }
 
     public Environment(Map<String, String> data) {

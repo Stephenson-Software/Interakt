@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public class GridFactory {
     private static GridFactory instance;
+    private static int GRID_SIZE = 2;
 
     private GridFactory() {
 
@@ -19,8 +20,8 @@ public class GridFactory {
         return instance;
     }
 
-    public UUID createGrid(int size, UUID environmentUUID) {
-        Grid grid = new Grid(size, size, environmentUUID);
+    public UUID createGrid(UUID environmentUUID) {
+        Grid grid = new Grid(GRID_SIZE, GRID_SIZE, environmentUUID);
         grid.createGrid();
         PersistentData.getInstance().addGrid(grid);
         return grid.getUUID();
