@@ -73,7 +73,7 @@ public class Location implements Savable {
 
     public void addEntity(Entity entity) {
         entities.add(entity);
-        entity.setLocationUUID(entity.getUUID());
+        entity.setLocationUUID(getUUID());
     }
 
     public void removeEntity(Entity entity) {
