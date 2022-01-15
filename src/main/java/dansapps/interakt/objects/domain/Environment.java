@@ -7,7 +7,6 @@ package dansapps.interakt.objects.domain;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import dansapps.interakt.objects.structural.TwoDimensionalGrid;
 import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
 

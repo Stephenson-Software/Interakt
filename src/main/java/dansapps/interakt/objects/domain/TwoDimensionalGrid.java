@@ -2,17 +2,26 @@
   Copyright (c) 2022 Daniel McCoy Stephenson
   Apache License 2.0
  */
-package dansapps.interakt.objects.structural;
+package dansapps.interakt.objects.domain;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import preponderous.ponder.misc.abs.Savable;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class TwoDimensionalGrid {
-    private final UUID uuid;
+public class TwoDimensionalGrid implements Savable {
+    private UUID uuid;
+    private HashSet<UUID> locationUUIDs = new HashSet<>();
     private int columns;
     private int rows;
     private int locationHeight;
@@ -29,11 +38,21 @@ public class TwoDimensionalGrid {
         this.parentEnvironmentUUID = parentEnvironmentUUID;
     }
 
+    public TwoDimensionalGrid(Map<String, String> data) {
+        this.load(data);
+    }
+
     public UUID getUUID() {
         return uuid;
     }
 
-    private HashSet<Location> locations = new HashSet<>();
+    public HashSet<UUID> getLocationUUIDs() {
+        return locationUUIDs;
+    }
+
+    public void setLocationUUIDs(HashSet<UUID> gridLocations) {
+        this.locationUUIDs = gridLocations;
+    }
 
     public int getColumns() {
         return columns;
@@ -65,14 +84,6 @@ public class TwoDimensionalGrid {
 
     public void setLocationWidth(int locationWidth) {
         this.locationWidth = locationWidth;
-    }
-
-    public HashSet<Location> getLocations() {
-        return locations;
-    }
-
-    public void setLocations(HashSet<Location> gridLocations) {
-        this.locations = gridLocations;
     }
 
     public UUID getPrimaryLocationUUID() {
@@ -110,6 +121,38 @@ public class TwoDimensionalGrid {
 
     public void addLocation(Location gridLocation) {
         // TODO: ensure that no locations are added with the same x and y
-        locations.add(gridLocation);
+        locationUUIDs.add(gridLocation.getUUID());
+    }
+
+    @Override
+    public Map<String, String> save() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Map<String, String> saveMap = new HashMap<>();
+        saveMap.put("uuid", gson.toJson(uuid));
+        saveMap.put("locationUUIDs", gson.toJson(locationUUIDs));
+        saveMap.put("columns", gson.toJson(columns));
+        saveMap.put("rows", gson.toJson(rows));
+        saveMap.put("locationHeight", gson.toJson(locationHeight));
+        saveMap.put("locationWidth", gson.toJson(locationWidth));
+        saveMap.put("primaryLocationUUID", gson.toJson(primaryLocationUUID));
+        saveMap.put("parentEnvironmentUUID", gson.toJson(parentEnvironmentUUID));
+        return saveMap;
+    }
+
+    @Override
+    public void load(Map<String, String> data) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Type hashsetTypeUUID = new TypeToken<HashSet<UUID>>(){}.getType();
+
+        uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
+        locationUUIDs = gson.fromJson(data.get("locationUUIDs"), hashsetTypeUUID);
+        columns = Integer.parseInt(data.get("columns"));
+        rows = Integer.parseInt(data.get("rows"));
+        locationHeight = Integer.parseInt(data.get("locationHeight"));
+        locationWidth = Integer.parseInt(data.get("locationWidth"));
+        primaryLocationUUID = UUID.fromString(gson.fromJson(data.get("primaryLocationUUID"), String.class));
+        parentEnvironmentUUID = UUID.fromString(gson.fromJson(data.get("parentEnvironmentUUID"), String.class));
     }
 }

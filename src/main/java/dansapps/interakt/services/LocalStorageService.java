@@ -7,6 +7,8 @@ package dansapps.interakt.services;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
+import dansapps.interakt.objects.domain.Location;
+import dansapps.interakt.objects.domain.TwoDimensionalGrid;
 import preponderous.ponder.misc.JsonWriterReader;
 
 import java.util.*;
@@ -20,6 +22,9 @@ public class LocalStorageService {
     private final static String FILE_PATH = "/Interakt/";
     private final static String ENTITIES_FILE_NAME = "entities.json";
     private final static String ENVIRONMENTS_FILE_NAME = "environments.json";
+    private final static String TWO_DIMENSIONAL_GRIDS_FILE_NAME = "twoDimensionalGrids.json";
+    private final static String LOCATIONS_FILE_NAME = "locations.json";
+
     private final JsonWriterReader jsonWriterReader = new JsonWriterReader();
 
     private LocalStorageService() {
@@ -36,11 +41,15 @@ public class LocalStorageService {
     public void save() {
         saveEntities();
         saveEnvironments();
+        saveGrids();
+        saveLocations();
     }
 
     public void load() {
         loadEntities();
         loadEnvironments();
+        loadGrids();
+        loadLocations();
     }
 
     private void saveEntities() {
@@ -57,6 +66,22 @@ public class LocalStorageService {
             environments.add(environment.save());
         }
         jsonWriterReader.writeOutFiles(environments, ENVIRONMENTS_FILE_NAME);
+    }
+
+    private void saveGrids() {
+        List<Map<String, String>> twoDimensionalGrids = new ArrayList<>();
+        for (TwoDimensionalGrid twoDimensionalGrid : PersistentData.getInstance().getGrids()){
+            twoDimensionalGrids.add(twoDimensionalGrid.save());
+        }
+        jsonWriterReader.writeOutFiles(twoDimensionalGrids, TWO_DIMENSIONAL_GRIDS_FILE_NAME);
+    }
+
+    private void saveLocations() {
+        List<Map<String, String>> locations = new ArrayList<>();
+        for (Location location : PersistentData.getInstance().getLocations()){
+            locations.add(location.save());
+        }
+        jsonWriterReader.writeOutFiles(locations, LOCATIONS_FILE_NAME);
     }
 
     private void loadEntities() {
@@ -79,5 +104,27 @@ public class LocalStorageService {
             environments.add(environment);
         }
         PersistentData.getInstance().setEnvironments(environments);
+    }
+
+    private void loadGrids() {
+        PersistentData.getInstance().getGrids().clear();
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + TWO_DIMENSIONAL_GRIDS_FILE_NAME);
+        HashSet<TwoDimensionalGrid> twoDimensionalGrids = new HashSet<>();
+        for (Map<String, String> twoDimensionalGridData : data){
+            TwoDimensionalGrid twoDimensionalGrid = new TwoDimensionalGrid(twoDimensionalGridData);
+            twoDimensionalGrids.add(twoDimensionalGrid);
+        }
+        PersistentData.getInstance().setGrids(twoDimensionalGrids);
+    }
+
+    private void loadLocations() {
+        PersistentData.getInstance().getLocations().clear();
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + LOCATIONS_FILE_NAME);
+        HashSet<Location> twoDimensionalGrids = new HashSet<>();
+        for (Map<String, String> locationData : data){
+            Location location = new Location(locationData);
+            twoDimensionalGrids.add(location);
+        }
+        PersistentData.getInstance().setLocations(twoDimensionalGrids);
     }
 }

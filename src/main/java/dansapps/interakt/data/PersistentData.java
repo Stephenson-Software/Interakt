@@ -6,6 +6,8 @@ package dansapps.interakt.data;
 
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
+import dansapps.interakt.objects.domain.Location;
+import dansapps.interakt.objects.domain.TwoDimensionalGrid;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -16,8 +18,10 @@ import java.util.UUID;
  */
 public class PersistentData {
     private static PersistentData instance;
-    private HashSet<Environment> environments = new HashSet<>();
     private HashSet<Entity> entities = new HashSet<>();
+    private HashSet<Environment> environments = new HashSet<>();
+    private HashSet<TwoDimensionalGrid> grids = new HashSet<>();
+    private HashSet<Location> locations = new HashSet<>();
 
     private PersistentData() {
 
@@ -30,28 +34,12 @@ public class PersistentData {
         return instance;
     }
 
-    public HashSet<Environment> getEnvironments() {
-        return environments;
-    }
-
-    public void setEnvironments(HashSet<Environment> environments) {
-        this.environments = environments;
-    }
-
     public HashSet<Entity> getEntities() {
         return entities;
     }
 
     public void setEntities(HashSet<Entity> entities) {
         this.entities = entities;
-    }
-
-    public void addEnvironment(Environment environment) {
-        environments.add(environment);
-    }
-
-    public void removeEnvironment(Environment environment) {
-        environments.remove(environment);
     }
 
     public void addEntity(Entity entity) {
@@ -80,6 +68,22 @@ public class PersistentData {
         return null;
     }
 
+    public HashSet<Environment> getEnvironments() {
+        return environments;
+    }
+
+    public void setEnvironments(HashSet<Environment> environments) {
+        this.environments = environments;
+    }
+
+    public void addEnvironment(Environment environment) {
+        environments.add(environment);
+    }
+
+    public void removeEnvironment(Environment environment) {
+        environments.remove(environment);
+    }
+
     public Environment getEnvironment(String name) {
         for (Environment environment : environments) {
             if (environment.getName().equalsIgnoreCase(name)) {
@@ -96,5 +100,21 @@ public class PersistentData {
             }
         }
         return null;
+    }
+
+    public HashSet<TwoDimensionalGrid> getGrids() {
+        return grids;
+    }
+
+    public void setGrids(HashSet<TwoDimensionalGrid> grids) {
+        this.grids = grids;
+    }
+
+    public HashSet<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(HashSet<Location> locations) {
+        this.locations = locations;
     }
 }

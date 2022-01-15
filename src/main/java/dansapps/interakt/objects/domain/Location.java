@@ -2,11 +2,14 @@
   Copyright (c) 2022 Daniel McCoy Stephenson
   Apache License 2.0
  */
-package dansapps.interakt.objects.structural;
+package dansapps.interakt.objects.domain;
 
-import dansapps.interakt.objects.domain.Entity;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import preponderous.ponder.misc.abs.Savable;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
@@ -16,7 +19,7 @@ import java.util.UUID;
  * @since January 7th, 2022
  */
 public class Location implements Savable {
-    private final UUID uuid;
+    private UUID uuid;
     private int x;
     private int y;
     private int width;
@@ -32,6 +35,10 @@ public class Location implements Savable {
         this.width = width;
         this.height = height;
         this.parentGrid = parentGrid;
+    }
+
+    public Location(Map<String, String> data) {
+        this.load(data);
     }
 
     public UUID getUUID() {
@@ -100,12 +107,25 @@ public class Location implements Savable {
 
     @Override
     public Map<String, String> save() {
-        // TODO: implement
-        return null;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Map<String, String> saveMap = new HashMap<>();
+        saveMap.put("uuid", gson.toJson(uuid));
+        saveMap.put("x", gson.toJson(x));
+        saveMap.put("y", gson.toJson(y));
+        saveMap.put("width", gson.toJson(width));
+        saveMap.put("height", gson.toJson(height));
+        return saveMap;
     }
 
     @Override
-    public void load(Map<String, String> map) {
-        // TODO: implement
+    public void load(Map<String, String> data) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
+        x = Integer.parseInt(gson.fromJson(data.get("x"), String.class));
+        y = Integer.parseInt(gson.fromJson(data.get("y"), String.class));
+        width = Integer.parseInt(gson.fromJson(data.get("width"), String.class));
+        height = Integer.parseInt(gson.fromJson(data.get("height"), String.class));
     }
 }
