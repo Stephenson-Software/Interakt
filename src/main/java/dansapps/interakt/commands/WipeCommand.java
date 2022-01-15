@@ -14,13 +14,14 @@ public class WipeCommand extends InteraktCommand {
     }
 
     @Override
-    public boolean execute(CommandSender commandSender) {
+    public boolean execute(CommandSender sender) {
         PersistentData.getInstance().clearData();
+        sender.sendMessage("Data has been wiped.");
         return true;
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] strings) {
-        return execute(commandSender);
+    public boolean execute(CommandSender sender, String[] strings) {
+        return execute(sender);
     }
 }
