@@ -4,7 +4,7 @@
  */
 package dansapps.interakt.data;
 
-import dansapps.interakt.objects.*;
+import dansapps.interakt.objects.domain.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -113,6 +113,15 @@ public class PersistentData {
         grids.add(grid);
     }
 
+    public Grid getGrid(UUID gridUUID) throws Exception {
+        for (Grid grid : grids) {
+            if (grid.getUUID().equals(gridUUID)) {
+                return grid;
+            }
+        }
+        throw new Exception();
+    }
+
     public HashSet<Location> getLocations() {
         return locations;
     }
@@ -123,6 +132,15 @@ public class PersistentData {
 
     public void addLocation(Location location) {
         locations.add(location);
+    }
+
+    public Location getLocation(UUID locationUUID) throws Exception {
+        for (Location location : locations) {
+            if (location.getUUID().equals(locationUUID)) {
+                return location;
+            }
+        }
+        throw new Exception();
     }
 
     public ArrayList<TimeSlot> getTimeSlots() {

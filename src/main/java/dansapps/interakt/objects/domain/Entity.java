@@ -2,7 +2,7 @@
   Copyright (c) 2022 Daniel McCoy Stephenson
   Apache License 2.0
  */
-package dansapps.interakt.objects;
+package dansapps.interakt.objects.domain;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,6 +24,7 @@ public class Entity implements Savable {
     private String name;
     private LocalDateTime creationDate;
     private UUID environmentUUID;
+    private UUID locationUUID;
 
     public Entity(String name) {
         uuid = UUID.randomUUID();
@@ -57,6 +58,14 @@ public class Entity implements Savable {
 
     public void setEnvironmentUUID(UUID environmentUUID) {
         this.environmentUUID = environmentUUID;
+    }
+
+    private UUID getLocationUUID() {
+        return locationUUID;
+    }
+
+    public void setLocationUUID(UUID locationUUD) {
+        this.locationUUID = locationUUD;
     }
 
     public void sendInfo(CommandSender sender) {
@@ -104,5 +113,9 @@ public class Entity implements Savable {
 
     private Environment getEnvironment() {
         return PersistentData.getInstance().getEnvironment(getEnvironmentUUID());
+    }
+
+    public Location getLocation() throws Exception {
+        return PersistentData.getInstance().getLocation(getLocationUUID());
     }
 }
