@@ -48,9 +48,8 @@ public class Interakt extends PonderApplication {
     /**
      * The primary method for the application. This is where the running loop can be found.
      * @param user The user of the application.
-     * @return Whether the program exited successfully.
      */
-    public boolean run(CommandSenderImpl user) {
+    public void run(CommandSenderImpl user) {
         Logger.getInstance().log("Running application.");
 
         String line;
@@ -61,7 +60,7 @@ public class Interakt extends PonderApplication {
         while (isRunning()) {
             line = getInput();
             if (line == null) {
-                return false;
+                return;
             }
 
             int indexOfFirstSpace = line.indexOf(' ');
@@ -79,7 +78,6 @@ public class Interakt extends PonderApplication {
                 Logger.getInstance().log("Something went wrong processing the " + label + " command.");
             }
         }
-        return true;
     }
 
     /**
