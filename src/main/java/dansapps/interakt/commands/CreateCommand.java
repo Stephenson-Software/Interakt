@@ -5,9 +5,8 @@
 package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
-import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
-import dansapps.interakt.objects.Environment;
+import dansapps.interakt.factories.EntityFactory;
+import dansapps.interakt.factories.EnvironmentFactory;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -49,28 +48,18 @@ public class CreateCommand extends InteraktCommand {
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("entity")) {
-            createEntity(name, sender);
+            EntityFactory.getInstance().createEntity(name);
+            sender.sendMessage("Entity created.");
             return true;
         }
         else if (type.equalsIgnoreCase("environment")) {
-            createEnvironment(name, sender);
+            EnvironmentFactory.getInstance().createEnvironment(name);
+            sender.sendMessage("Environment created.");
             return true;
         }
         else {
             sender.sendMessage("'" + type + "' is not a supported type. Supported types include entity and environment.");
             return false;
         }
-    }
-
-    private void createEntity(String name, CommandSender sender) {
-        Entity entity = new Entity(name);
-        PersistentData.getInstance().addEntity(entity);
-        sender.sendMessage("Entity created.");
-    }
-
-    private void createEnvironment(String name, CommandSender sender) {
-        Environment environment = new Environment(name);
-        PersistentData.getInstance().addEnvironment(environment);
-        sender.sendMessage("Environment created.");
     }
 }
