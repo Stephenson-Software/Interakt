@@ -27,7 +27,7 @@ public class Grid implements Savable {
     private UUID primaryLocationUUID;
     private UUID parentEnvironmentUUID;
 
-    public Grid(int columns, int rows, int locationHeight, int locationWidth, UUID parentEnvironmentUUID) {
+    public Grid(int columns, int rows, UUID parentEnvironmentUUID) {
         uuid = UUID.randomUUID();
         this.columns = columns;
         this.rows = rows;
