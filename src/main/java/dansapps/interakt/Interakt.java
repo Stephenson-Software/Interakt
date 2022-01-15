@@ -41,7 +41,7 @@ public class Interakt extends PonderApplication {
      * Initializes values and calls the onStartup method.
      */
     public Interakt() {
-        super("ExamplePonderApplication", "This is an example of an application created with Ponder.");
+        super("Interakt", "This application is intended to allow the user to create and manage environments and entities that can exist within those environments.");
         onStartup();
     }
 
