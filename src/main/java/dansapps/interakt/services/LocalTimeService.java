@@ -17,10 +17,11 @@ import java.util.concurrent.TimeUnit;
 public class LocalTimeService extends Thread {
     private static LocalTimeService instance;
     private TimeStream timeStream = new TimeStream();
-    private int timeSlotLength = 5000;
+    private int timeSlotLength;
 
     private LocalTimeService() {
-
+        int seconds = 60;
+        timeSlotLength = seconds * 1000;
     }
 
     public static LocalTimeService getInstance() {

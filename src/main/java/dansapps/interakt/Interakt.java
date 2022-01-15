@@ -23,7 +23,7 @@ import java.util.Scanner;
  */
 public class Interakt extends PonderApplication {
     private static Interakt instance;
-    private boolean debug = false;
+    private boolean debug = true;
     private boolean running = true;
 
     private CommandService commandService;
