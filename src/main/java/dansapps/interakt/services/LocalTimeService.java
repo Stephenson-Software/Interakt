@@ -64,11 +64,4 @@ public class LocalTimeService extends Thread {
             entity.attemptToPerformMoveAction();
         }
     }
-
-    /**
-     * Method for testing.
-     */
-    public static void main(String[] args) {
-        LocalTimeService.getInstance().start();
-    }
 }
