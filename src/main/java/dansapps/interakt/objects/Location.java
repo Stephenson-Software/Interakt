@@ -21,19 +21,15 @@ public class Location implements Savable {
     private UUID uuid;
     private int x;
     private int y;
-    private int width;
-    private int height;
 
-    private Grid parentGrid;
+    private UUID parentGridUUID;
     private HashSet<Entity> entities = new HashSet<>();
 
-    public Location(int x, int y, int width, int height, Grid parentGrid) {
+    public Location(int x, int y, Grid parentGrid) {
         uuid = UUID.randomUUID();
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
-        this.parentGrid = parentGrid;
+        this.parentGridUUID = parentGrid.getUUID();
     }
 
     public Location(Map<String, String> data) {
@@ -60,28 +56,12 @@ public class Location implements Savable {
         this.y = y;
     }
 
-    public int getWidth() {
-        return width;
+    public UUID getParentGridUUID() {
+        return parentGridUUID;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public Grid getParentGrid() {
-        return parentGrid;
-    }
-
-    public void setParentGrid(Grid parentGrid) {
-        this.parentGrid = parentGrid;
+    public void setParentGridUUID(UUID parentGridUUID) {
+        this.parentGridUUID = parentGridUUID;
     }
 
     public HashSet<Entity> getEntities() {
@@ -112,8 +92,6 @@ public class Location implements Savable {
         saveMap.put("uuid", gson.toJson(uuid));
         saveMap.put("x", gson.toJson(x));
         saveMap.put("y", gson.toJson(y));
-        saveMap.put("width", gson.toJson(width));
-        saveMap.put("height", gson.toJson(height));
         return saveMap;
     }
 
@@ -124,7 +102,5 @@ public class Location implements Savable {
         uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
         x = Integer.parseInt(gson.fromJson(data.get("x"), String.class));
         y = Integer.parseInt(gson.fromJson(data.get("y"), String.class));
-        width = Integer.parseInt(gson.fromJson(data.get("width"), String.class));
-        height = Integer.parseInt(gson.fromJson(data.get("height"), String.class));
     }
 }

@@ -24,8 +24,6 @@ public class Grid implements Savable {
     private HashSet<UUID> locationUUIDs = new HashSet<>();
     private int columns;
     private int rows;
-    private int locationHeight;
-    private int locationWidth;
     private UUID primaryLocationUUID;
     private UUID parentEnvironmentUUID;
 
@@ -33,8 +31,6 @@ public class Grid implements Savable {
         uuid = UUID.randomUUID();
         this.columns = columns;
         this.rows = rows;
-        this.locationHeight = locationHeight;
-        this.locationWidth = locationWidth;
         this.parentEnvironmentUUID = parentEnvironmentUUID;
     }
 
@@ -70,22 +66,6 @@ public class Grid implements Savable {
         this.rows = rows;
     }
 
-    public int getLocationHeight() {
-        return locationHeight;
-    }
-
-    public void setLocationHeight(int locationHeight) {
-        this.locationHeight = locationHeight;
-    }
-
-    public int getLocationWidth() {
-        return locationWidth;
-    }
-
-    public void setLocationWidth(int locationWidth) {
-        this.locationWidth = locationWidth;
-    }
-
     public UUID getPrimaryLocationUUID() {
         return primaryLocationUUID;
     }
@@ -107,14 +87,14 @@ public class Grid implements Savable {
         int yPosition = 0;
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                Location newGridLocation = new Location(xPosition, yPosition, locationWidth, locationHeight, this);
+                Location newGridLocation = new Location(xPosition, yPosition, this);
                 addLocation(newGridLocation);
                 if (i == 0 && j == 0) {
                     primaryLocationUUID = newGridLocation.getUUID();
                 }
-                xPosition += locationWidth;
+                xPosition += 1;
             }
-            yPosition += locationHeight;
+            yPosition += 1;
             xPosition = 0;
         }
     }
@@ -133,8 +113,6 @@ public class Grid implements Savable {
         saveMap.put("locationUUIDs", gson.toJson(locationUUIDs));
         saveMap.put("columns", gson.toJson(columns));
         saveMap.put("rows", gson.toJson(rows));
-        saveMap.put("locationHeight", gson.toJson(locationHeight));
-        saveMap.put("locationWidth", gson.toJson(locationWidth));
         saveMap.put("primaryLocationUUID", gson.toJson(primaryLocationUUID));
         saveMap.put("parentEnvironmentUUID", gson.toJson(parentEnvironmentUUID));
         return saveMap;
@@ -150,8 +128,6 @@ public class Grid implements Savable {
         locationUUIDs = gson.fromJson(data.get("locationUUIDs"), hashsetTypeUUID);
         columns = Integer.parseInt(data.get("columns"));
         rows = Integer.parseInt(data.get("rows"));
-        locationHeight = Integer.parseInt(data.get("locationHeight"));
-        locationWidth = Integer.parseInt(data.get("locationWidth"));
         primaryLocationUUID = UUID.fromString(gson.fromJson(data.get("primaryLocationUUID"), String.class));
         parentEnvironmentUUID = UUID.fromString(gson.fromJson(data.get("parentEnvironmentUUID"), String.class));
     }
