@@ -4,6 +4,7 @@
  */
 package dansapps.interakt.commands;
 
+import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
@@ -17,7 +18,7 @@ import java.util.List;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class ListCommand extends ApplicationCommand {
+public class ListCommand extends InteraktCommand {
 
     public ListCommand() {
         super(new ArrayList<>(List.of("list")), new ArrayList<>(List.of("interakt.list")));

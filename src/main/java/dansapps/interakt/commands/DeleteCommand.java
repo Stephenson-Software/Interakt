@@ -4,6 +4,7 @@
  */
 package dansapps.interakt.commands;
 
+import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
@@ -18,7 +19,7 @@ import java.util.List;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class DeleteCommand extends ApplicationCommand {
+public class DeleteCommand extends InteraktCommand {
 
     public DeleteCommand() {
         super(new ArrayList<>(List.of("delete")), new ArrayList<>(List.of("interakt.delete")));
@@ -36,28 +37,44 @@ public class DeleteCommand extends ApplicationCommand {
             sender.sendMessage("Not enough arguments.");
             return false;
         }
-        ArgumentParser argumentParser = new ArgumentParser();
-        ArrayList<String> doubleQuoteArgs = argumentParser.getArgumentsInsideDoubleQuotes(args);
-        if (doubleQuoteArgs.size() < 2) {
+
+        ArrayList<String> doubleQuoteArgs;
+        try {
+            doubleQuoteArgs = extractArgumentsInsideDoubleQuotes(args);
+        }
+        catch(Exception e) {
             sender.sendMessage("Arguments must be designated in between quotation marks.");
             return false;
         }
+
         String type = doubleQuoteArgs.get(0);
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("entity")) {
-            Entity entity = (Entity) PersistentData.getInstance().getEntity(name);
-            PersistentData.getInstance().removeEntity(entity);
+            deleteEntity(name, sender);
             return true;
         }
         else if (type.equalsIgnoreCase("environment")) {
-            Environment environment = PersistentData.getInstance().getEnvironment(name);
-            PersistentData.getInstance().removeEnvironment(environment);
+            deleteEnvironment(name, sender);
             return true;
         }
         else {
             sender.sendMessage("That type isn't supported.");
             return false;
         }
+    }
+
+
+
+    private void deleteEntity(String name, CommandSender sender) {
+        Entity entity = PersistentData.getInstance().getEntity(name);
+        PersistentData.getInstance().removeEntity(entity);
+        sender.sendMessage("Entity removed.");
+    }
+
+    private void deleteEnvironment(String name, CommandSender sender) {
+        Environment environment = PersistentData.getInstance().getEnvironment(name);
+        PersistentData.getInstance().removeEnvironment(environment);
+        sender.sendMessage("Environment removed.");
     }
 }

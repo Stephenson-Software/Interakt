@@ -26,6 +26,10 @@ public class Environment implements Savable {
     private UUID gridUUID;
     private HashSet<UUID> entities = new HashSet<>();
 
+    public Environment(String name) {
+        this(name, 10);
+    }
+
     public Environment(String name, int size) {
         uuid = UUID.randomUUID();
         this.name = name;

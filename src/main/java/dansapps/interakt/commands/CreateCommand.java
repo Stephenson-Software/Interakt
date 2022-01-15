@@ -4,6 +4,7 @@
  */
 package dansapps.interakt.commands;
 
+import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
@@ -18,7 +19,7 @@ import java.util.List;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class CreateCommand extends ApplicationCommand {
+public class CreateCommand extends InteraktCommand {
 
     public CreateCommand() {
         super(new ArrayList<>(List.of("create")), new ArrayList<>(List.of("interakt.create")));
@@ -36,30 +37,42 @@ public class CreateCommand extends ApplicationCommand {
             sender.sendMessage("Not enough arguments.");
             return false;
         }
-        ArgumentParser argumentParser = new ArgumentParser();
-        ArrayList<String> doubleQuoteArgs = argumentParser.getArgumentsInsideDoubleQuotes(args);
-        if (doubleQuoteArgs.size() < 2) {
+
+        ArrayList<String> doubleQuoteArgs;
+        try {
+            doubleQuoteArgs = extractArgumentsInsideDoubleQuotes(args);
+        }
+        catch(Exception e) {
             sender.sendMessage("Arguments must be designated in between quotation marks.");
             return false;
         }
+
         String type = doubleQuoteArgs.get(0);
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("entity")) {
-            Entity entity = new Entity(name); // TODO: create factory for this
-            PersistentData.getInstance().addEntity(entity);
-            sender.sendMessage("Entity created.");
+            createEntity(name, sender);
             return true;
         }
         else if (type.equalsIgnoreCase("environment")) {
-            Environment environment = new Environment(name, 10); // TODO: create factory for this
-            PersistentData.getInstance().addEnvironment(environment);
-            sender.sendMessage("Environment created.");
+            createEnvironment(name, sender);
             return true;
         }
         else {
             sender.sendMessage("'" + type + "' is not a supported type. Supported types include entity and environment.");
             return false;
         }
+    }
+
+    private void createEntity(String name, CommandSender sender) {
+        Entity entity = new Entity(name);
+        PersistentData.getInstance().addEntity(entity);
+        sender.sendMessage("Entity created.");
+    }
+
+    private void createEnvironment(String name, CommandSender sender) {
+        Environment environment = new Environment(name);
+        PersistentData.getInstance().addEnvironment(environment);
+        sender.sendMessage("Environment created.");
     }
 }

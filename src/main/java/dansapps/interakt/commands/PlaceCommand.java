@@ -4,6 +4,7 @@
  */
 package dansapps.interakt.commands;
 
+import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
@@ -18,7 +19,7 @@ import java.util.List;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class PlaceCommand extends ApplicationCommand {
+public class PlaceCommand extends InteraktCommand {
 
     public PlaceCommand() {
         super(new ArrayList<>(List.of("place")), new ArrayList<>(List.of("interakt.place")));
@@ -36,12 +37,16 @@ public class PlaceCommand extends ApplicationCommand {
             sender.sendMessage("Not enough arguments.");
             return false;
         }
-        ArgumentParser argumentParser = new ArgumentParser();
-        ArrayList<String> doubleQuoteArgs = argumentParser.getArgumentsInsideDoubleQuotes(args);
-        if (doubleQuoteArgs.size() < 2) {
+
+        ArrayList<String> doubleQuoteArgs;
+        try {
+            doubleQuoteArgs = extractArgumentsInsideDoubleQuotes(args);
+        }
+        catch(Exception e) {
             sender.sendMessage("Arguments must be designated in between quotation marks.");
             return false;
         }
+
         String entityName = doubleQuoteArgs.get(0);
         Entity entity = (Entity) PersistentData.getInstance().getEntity(entityName);
         if (entity == null) {

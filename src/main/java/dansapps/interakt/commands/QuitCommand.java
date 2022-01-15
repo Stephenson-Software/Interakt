@@ -5,6 +5,7 @@
 package dansapps.interakt.commands;
 
 import dansapps.interakt.Interakt;
+import dansapps.interakt.commands.abs.InteraktCommand;
 import preponderous.ponder.system.abs.ApplicationCommand;
 import preponderous.ponder.system.abs.CommandSender;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class QuitCommand extends ApplicationCommand {
+public class QuitCommand extends InteraktCommand {
 
     public QuitCommand() {
         super(new ArrayList<>(List.of("quit")), new ArrayList<>(List.of("interakt.quit")));

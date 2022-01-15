@@ -5,6 +5,7 @@
 package dansapps.interakt.commands;
 
 
+import dansapps.interakt.commands.abs.InteraktCommand;
 import preponderous.ponder.system.abs.ApplicationCommand;
 import preponderous.ponder.system.abs.CommandSender;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class InfoCommand extends ApplicationCommand {
+public class InfoCommand extends InteraktCommand {
     public InfoCommand() {
         super(new ArrayList<>(List.of("info")), new ArrayList<>(List.of("interakt.info")));
     }
