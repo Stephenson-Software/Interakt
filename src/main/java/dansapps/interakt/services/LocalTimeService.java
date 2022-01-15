@@ -6,6 +6,7 @@ package dansapps.interakt.services;
 
 import dansapps.interakt.Interakt;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.factories.TimeSlotFactory;
 import dansapps.interakt.objects.TimeSlot;
 import dansapps.interakt.utils.Logger;
 
@@ -52,8 +53,7 @@ public class LocalTimeService extends Thread {
     }
 
     private void elapse() {
-        TimeSlot timeSlot = new TimeSlot(timeSlotLength);
-        PersistentData.getInstance().addTimeSlot(timeSlot);
+        TimeSlotFactory.getInstance().createTimeSlot(timeSlotLength);
         Logger.getInstance().log("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimeSlots().size());
     }
 

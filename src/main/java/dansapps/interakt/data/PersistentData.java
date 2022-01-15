@@ -110,7 +110,7 @@ public class PersistentData {
     }
 
     public void addGrid(Grid grid) {
-
+        grids.add(grid);
     }
 
     public HashSet<Location> getLocations() {
@@ -121,8 +121,8 @@ public class PersistentData {
         this.locations = locations;
     }
 
-    public void addLocation(Location gridLocation) {
-
+    public void addLocation(Location location) {
+        locations.add(location);
     }
 
     public ArrayList<TimeSlot> getTimeSlots() {

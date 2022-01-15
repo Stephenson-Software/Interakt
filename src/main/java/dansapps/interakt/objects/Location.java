@@ -6,8 +6,10 @@ package dansapps.interakt.objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import preponderous.ponder.misc.abs.Savable;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,15 +23,14 @@ public class Location implements Savable {
     private UUID uuid;
     private int x;
     private int y;
-
     private UUID parentGridUUID;
     private HashSet<Entity> entities = new HashSet<>();
 
-    public Location(int x, int y, Grid parentGrid) {
+    public Location(int x, int y, UUID gridUUID) {
         uuid = UUID.randomUUID();
         this.x = x;
         this.y = y;
-        this.parentGridUUID = parentGrid.getUUID();
+        this.parentGridUUID = gridUUID;
     }
 
     public Location(Map<String, String> data) {
@@ -92,6 +93,8 @@ public class Location implements Savable {
         saveMap.put("uuid", gson.toJson(uuid));
         saveMap.put("x", gson.toJson(x));
         saveMap.put("y", gson.toJson(y));
+        saveMap.put("parentGridUUID", gson.toJson(parentGridUUID));
+        saveMap.put("entities", gson.toJson(entities));
         return saveMap;
     }
 
@@ -99,8 +102,12 @@ public class Location implements Savable {
     public void load(Map<String, String> data) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+        Type hashsetTypeUUID = new TypeToken<HashSet<UUID>>(){}.getType();
+
         uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
         x = Integer.parseInt(gson.fromJson(data.get("x"), String.class));
         y = Integer.parseInt(gson.fromJson(data.get("y"), String.class));
+        parentGridUUID = UUID.fromString(gson.fromJson(data.get("parentGridUUID"), String.class));
+        entities = gson.fromJson(data.get("entities"), hashsetTypeUUID);
     }
 }
