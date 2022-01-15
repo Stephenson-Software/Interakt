@@ -7,6 +7,8 @@ package dansapps.interakt.objects.domain;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.actions.MoveAction;
+import dansapps.interakt.utils.Logger;
 import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
 
@@ -83,6 +85,24 @@ public class Entity implements Savable {
         }
     }
 
+    public Environment getEnvironment() {
+        return PersistentData.getInstance().getEnvironment(getEnvironmentUUID());
+    }
+
+    public Location getLocation() throws Exception {
+        return PersistentData.getInstance().getLocation(getLocationUUID());
+    }
+
+    public void performMoveAction() {
+        try {
+            MoveAction.execute(this);
+            Location location = getLocation();
+            Logger.getInstance().log(getName() + " moved to " + location.getX() + ", " + location.getY() + " in " + getEnvironment().getName());
+        } catch (Exception e) {
+            Logger.getInstance().log(getName() + " attempted to move, but was not able to.");
+        }
+    }
+
     @Override
     public Map<String, String> save() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -109,13 +129,5 @@ public class Entity implements Savable {
         catch(Exception ignored) {
 
         }
-    }
-
-    private Environment getEnvironment() {
-        return PersistentData.getInstance().getEnvironment(getEnvironmentUUID());
-    }
-
-    public Location getLocation() throws Exception {
-        return PersistentData.getInstance().getLocation(getLocationUUID());
     }
 }

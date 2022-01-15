@@ -7,6 +7,7 @@ package dansapps.interakt.services;
 import dansapps.interakt.Interakt;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.TimeSlotFactory;
+import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.utils.Logger;
 
 import java.util.concurrent.TimeUnit;
@@ -52,8 +53,16 @@ public class LocalTimeService extends Thread {
     }
 
     private void elapse() {
+        Logger.getInstance().log("----------------------");
         TimeSlotFactory.getInstance().createTimeSlot(timeSlotLength);
+        makeEntitiesPerformMoveAction();
         Logger.getInstance().log("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimeSlots().size());
+    }
+
+    private void makeEntitiesPerformMoveAction() {
+        for (Entity entity : PersistentData.getInstance().getEntities()) {
+            entity.performMoveAction();
+        }
     }
 
     /**
