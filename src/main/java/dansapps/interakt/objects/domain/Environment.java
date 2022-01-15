@@ -73,7 +73,7 @@ public class Environment implements Savable {
     }
 
     public void sendInfo(CommandSender sender) {
-        sender.sendMessage("===  Details of " + getName() + " ===");
+        sender.sendMessage("=== Details of " + getName() + " ===");
         sender.sendMessage("UUID: " + getUUID());
         sender.sendMessage("Number of entities: " + entities.size());
         sender.sendMessage("Created: " + getCreationDate().toString());
