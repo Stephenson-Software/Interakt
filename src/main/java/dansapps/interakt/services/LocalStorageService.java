@@ -9,6 +9,7 @@ import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
 import dansapps.interakt.objects.domain.Location;
 import dansapps.interakt.objects.domain.TwoDimensionalGrid;
+import dansapps.interakt.utils.Logger;
 import preponderous.ponder.misc.JsonWriterReader;
 
 import java.util.*;
@@ -39,17 +40,27 @@ public class LocalStorageService {
     }
 
     public void save() {
-        saveEntities();
-        saveEnvironments();
-        saveGrids();
-        saveLocations();
+        try {
+            saveEntities();
+            saveEnvironments();
+            saveGrids();
+            saveLocations();
+        }
+        catch(Exception e) {
+            Logger.getInstance().log("Something went wrong when saving the data of the application.");
+        }
     }
 
     public void load() {
-        loadEntities();
-        loadEnvironments();
-        loadGrids();
-        loadLocations();
+        try {
+            loadEntities();
+            loadEnvironments();
+            loadGrids();
+            loadLocations();
+        }
+        catch(Exception e) {
+            Logger.getInstance().log("Something went wrong when loading the data of the application.");
+        }
     }
 
     private void saveEntities() {
