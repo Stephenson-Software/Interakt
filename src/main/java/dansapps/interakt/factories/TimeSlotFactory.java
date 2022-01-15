@@ -1,7 +1,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.TimeSlot;
+import dansapps.interakt.objects.domain.TimeSlot;
 
 public class TimeSlotFactory {
     private static TimeSlotFactory instance;

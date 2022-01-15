@@ -19,7 +19,7 @@ public class StatsCommand extends InteraktCommand {
         sender.sendMessage("Number of environments: " + PersistentData.getInstance().getEnvironments().size());
         sender.sendMessage("Number of grids: " + PersistentData.getInstance().getGrids().size());
         sender.sendMessage("Number of locations: " + PersistentData.getInstance().getLocations().size());
-        sender.sendMessage("Number of time slots: " + PersistentData.getInstance().getTimeSlots().size());
+        sender.sendMessage("Number of elapsed time slots: " + PersistentData.getInstance().getTimeSlots().size());
         return true;
     }
 

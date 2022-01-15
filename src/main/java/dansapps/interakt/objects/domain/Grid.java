@@ -2,7 +2,7 @@
   Copyright (c) 2022 Daniel McCoy Stephenson
   Apache License 2.0
  */
-package dansapps.interakt.objects;
+package dansapps.interakt.objects.domain;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -98,6 +98,16 @@ public class Grid implements Savable {
         if (i == 0 && j == 0) {
             primaryLocationUUID = locationUUID;
         }
+    }
+
+    public Location getLocation(int x, int y) throws Exception {
+        for (UUID locationUUID : getLocationUUIDs()) {
+            Location location = PersistentData.getInstance().getLocation(locationUUID);
+            if (location.getX() == x && location.getY() == y) {
+                return location;
+            }
+        }
+        throw new Exception();
     }
 
     @Override
