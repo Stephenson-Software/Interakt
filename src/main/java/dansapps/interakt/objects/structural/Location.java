@@ -4,7 +4,7 @@
  */
 package dansapps.interakt.objects.structural;
 
-import dansapps.interakt.objects.domain.LivingEntity;
+import dansapps.interakt.objects.domain.Entity;
 import preponderous.ponder.misc.abs.Savable;
 
 import java.util.HashSet;
@@ -23,7 +23,7 @@ public class Location implements Savable {
     private int height;
 
     private TwoDimensionalGrid parentGrid;
-    private HashSet<LivingEntity> entities = new HashSet<>();
+    private HashSet<Entity> entities = new HashSet<>();
 
     public Location(int x, int y, int width, int height, TwoDimensionalGrid parentGrid) {
         uuid = UUID.randomUUID();
@@ -78,23 +78,23 @@ public class Location implements Savable {
         this.parentGrid = parentGrid;
     }
 
-    public HashSet<LivingEntity> getEntities() {
+    public HashSet<Entity> getEntities() {
         return entities;
     }
 
-    public void setEntities(HashSet<LivingEntity> entities) {
+    public void setEntities(HashSet<Entity> entities) {
         this.entities = entities;
     }
 
-    public void addEntity(LivingEntity entity) {
+    public void addEntity(Entity entity) {
         entities.add(entity);
     }
 
-    public void removeEntity(LivingEntity entity) {
+    public void removeEntity(Entity entity) {
         entities.remove(entity);
     }
 
-    public boolean isEntityPresent(LivingEntity entity) {
+    public boolean isEntityPresent(Entity entity) {
         return entities.contains(entity);
     }
 

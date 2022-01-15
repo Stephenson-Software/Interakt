@@ -5,8 +5,8 @@
 package dansapps.interakt.commands;
 
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
-import dansapps.interakt.objects.domain.LivingEntity;
 import preponderous.ponder.misc.ArgumentParser;
 import preponderous.ponder.system.abs.ApplicationCommand;
 import preponderous.ponder.system.abs.CommandSender;
@@ -46,7 +46,7 @@ public class CreateCommand extends ApplicationCommand {
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("entity")) {
-            LivingEntity entity = new LivingEntity(name); // TODO: create factory for this
+            Entity entity = new Entity(name); // TODO: create factory for this
             PersistentData.getInstance().addEntity(entity);
             sender.sendMessage("Entity created.");
             return true;

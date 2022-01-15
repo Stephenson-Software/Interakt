@@ -4,58 +4,105 @@
  */
 package dansapps.interakt.objects.domain;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.objects.structural.TwoDimensionalGrid;
 import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
+import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class Environment extends Entity implements Savable {
+public class Environment implements Savable {
     private UUID uuid;
-    private TwoDimensionalGrid grid; // TODO: make persistent
-    private HashSet<LivingEntity> entities = new HashSet<>(); // TODO: make persistent
+    private String name;
+    private LocalDateTime creationDate;
+    private UUID gridUUID;
+    private HashSet<UUID> entities = new HashSet<>();
 
     public Environment(String name, int size) {
-        super(name);
         uuid = UUID.randomUUID();
-        grid = new TwoDimensionalGrid(size, size, 10, 10, uuid);
+        this.name = name;
+        creationDate = LocalDateTime.now();
+        TwoDimensionalGrid grid = new TwoDimensionalGrid(size, size, 10, 10, getUUID());
         grid.createGrid();
+        gridUUID = grid.getUUID();
     }
 
     public Environment(Map<String, String> data) {
-        super(data);
         this.load(data);
     }
 
-    public TwoDimensionalGrid getGrid() {
-        return grid;
+    public UUID getUUID() {
+        return uuid;
     }
 
-    public void addEntity(LivingEntity entity) {
-        entities.add(entity);
-        entity.setLocationUUID(getGrid().getPrimaryLocationUUID());
+    public UUID getGridUUID() {
+        return gridUUID;
     }
 
-    public void removeEntity(LivingEntity entity) {
-        entities.remove(entity);
+    public String getName() {
+        return name;
     }
 
-    public boolean isEntityPresent(LivingEntity entity) {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void addEntity(Entity entity) {
+        entities.add(entity.getUUID());
+        entity.setEnvironmentUUID(getUUID());
+    }
+
+    public void removeEntity(Entity entity) {
+        entities.remove(entity.getUUID());
+    }
+
+    public boolean isEntityPresent(Entity entity) {
         return entities.contains(entity);
     }
 
-    @Override
     public void sendInfo(CommandSender sender) {
         sender.sendMessage("===  Details of " + getName() + " ===");
         sender.sendMessage("UUID: " + getUUID());
-        sender.sendMessage("Number of slots: " + grid.getLocations().size());
         sender.sendMessage("Number of entities: " + entities.size());
         sender.sendMessage("Created: " + getCreationDate().toString());
+    }
+
+    @Override
+    public Map<String, String> save() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Map<String, String> saveMap = new HashMap<>();
+        saveMap.put("uuid", gson.toJson(uuid));
+        saveMap.put("name", gson.toJson(name));
+        saveMap.put("creationDate", gson.toJson(creationDate.toString()));
+        saveMap.put("gridUUID", gson.toJson(gridUUID));
+        saveMap.put("entities", gson.toJson(entities));
+
+        return saveMap;
+    }
+
+    @Override
+    public void load(Map<String, String> data) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Type hashsetTypeUUID = new TypeToken<HashSet<UUID>>(){}.getType();
+
+        uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
+        name = gson.fromJson(data.get("name"), String.class);
+        creationDate = LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class));
+        gridUUID = UUID.fromString(gson.fromJson(data.get("gridUUID"), String.class));
+        entities = gson.fromJson(data.get("entities"), hashsetTypeUUID);
     }
 }

@@ -5,8 +5,8 @@
 package dansapps.interakt.commands;
 
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
-import dansapps.interakt.objects.domain.LivingEntity;
 import preponderous.ponder.misc.ArgumentParser;
 import preponderous.ponder.system.abs.ApplicationCommand;
 import preponderous.ponder.system.abs.CommandSender;
@@ -43,12 +43,12 @@ public class PlaceCommand extends ApplicationCommand {
             return false;
         }
         String entityName = doubleQuoteArgs.get(0);
-        LivingEntity entity = (LivingEntity) PersistentData.getInstance().getEntity(entityName);
+        Entity entity = (Entity) PersistentData.getInstance().getEntity(entityName);
         if (entity == null) {
             sender.sendMessage("That entity wasn't found.");
             return false;
         }
-        if (entity.getLocationUUID() != null) {
+        if (entity.getEnvironmentUUID() != null) {
             sender.sendMessage("That entity is already in an environment.");
             return false;
         }

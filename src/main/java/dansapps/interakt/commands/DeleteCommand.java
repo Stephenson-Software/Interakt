@@ -5,8 +5,8 @@
 package dansapps.interakt.commands;
 
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
-import dansapps.interakt.objects.domain.LivingEntity;
 import preponderous.ponder.misc.ArgumentParser;
 import preponderous.ponder.system.abs.ApplicationCommand;
 import preponderous.ponder.system.abs.CommandSender;
@@ -46,7 +46,7 @@ public class DeleteCommand extends ApplicationCommand {
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("entity")) {
-            LivingEntity entity = (LivingEntity) PersistentData.getInstance().getEntity(name);
+            Entity entity = (Entity) PersistentData.getInstance().getEntity(name);
             PersistentData.getInstance().removeEntity(entity);
             return true;
         }

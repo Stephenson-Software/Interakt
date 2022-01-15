@@ -8,6 +8,7 @@ import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Environment;
 
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -70,9 +71,27 @@ public class PersistentData {
         return null;
     }
 
+    public Entity getEntity(UUID entityUUID) {
+        for (Entity entity : entities) {
+            if (entity.getUUID().equals(entityUUID)) {
+                return entity;
+            }
+        }
+        return null;
+    }
+
     public Environment getEnvironment(String name) {
         for (Environment environment : environments) {
             if (environment.getName().equalsIgnoreCase(name)) {
+                return environment;
+            }
+        }
+        return null;
+    }
+
+    public Environment getEnvironment(UUID environmentUUID) {
+        for (Environment environment : environments) {
+            if (environment.getUUID().equals(environmentUUID)) {
                 return environment;
             }
         }
