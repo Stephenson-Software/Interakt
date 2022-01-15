@@ -53,7 +53,6 @@ public class Interakt extends PonderApplication {
     public boolean run(CommandSenderImpl user) {
         Logger.getInstance().log("Running application.");
 
-        // declare variables to be used in loop
         String line;
         String label;
         String[] args;
@@ -65,20 +64,16 @@ public class Interakt extends PonderApplication {
                 return false;
             }
 
-            // handle spaces
             int indexOfFirstSpace = line.indexOf(' ');
             if (indexOfFirstSpace != -1) {
-                // spaces found
                 label = line.substring(0, indexOfFirstSpace);
                 args = line.substring(indexOfFirstSpace).split(" ");
             }
             else {
-                // no spaces found
                 label = line;
                 args = new String[0];
             }
 
-            // handle command
             boolean success = onCommand(user, label, args);
             if (!success) {
                 Logger.getInstance().log("Something went wrong processing the " + label + " command.");
