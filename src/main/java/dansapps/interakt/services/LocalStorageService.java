@@ -5,10 +5,7 @@
 package dansapps.interakt.services;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.domain.Entity;
-import dansapps.interakt.objects.domain.Environment;
-import dansapps.interakt.objects.domain.Location;
-import dansapps.interakt.objects.domain.TwoDimensionalGrid;
+import dansapps.interakt.objects.*;
 import dansapps.interakt.utils.Logger;
 import preponderous.ponder.misc.JsonWriterReader;
 
@@ -25,6 +22,7 @@ public class LocalStorageService {
     private final static String ENVIRONMENTS_FILE_NAME = "environments.json";
     private final static String TWO_DIMENSIONAL_GRIDS_FILE_NAME = "twoDimensionalGrids.json";
     private final static String LOCATIONS_FILE_NAME = "locations.json";
+    private final static String TIME_SLOTS_FILE_NAME = "timeSlots.json";
 
     private final JsonWriterReader jsonWriterReader = new JsonWriterReader();
 
@@ -45,6 +43,7 @@ public class LocalStorageService {
             saveEnvironments();
             saveGrids();
             saveLocations();
+            saveTimeSlots();
         }
         catch(Exception e) {
             Logger.getInstance().log("Something went wrong when saving the data of the application.");
@@ -57,6 +56,7 @@ public class LocalStorageService {
             loadEnvironments();
             loadGrids();
             loadLocations();
+            loadTimeSlots();
         }
         catch(Exception e) {
             Logger.getInstance().log("Something went wrong when loading the data of the application.");
@@ -95,6 +95,14 @@ public class LocalStorageService {
         jsonWriterReader.writeOutFiles(locations, LOCATIONS_FILE_NAME);
     }
 
+    private void saveTimeSlots() {
+        List<Map<String, String>> timeSlots = new ArrayList<>();
+        for (TimeSlot timeSlot : PersistentData.getInstance().getTimeSlots()){
+            timeSlots.add(timeSlot.save());
+        }
+        jsonWriterReader.writeOutFiles(timeSlots, TIME_SLOTS_FILE_NAME);
+    }
+
     private void loadEntities() {
         PersistentData.getInstance().getEntities().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ENTITIES_FILE_NAME);
@@ -131,11 +139,22 @@ public class LocalStorageService {
     private void loadLocations() {
         PersistentData.getInstance().getLocations().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + LOCATIONS_FILE_NAME);
-        HashSet<Location> twoDimensionalGrids = new HashSet<>();
+        HashSet<Location> locations = new HashSet<>();
         for (Map<String, String> locationData : data){
             Location location = new Location(locationData);
-            twoDimensionalGrids.add(location);
+            locations.add(location);
         }
-        PersistentData.getInstance().setLocations(twoDimensionalGrids);
+        PersistentData.getInstance().setLocations(locations);
+    }
+
+    private void loadTimeSlots() {
+        PersistentData.getInstance().getTimeSlots().clear();
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + TIME_SLOTS_FILE_NAME);
+        ArrayList<TimeSlot> timeSlots = new ArrayList<>();
+        for (Map<String, String> timeSlotData : data){
+            TimeSlot timeSlot = new TimeSlot(timeSlotData);
+            timeSlots.add(timeSlot);
+        }
+        PersistentData.getInstance().setTimeSlots(timeSlots);
     }
 }

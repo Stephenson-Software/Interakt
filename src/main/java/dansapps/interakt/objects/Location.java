@@ -2,13 +2,12 @@
   Copyright (c) 2022 Daniel McCoy Stephenson
   Apache License 2.0
  */
-package dansapps.interakt.objects.domain;
+package dansapps.interakt.objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import preponderous.ponder.misc.abs.Savable;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

@@ -4,11 +4,9 @@
  */
 package dansapps.interakt.data;
 
-import dansapps.interakt.objects.domain.Entity;
-import dansapps.interakt.objects.domain.Environment;
-import dansapps.interakt.objects.domain.Location;
-import dansapps.interakt.objects.domain.TwoDimensionalGrid;
+import dansapps.interakt.objects.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -22,6 +20,7 @@ public class PersistentData {
     private HashSet<Environment> environments = new HashSet<>();
     private HashSet<TwoDimensionalGrid> grids = new HashSet<>();
     private HashSet<Location> locations = new HashSet<>();
+    private ArrayList<TimeSlot> timeSlots = new ArrayList<>();
 
     private PersistentData() {
 
@@ -116,5 +115,21 @@ public class PersistentData {
 
     public void setLocations(HashSet<Location> locations) {
         this.locations = locations;
+    }
+
+    public ArrayList<TimeSlot> getTimeSlots() {
+        return timeSlots;
+    }
+
+    public void setTimeSlots(ArrayList<TimeSlot> timeSlots) {
+        this.timeSlots = timeSlots;
+    }
+
+    public void addTimeSlot(TimeSlot timeSlot) {
+        timeSlots.add(timeSlot);
+    }
+
+    public void removeTimeSlot(TimeSlot timeSlot) {
+        timeSlots.remove(timeSlot);
     }
 }

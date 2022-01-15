@@ -4,8 +4,9 @@
  */
 package dansapps.interakt.services;
 
-import dansapps.interakt.objects.time.TimeSlot;
-import dansapps.interakt.objects.time.TimeStream;
+import dansapps.interakt.Interakt;
+import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.TimeSlot;
 import dansapps.interakt.utils.Logger;
 
 import java.util.concurrent.TimeUnit;
@@ -16,7 +17,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class LocalTimeService extends Thread {
     private static LocalTimeService instance;
-    private TimeStream timeStream = new TimeStream();
     private int timeSlotLength;
 
     private LocalTimeService() {
@@ -33,7 +33,7 @@ public class LocalTimeService extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (Interakt.getInstance().isRunning()) {
             elapse();
             try {
                 TimeUnit.SECONDS.sleep(timeSlotLength/1000);
@@ -41,14 +41,6 @@ public class LocalTimeService extends Thread {
                 Logger.getInstance().log("Time stream was interrupted.");
             }
         }
-    }
-
-    public TimeStream getTimeStream() {
-        return timeStream;
-    }
-
-    public void setTimeStream(TimeStream timeStream) {
-        this.timeStream = timeStream;
     }
 
     public int getTimeSlotLength() {
@@ -61,8 +53,8 @@ public class LocalTimeService extends Thread {
 
     private void elapse() {
         TimeSlot timeSlot = new TimeSlot(timeSlotLength);
-        timeStream.addTimeSlot(timeSlot);
-        Logger.getInstance().log("Time elapsed. Number of elapsed slots: " + timeStream.getTimeSlots().size());
+        PersistentData.getInstance().addTimeSlot(timeSlot);
+        Logger.getInstance().log("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimeSlots().size());
     }
 
     /**
