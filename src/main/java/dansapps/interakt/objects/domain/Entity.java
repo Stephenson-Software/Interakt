@@ -94,7 +94,12 @@ public class Entity implements Savable {
         uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
         name = gson.fromJson(data.get("name"), String.class);
         creationDate = LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class));
-        environmentUUID = UUID.fromString(gson.fromJson(data.get("environmentUUID"), String.class));
+        try {
+            environmentUUID = UUID.fromString(gson.fromJson(data.get("environmentUUID"), String.class));
+        }
+        catch(Exception ignored) {
+
+        }
     }
 
     private Environment getEnvironment() {
