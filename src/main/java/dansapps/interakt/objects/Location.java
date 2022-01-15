@@ -24,10 +24,10 @@ public class Location implements Savable {
     private int width;
     private int height;
 
-    private TwoDimensionalGrid parentGrid;
+    private Grid parentGrid;
     private HashSet<Entity> entities = new HashSet<>();
 
-    public Location(int x, int y, int width, int height, TwoDimensionalGrid parentGrid) {
+    public Location(int x, int y, int width, int height, Grid parentGrid) {
         uuid = UUID.randomUUID();
         this.x = x;
         this.y = y;
@@ -76,11 +76,11 @@ public class Location implements Savable {
         this.height = height;
     }
 
-    public TwoDimensionalGrid getParentGrid() {
+    public Grid getParentGrid() {
         return parentGrid;
     }
 
-    public void setParentGrid(TwoDimensionalGrid parentGrid) {
+    public void setParentGrid(Grid parentGrid) {
         this.parentGrid = parentGrid;
     }
 

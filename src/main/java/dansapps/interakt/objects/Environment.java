@@ -36,7 +36,7 @@ public class Environment implements Savable {
         uuid = UUID.randomUUID();
         this.name = name;
         creationDate = LocalDateTime.now();
-        TwoDimensionalGrid grid = new TwoDimensionalGrid(size, size, 10, 10, getUUID());
+        Grid grid = new Grid(size, size, 10, 10, getUUID());
         grid.createGrid();
         gridUUID = grid.getUUID();
     }

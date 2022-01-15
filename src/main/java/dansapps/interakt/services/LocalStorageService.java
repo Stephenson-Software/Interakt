@@ -81,8 +81,8 @@ public class LocalStorageService {
 
     private void saveGrids() {
         List<Map<String, String>> twoDimensionalGrids = new ArrayList<>();
-        for (TwoDimensionalGrid twoDimensionalGrid : PersistentData.getInstance().getGrids()){
-            twoDimensionalGrids.add(twoDimensionalGrid.save());
+        for (Grid grid : PersistentData.getInstance().getGrids()){
+            twoDimensionalGrids.add(grid.save());
         }
         jsonWriterReader.writeOutFiles(twoDimensionalGrids, TWO_DIMENSIONAL_GRIDS_FILE_NAME);
     }
@@ -128,12 +128,12 @@ public class LocalStorageService {
     private void loadGrids() {
         PersistentData.getInstance().getGrids().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + TWO_DIMENSIONAL_GRIDS_FILE_NAME);
-        HashSet<TwoDimensionalGrid> twoDimensionalGrids = new HashSet<>();
+        HashSet<Grid> grids = new HashSet<>();
         for (Map<String, String> twoDimensionalGridData : data){
-            TwoDimensionalGrid twoDimensionalGrid = new TwoDimensionalGrid(twoDimensionalGridData);
-            twoDimensionalGrids.add(twoDimensionalGrid);
+            Grid grid = new Grid(twoDimensionalGridData);
+            grids.add(grid);
         }
-        PersistentData.getInstance().setGrids(twoDimensionalGrids);
+        PersistentData.getInstance().setGrids(grids);
     }
 
     private void loadLocations() {

@@ -19,7 +19,7 @@ import java.util.UUID;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class TwoDimensionalGrid implements Savable {
+public class Grid implements Savable {
     private UUID uuid;
     private HashSet<UUID> locationUUIDs = new HashSet<>();
     private int columns;
@@ -29,7 +29,7 @@ public class TwoDimensionalGrid implements Savable {
     private UUID primaryLocationUUID;
     private UUID parentEnvironmentUUID;
 
-    public TwoDimensionalGrid(int columns, int rows, int locationHeight, int locationWidth, UUID parentEnvironmentUUID) {
+    public Grid(int columns, int rows, int locationHeight, int locationWidth, UUID parentEnvironmentUUID) {
         uuid = UUID.randomUUID();
         this.columns = columns;
         this.rows = rows;
@@ -38,7 +38,7 @@ public class TwoDimensionalGrid implements Savable {
         this.parentEnvironmentUUID = parentEnvironmentUUID;
     }
 
-    public TwoDimensionalGrid(Map<String, String> data) {
+    public Grid(Map<String, String> data) {
         this.load(data);
     }
 

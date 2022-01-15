@@ -18,7 +18,7 @@ public class PersistentData {
     private static PersistentData instance;
     private HashSet<Entity> entities = new HashSet<>();
     private HashSet<Environment> environments = new HashSet<>();
-    private HashSet<TwoDimensionalGrid> grids = new HashSet<>();
+    private HashSet<Grid> grids = new HashSet<>();
     private HashSet<Location> locations = new HashSet<>();
     private ArrayList<TimeSlot> timeSlots = new ArrayList<>();
 
@@ -101,11 +101,11 @@ public class PersistentData {
         return null;
     }
 
-    public HashSet<TwoDimensionalGrid> getGrids() {
+    public HashSet<Grid> getGrids() {
         return grids;
     }
 
-    public void setGrids(HashSet<TwoDimensionalGrid> grids) {
+    public void setGrids(HashSet<Grid> grids) {
         this.grids = grids;
     }
 
