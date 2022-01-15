@@ -7,7 +7,6 @@ package dansapps.interakt.objects.domain;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.structural.Location;
 import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
 

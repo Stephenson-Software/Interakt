@@ -4,8 +4,6 @@
  */
 package dansapps.interakt.objects.structural;
 
-import dansapps.interakt.objects.domain.Environment;
-
 import java.util.HashSet;
 import java.util.UUID;
 

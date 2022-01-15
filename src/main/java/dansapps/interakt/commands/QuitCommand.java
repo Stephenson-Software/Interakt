@@ -6,7 +6,6 @@ package dansapps.interakt.commands;
 
 import dansapps.interakt.Interakt;
 import dansapps.interakt.commands.abs.InteraktCommand;
-import preponderous.ponder.system.abs.ApplicationCommand;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
