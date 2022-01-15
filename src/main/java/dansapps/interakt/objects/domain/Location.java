@@ -2,18 +2,16 @@
   Copyright (c) 2022 Daniel McCoy Stephenson
   Apache License 2.0
  */
-package dansapps.interakt.objects;
+package dansapps.interakt.objects.domain;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import dansapps.interakt.data.PersistentData;
 import preponderous.ponder.misc.abs.Savable;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -109,5 +107,38 @@ public class Location implements Savable {
         y = Integer.parseInt(gson.fromJson(data.get("y"), String.class));
         parentGridUUID = UUID.fromString(gson.fromJson(data.get("parentGridUUID"), String.class));
         entities = gson.fromJson(data.get("entities"), hashsetTypeUUID);
+    }
+
+    public Location getRandomAdjacentLocation() throws Exception {
+        Random random = new Random();
+        Grid grid = getParentGrid();
+        int direction = random.nextInt(4);
+        return switch (direction) {
+            case 0 -> getUp(grid);
+            case 1 -> getRight(grid);
+            case 2 -> getDown(grid);
+            case 3 -> getLeft(grid);
+            default -> throw new Exception();
+        };
+    }
+
+    private Grid getParentGrid() throws Exception {
+        return PersistentData.getInstance().getGrid(getParentGridUUID());
+    }
+
+    private Location getUp(Grid grid) throws Exception {
+        return grid.getLocation(getX(), getY() + 1);
+    }
+
+    private Location getRight(Grid grid) throws Exception {
+        return grid.getLocation(getX() + 1, getY());
+    }
+
+    private Location getDown(Grid grid) throws Exception {
+        return grid.getLocation(getX(), getY() - 1);
+    }
+
+    private Location getLeft(Grid grid) throws Exception {
+        return grid.getLocation(getX() - 1, getY());
     }
 }

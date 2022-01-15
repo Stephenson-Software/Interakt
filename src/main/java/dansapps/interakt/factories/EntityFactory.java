@@ -1,7 +1,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
+import dansapps.interakt.objects.domain.Entity;
 
 public class EntityFactory {
     private static EntityFactory instance;

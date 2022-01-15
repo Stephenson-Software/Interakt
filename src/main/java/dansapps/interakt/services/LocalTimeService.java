@@ -7,7 +7,6 @@ package dansapps.interakt.services;
 import dansapps.interakt.Interakt;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.TimeSlotFactory;
-import dansapps.interakt.objects.TimeSlot;
 import dansapps.interakt.utils.Logger;
 
 import java.util.concurrent.TimeUnit;
