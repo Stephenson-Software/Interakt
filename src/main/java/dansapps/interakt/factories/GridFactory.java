@@ -7,10 +7,6 @@ package dansapps.interakt.factories;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.Grid;
 
-/**
- * @author Daniel McCoy Stephenson
- * @since January 7th, 2022
- */
 import java.util.UUID;
 
 public class GridFactory {
