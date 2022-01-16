@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.LocationFactory;
+import dansapps.interakt.misc.CONFIG;
 import preponderous.ponder.misc.abs.Savable;
 
 import java.lang.reflect.Type;
@@ -124,6 +125,44 @@ public class Grid implements Savable {
         parentEnvironmentUUID = UUID.fromString(gson.fromJson(data.get("parentEnvironmentUUID"), String.class));
     }
 
+    @Override
+    public String toString() {
+        StringBuilder toReturn = new StringBuilder();
+        for (int x = 0; x < columns; x++) {
+            for (int y = 0; y < rows; y++) {
+                Location location;
+                try {
+                    location = getLocation(x, y);
+                } catch (Exception e) {
+                    toReturn.append("[N/A] ");
+                    continue;
+                }
+                if (location.getEntityUUIDs().size() > 0) {
+                    switch(CONFIG.DISPLAY_TYPE) {
+                        case SIMPLE:
+                            toReturn.append("[x] ");
+                            break;
+                        case CHARACTER_AT_INDEX_ZERO:
+                            UUID entityUUID = location.getEntityUUIDs().iterator().next();
+                            Entity entity = PersistentData.getInstance().getEntity(entityUUID);
+                            toReturn.append("[").append(entity.getName().charAt(0)).append("] ");
+                            break;
+                        case NUMBER_OF_ENTITIES:
+                            int numberOfEntities = location.getEntityUUIDs().size();
+                            toReturn.append("[").append(numberOfEntities).append("] ");
+                            break;
+                    }
+
+                }
+                else {
+                    toReturn.append("[ ] ");
+                }
+            }
+            toReturn.append("\n");
+        }
+        return toReturn.toString();
+    }
+
     private void createGrid() {
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
@@ -136,5 +175,4 @@ public class Grid implements Savable {
     private UUID getFirstLocationUUID() {
         return locationUUIDs.get(0);
     }
-
 }

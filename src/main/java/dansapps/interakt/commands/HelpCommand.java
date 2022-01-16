@@ -29,8 +29,10 @@ public class HelpCommand extends InteraktCommand {
         sender.sendMessage("create - Create an entity or environment.");
         sender.sendMessage("delete - Delete an entity or environment.");
         sender.sendMessage("place - Place an entity in an environment.");
+        sender.sendMessage("save - Force the application to save its data.");
         sender.sendMessage("info - View information about the application.");
         sender.sendMessage("stats - View statistics about the application.");
+        sender.sendMessage("wipe - Wipe the data of the application.");
         sender.sendMessage("quit - Quit the application.");
         return true;
     }

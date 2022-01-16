@@ -16,6 +16,7 @@ import java.util.List;
  * @since January 7th, 2022
  */
 public class InfoCommand extends InteraktCommand {
+
     public InfoCommand() {
         super(new ArrayList<>(List.of("info")), new ArrayList<>(List.of("interakt.info")));
     }

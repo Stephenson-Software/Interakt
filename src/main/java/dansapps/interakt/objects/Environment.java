@@ -79,6 +79,16 @@ public class Environment implements Savable {
         sender.sendMessage("UUID: " + getUUID());
         sender.sendMessage("Number of entities: " + entities.size());
         sender.sendMessage("Created: " + getCreationDate().toString());
+        try {
+            sender.sendMessage("Grid:\n" + getGrid());
+        } catch (Exception e) {
+            sender.sendMessage("Grid: N/A");
+        }
+    }
+
+    public Location getPrimaryLocation() throws Exception {
+        Grid grid = PersistentData.getInstance().getGrid(getGridUUID());
+        return PersistentData.getInstance().getLocation(grid.getPrimaryLocationUUID());
     }
 
     @Override
@@ -108,8 +118,7 @@ public class Environment implements Savable {
         entities = gson.fromJson(data.get("entities"), hashsetTypeUUID);
     }
 
-    public Location getPrimaryLocation() throws Exception {
-        Grid grid = PersistentData.getInstance().getGrid(getGridUUID());
-        return PersistentData.getInstance().getLocation(grid.getPrimaryLocationUUID());
+    private Grid getGrid() throws Exception {
+        return PersistentData.getInstance().getGrid(getGridUUID());
     }
 }

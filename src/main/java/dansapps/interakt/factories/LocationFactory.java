@@ -11,7 +11,7 @@ import java.util.UUID;
 
 /**
  * @author Daniel McCoy Stephenson
- * @since January 7th, 2022
+ * @since January 15th, 2022
  */
 public class LocationFactory {
     private static LocationFactory instance;

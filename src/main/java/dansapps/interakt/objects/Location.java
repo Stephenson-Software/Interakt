@@ -77,7 +77,7 @@ public class Location implements Savable {
     }
 
     public void removeEntity(Entity entity) {
-        entityUUIDs.remove(entity);
+        entityUUIDs.remove(entity.getUUID());
     }
 
     public boolean isEntityPresent(Entity entity) {

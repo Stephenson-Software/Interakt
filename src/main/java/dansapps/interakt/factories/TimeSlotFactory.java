@@ -9,7 +9,7 @@ import dansapps.interakt.objects.TimeSlot;
 
 /**
  * @author Daniel McCoy Stephenson
- * @since January 7th, 2022
+ * @since January 15th, 2022
  */
 public class TimeSlotFactory {
     private static TimeSlotFactory instance;

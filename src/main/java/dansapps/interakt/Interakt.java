@@ -6,13 +6,13 @@ package dansapps.interakt;
 
 import dansapps.interakt.commands.*;
 import dansapps.interakt.misc.CommandSenderImpl;
+import dansapps.interakt.services.LocalCommandService;
 import dansapps.interakt.services.LocalStorageService;
 import dansapps.interakt.services.LocalTimeService;
 import dansapps.interakt.utils.Logger;
 import preponderous.ponder.system.abs.ApplicationCommand;
 import preponderous.ponder.system.abs.CommandSender;
 import preponderous.ponder.system.abs.PonderApplication;
-import preponderous.ponder.system.services.CommandService;
 
 import java.util.HashSet;
 import java.util.Scanner;
@@ -23,10 +23,10 @@ import java.util.Scanner;
  */
 public class Interakt extends PonderApplication {
     private static Interakt instance;
-    private boolean debug = true;
+    private boolean debug = false;
     private boolean running = true;
 
-    private CommandService commandService;
+    private LocalCommandService commandService;
     private final Scanner scanner = new Scanner(System.in);
 
     /**
@@ -73,6 +73,8 @@ public class Interakt extends PonderApplication {
                 args = new String[0];
             }
 
+            getLocalCommandService().addCommand(label);
+
             boolean success = onCommand(user, label, args);
             if (!success) {
                 Logger.getInstance().log("Something went wrong processing the " + label + " command.");
@@ -98,7 +100,7 @@ public class Interakt extends PonderApplication {
     public void onStartup() {
         instance = this;
         Logger.getInstance().log("Initiating startup.");
-        initializeCommandService();
+        initializeLocalCommandService();
         LocalStorageService.getInstance().load();
         LocalTimeService.getInstance().start();
     }
@@ -122,7 +124,7 @@ public class Interakt extends PonderApplication {
     @Override
     public boolean onCommand(CommandSender sender, String label, String[] args) {
         Logger.getInstance().log("Interpreting command " + label);
-        return getCommandService().interpretCommand(sender, label, args);
+        return getLocalCommandService().interpretCommand(sender, label, args);
     }
 
     /**
@@ -160,7 +162,7 @@ public class Interakt extends PonderApplication {
     /**
      * Initializes the command service with the application's commands.
      */
-    private void initializeCommandService() {
+    private void initializeLocalCommandService() {
         HashSet<ApplicationCommand> commands = new HashSet<>();
         commands.add(new HelpCommand());
         commands.add(new InfoCommand());
@@ -173,14 +175,15 @@ public class Interakt extends PonderApplication {
         commands.add(new StatsCommand());
         commands.add(new WipeCommand());
         commands.add(new ElapseCommand());
-        setCommandService(new CommandService((commands)));
+        commands.add(new SaveCommand());
+        setCommandService(new LocalCommandService((commands)));
     }
 
     /**
      * This can be used to access Ponder's command service.
      * @return This application's managed instance of Ponder's command service.
      */
-    private CommandService getCommandService() {
+    private LocalCommandService getLocalCommandService() {
         return commandService;
     }
 
@@ -188,7 +191,7 @@ public class Interakt extends PonderApplication {
      * This can be used to set this application's managed instance of Ponder's command service.
      * @param commandService The instance of Ponder's command service to use.
      */
-    private void setCommandService(CommandService commandService) {
+    private void setCommandService(LocalCommandService commandService) {
         this.commandService = commandService;
     }
 
