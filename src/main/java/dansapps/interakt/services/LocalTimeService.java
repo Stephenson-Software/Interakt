@@ -7,7 +7,7 @@ package dansapps.interakt.services;
 import dansapps.interakt.Interakt;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.TimeSlotFactory;
-import dansapps.interakt.objects.TimeSlot;
+import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.utils.Logger;
 
 import java.util.concurrent.TimeUnit;
@@ -18,12 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class LocalTimeService extends Thread {
     private static LocalTimeService instance;
-    private int timeSlotLength;
-
-    private LocalTimeService() {
-        int seconds = 60;
-        timeSlotLength = seconds * 1000;
-    }
+    private static final int TIME_SLOT_LENGTH_IN_SECONDS = 10;
 
     public static LocalTimeService getInstance() {
         if (instance == null) {
@@ -37,30 +32,24 @@ public class LocalTimeService extends Thread {
         while (Interakt.getInstance().isRunning()) {
             elapse();
             try {
-                TimeUnit.SECONDS.sleep(timeSlotLength/1000);
+                TimeUnit.SECONDS.sleep(TIME_SLOT_LENGTH_IN_SECONDS);
             } catch (Exception e) {
                 Logger.getInstance().log("Time stream was interrupted.");
             }
         }
     }
 
-    public int getTimeSlotLength() {
-        return timeSlotLength;
-    }
-
-    public void setTimeSlotLength(int timeSlotLength) {
-        this.timeSlotLength = timeSlotLength;
-    }
-
     private void elapse() {
-        TimeSlotFactory.getInstance().createTimeSlot(timeSlotLength);
+        Logger.getInstance().log("----------------------");
+        int TIME_SLOT_LENGTH_IN_MILLISECONDS = TIME_SLOT_LENGTH_IN_SECONDS * 1000;
+        TimeSlotFactory.getInstance().createTimeSlot(TIME_SLOT_LENGTH_IN_MILLISECONDS);
+        makeEntitiesPerformMoveAction();
         Logger.getInstance().log("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimeSlots().size());
     }
 
-    /**
-     * Method for testing.
-     */
-    public static void main(String[] args) {
-        LocalTimeService.getInstance().start();
+    private void makeEntitiesPerformMoveAction() {
+        for (Entity entity : PersistentData.getInstance().getEntities()) {
+            entity.attemptToPerformMoveAction();
+        }
     }
 }

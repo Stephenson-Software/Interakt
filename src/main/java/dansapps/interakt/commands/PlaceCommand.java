@@ -6,8 +6,9 @@ package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
-import dansapps.interakt.objects.Environment;
+import dansapps.interakt.objects.domain.Entity;
+import dansapps.interakt.objects.domain.Environment;
+import dansapps.interakt.objects.domain.Location;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -60,16 +61,25 @@ public class PlaceCommand extends InteraktCommand {
             return false;
         }
 
+        // place into environment
         Environment environment;
+        Location location;
         try {
             environment = getEnvironment(doubleQuoteArgs, sender);
         } catch (Exception e) {
             sender.sendMessage("That environment wasn't found.");
             return false;
         }
+        try {
+            location = environment.getPrimaryLocation();
+        } catch (Exception e) {
+            sender.sendMessage("There was a problem finding a location in that environment to place the entity.");
+            return false;
+        }
 
         environment.addEntity(entity);
-        sender.sendMessage(entity.getName() + " was placed in the " + environment.getName() + " environment.");
+        location.addEntity(entity);
+        sender.sendMessage(entity.getName() + " was placed in the " + environment.getName() + " environment at location " + location);
         return true;
     }
 

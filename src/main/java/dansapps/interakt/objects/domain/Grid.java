@@ -2,7 +2,7 @@
   Copyright (c) 2022 Daniel McCoy Stephenson
   Apache License 2.0
  */
-package dansapps.interakt.objects;
+package dansapps.interakt.objects.domain;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,8 +12,8 @@ import dansapps.interakt.factories.LocationFactory;
 import preponderous.ponder.misc.abs.Savable;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 public class Grid implements Savable {
     private UUID uuid;
-    private HashSet<UUID> locationUUIDs = new HashSet<>();
+    private ArrayList<UUID> locationUUIDs = new ArrayList<>();
     private int columns;
     private int rows;
     private UUID primaryLocationUUID;
@@ -33,6 +33,8 @@ public class Grid implements Savable {
         uuid = UUID.randomUUID();
         this.columns = columns;
         this.rows = rows;
+        createGrid();
+        this.primaryLocationUUID = getFirstLocationUUID();
         this.parentEnvironmentUUID = parentEnvironmentUUID;
     }
 
@@ -44,11 +46,11 @@ public class Grid implements Savable {
         return uuid;
     }
 
-    public HashSet<UUID> getLocationUUIDs() {
+    public ArrayList<UUID> getLocationUUIDs() {
         return locationUUIDs;
     }
 
-    public void setLocationUUIDs(HashSet<UUID> gridLocations) {
+    public void setLocationUUIDs(ArrayList<UUID> gridLocations) {
         this.locationUUIDs = gridLocations;
     }
 
@@ -84,20 +86,14 @@ public class Grid implements Savable {
         this.parentEnvironmentUUID = parentEnvironmentUUID;
     }
 
-    public void createGrid() {
-        for (int i = 0; i < getRows(); i++) {
-            for (int j = 0; j < getColumns(); j++) {
-                UUID locationUUID = LocationFactory.getInstance().createLocation(i, j, getUUID());
-                locationUUIDs.add(locationUUID);
-                setPrimaryLocationIfNecessary(i, j, locationUUID);
+    public Location getLocation(int x, int y) throws Exception {
+        for (UUID locationUUID : getLocationUUIDs()) {
+            Location location = PersistentData.getInstance().getLocation(locationUUID);
+            if (location.getX() == x && location.getY() == y) {
+                return location;
             }
         }
-    }
-
-    private void setPrimaryLocationIfNecessary(int i, int j, UUID locationUUID) {
-        if (i == 0 && j == 0) {
-            primaryLocationUUID = locationUUID;
-        }
+        throw new Exception();
     }
 
     @Override
@@ -118,13 +114,27 @@ public class Grid implements Savable {
     public void load(Map<String, String> data) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        Type hashsetTypeUUID = new TypeToken<HashSet<UUID>>(){}.getType();
+        Type arrayListTypeUUID = new TypeToken<ArrayList<UUID>>(){}.getType();
 
         uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
-        locationUUIDs = gson.fromJson(data.get("locationUUIDs"), hashsetTypeUUID);
+        locationUUIDs = gson.fromJson(data.get("locationUUIDs"), arrayListTypeUUID);
         columns = Integer.parseInt(data.get("columns"));
         rows = Integer.parseInt(data.get("rows"));
         primaryLocationUUID = UUID.fromString(gson.fromJson(data.get("primaryLocationUUID"), String.class));
         parentEnvironmentUUID = UUID.fromString(gson.fromJson(data.get("parentEnvironmentUUID"), String.class));
     }
+
+    private void createGrid() {
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getColumns(); j++) {
+                UUID locationUUID = LocationFactory.getInstance().createLocation(i, j, getUUID());
+                locationUUIDs.add(locationUUID);
+            }
+        }
+    }
+
+    private UUID getFirstLocationUUID() {
+        return locationUUIDs.get(0);
+    }
+
 }

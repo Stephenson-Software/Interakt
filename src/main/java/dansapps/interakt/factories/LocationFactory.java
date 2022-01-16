@@ -1,7 +1,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Location;
+import dansapps.interakt.objects.domain.Location;
 
 import java.util.UUID;
 

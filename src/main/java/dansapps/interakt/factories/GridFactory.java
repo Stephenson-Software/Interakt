@@ -1,7 +1,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Grid;
+import dansapps.interakt.objects.domain.Grid;
 
 import java.util.UUID;
 
@@ -22,7 +22,6 @@ public class GridFactory {
 
     public UUID createGrid(UUID environmentUUID) {
         Grid grid = new Grid(GRID_SIZE, GRID_SIZE, environmentUUID);
-        grid.createGrid();
         PersistentData.getInstance().addGrid(grid);
         return grid.getUUID();
     }
