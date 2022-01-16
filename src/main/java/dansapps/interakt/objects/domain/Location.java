@@ -22,7 +22,7 @@ public class Location implements Savable {
     private int x;
     private int y;
     private UUID parentGridUUID;
-    private HashSet<Entity> entities = new HashSet<>();
+    private HashSet<UUID> entityUUIDs = new HashSet<>();
 
     public Location(int x, int y, UUID gridUUID) {
         uuid = UUID.randomUUID();
@@ -63,25 +63,25 @@ public class Location implements Savable {
         this.parentGridUUID = parentGridUUID;
     }
 
-    public HashSet<Entity> getEntities() {
-        return entities;
+    public HashSet<UUID> getEntityUUIDs() {
+        return entityUUIDs;
     }
 
-    public void setEntities(HashSet<Entity> entities) {
-        this.entities = entities;
+    public void setEntityUUIDs(HashSet<UUID> entityUUIDs) {
+        this.entityUUIDs = entityUUIDs;
     }
 
     public void addEntity(Entity entity) {
-        entities.add(entity);
+        entityUUIDs.add(entity.getUUID());
         entity.setLocationUUID(getUUID());
     }
 
     public void removeEntity(Entity entity) {
-        entities.remove(entity);
+        entityUUIDs.remove(entity);
     }
 
     public boolean isEntityPresent(Entity entity) {
-        return entities.contains(entity);
+        return entityUUIDs.contains(entity);
     }
 
     public Location getRandomAdjacentLocation() throws Exception {
@@ -106,7 +106,7 @@ public class Location implements Savable {
         saveMap.put("x", gson.toJson(x));
         saveMap.put("y", gson.toJson(y));
         saveMap.put("parentGridUUID", gson.toJson(parentGridUUID));
-        saveMap.put("entities", gson.toJson(entities));
+        saveMap.put("entities", gson.toJson(entityUUIDs));
         return saveMap;
     }
 
@@ -120,7 +120,7 @@ public class Location implements Savable {
         x = Integer.parseInt(gson.fromJson(data.get("x"), String.class));
         y = Integer.parseInt(gson.fromJson(data.get("y"), String.class));
         parentGridUUID = UUID.fromString(gson.fromJson(data.get("parentGridUUID"), String.class));
-        entities = gson.fromJson(data.get("entities"), hashsetTypeUUID);
+        entityUUIDs = gson.fromJson(data.get("entities"), hashsetTypeUUID);
     }
 
     @Override

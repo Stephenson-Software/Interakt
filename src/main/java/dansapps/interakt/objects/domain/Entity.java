@@ -106,13 +106,6 @@ public class Entity implements Savable {
 
     public void attemptToPerformMoveAction() {
         MoveAction.execute(this);
-        Location location;
-        try {
-            location = getLocation();
-        } catch (Exception e) {
-            return;
-        }
-        Logger.getInstance().log(getName() + " moved to " + location.getX() + ", " + location.getY() + " in " + getEnvironment().getName());
     }
 
     @Override
@@ -145,7 +138,7 @@ public class Entity implements Savable {
             environmentUUID = UUID.fromString(gson.fromJson(data.get("environmentUUID"), String.class));
         }
         catch(Exception ignored) {
-
+            Logger.getInstance().log("An environment wasn't found for " + getName());
         }
     }
 
@@ -154,7 +147,7 @@ public class Entity implements Savable {
             locationUUID = UUID.fromString(gson.fromJson(data.get("locationUUID"), String.class));
         }
         catch(Exception ignored) {
-
+            Logger.getInstance().log("A location wasn't found for " + getName());
         }
     }
 }

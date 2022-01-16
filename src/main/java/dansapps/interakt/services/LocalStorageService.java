@@ -64,11 +64,11 @@ public class LocalStorageService {
     }
 
     private void saveEntities() {
-        List<Map<String, String>> links = new ArrayList<>();
+        List<Map<String, String>> entities = new ArrayList<>();
         for (Entity entity : PersistentData.getInstance().getEntities()){
-            links.add(entity.save());
+            entities.add(entity.save());
         }
-        jsonWriterReader.writeOutFiles(links, ENTITIES_FILE_NAME);
+        jsonWriterReader.writeOutFiles(entities, ENTITIES_FILE_NAME);
     }
 
     private void saveEnvironments() {

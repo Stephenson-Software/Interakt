@@ -8,6 +8,7 @@ import dansapps.interakt.Interakt;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.TimeSlotFactory;
 import dansapps.interakt.objects.domain.Entity;
+import dansapps.interakt.objects.domain.Location;
 import dansapps.interakt.utils.Logger;
 
 import java.util.concurrent.TimeUnit;
@@ -62,6 +63,17 @@ public class LocalTimeService extends Thread {
     private void makeEntitiesPerformMoveAction() {
         for (Entity entity : PersistentData.getInstance().getEntities()) {
             entity.attemptToPerformMoveAction();
+            logMovement(entity);
         }
+    }
+
+    private void logMovement(Entity entity) {
+        Location location;
+        try {
+            location = entity.getLocation();
+        } catch (Exception e) {
+            return;
+        }
+        Logger.getInstance().log(getName() + " moved to " + location.getX() + ", " + location.getY() + " in " + entity.getEnvironment().getName());
     }
 }
