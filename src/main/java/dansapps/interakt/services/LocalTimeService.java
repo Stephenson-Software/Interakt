@@ -39,6 +39,10 @@ public class LocalTimeService extends Thread {
         }
     }
 
+    public void forceElapse() {
+        elapse();
+    }
+
     private void elapse() {
         Logger.getInstance().log("----------------------");
         int TIME_SLOT_LENGTH_IN_MILLISECONDS = TIME_SLOT_LENGTH_IN_SECONDS * 1000;
