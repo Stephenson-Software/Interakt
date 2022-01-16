@@ -5,6 +5,7 @@
 package dansapps.interakt;
 
 import dansapps.interakt.commands.*;
+import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.misc.CommandSenderImpl;
 import dansapps.interakt.services.LocalCommandService;
 import dansapps.interakt.services.LocalStorageService;
@@ -23,7 +24,6 @@ import java.util.Scanner;
  */
 public class Interakt extends PonderApplication {
     private static Interakt instance;
-    private boolean debug = false;
     private boolean running = true;
 
     private LocalCommandService commandService;
@@ -132,7 +132,7 @@ public class Interakt extends PonderApplication {
      * @return Whether the debug flag is enabled.
      */
     public boolean isDebugEnabled() {
-        return debug;
+        return CONFIG.DEBUG_FLAG;
     }
 
     /**
@@ -140,7 +140,7 @@ public class Interakt extends PonderApplication {
      * @param debug Desired value for the debug flag.
      */
     public void setDebugEnabled(boolean debug) {
-        this.debug = debug;
+        CONFIG.DEBUG_FLAG = debug;
     }
 
     /**
