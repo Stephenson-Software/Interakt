@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class GridFactory {
     private static GridFactory instance;
-    private static int GRID_SIZE = 2;
+    private static final int GRID_SIZE = 3;
 
     private GridFactory() {
 

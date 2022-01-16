@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class LocalTimeService extends Thread {
     private static LocalTimeService instance;
-    private static final int TIME_SLOT_LENGTH_IN_SECONDS = 10;
+    private static final int TIME_SLOT_LENGTH_IN_SECONDS = 60;
 
     public static LocalTimeService getInstance() {
         if (instance == null) {
