@@ -21,8 +21,7 @@ public class MoveAction {
         Location newLocation;
         try {
             newLocation = currentLocation.getRandomAdjacentLocation();
-        } catch (Exception e) {
-            Logger.getInstance().log(entity.getName() + " wanted to move, but the location they wanted to move to didn't exist.");
+        } catch (Exception ignored) {
             return;
         }
         currentLocation.removeEntity(entity);
