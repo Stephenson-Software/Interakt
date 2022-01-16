@@ -7,6 +7,10 @@ import preponderous.ponder.system.abs.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Daniel McCoy Stephenson
+ * @since January 15th, 2022
+ */
 public class SaveCommand extends InteraktCommand {
 
     public SaveCommand() {

@@ -10,6 +10,10 @@ import dansapps.interakt.misc.CONFIG;
 
 import java.util.UUID;
 
+/**
+ * @author Daniel McCoy Stephenson
+ * @since January 15th, 2022
+ */
 public class GridFactory {
     private static GridFactory instance;
 

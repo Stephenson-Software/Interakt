@@ -137,7 +137,9 @@ public class Grid implements Savable {
                     continue;
                 }
                 if (location.getEntityUUIDs().size() > 0) {
-                    toReturn.append("[x] ");
+                    UUID entityUUID = location.getEntityUUIDs().iterator().next();
+                    Entity entity = PersistentData.getInstance().getEntity(entityUUID);
+                    toReturn.append("[").append(entity.getName().charAt(0)).append("] ");
                 }
                 else {
                     toReturn.append("[ ] ");
