@@ -6,9 +6,9 @@ package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.domain.Entity;
-import dansapps.interakt.objects.domain.Environment;
-import dansapps.interakt.objects.domain.Location;
+import dansapps.interakt.objects.Entity;
+import dansapps.interakt.objects.Environment;
+import dansapps.interakt.objects.Location;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.domain.Environment;
+import dansapps.interakt.objects.Environment;
 
 public class EnvironmentFactory {
     private static EnvironmentFactory instance;

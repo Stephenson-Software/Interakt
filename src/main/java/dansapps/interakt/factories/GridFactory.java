@@ -1,7 +1,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.domain.Grid;
+import dansapps.interakt.objects.Grid;
 
 import java.util.UUID;
 

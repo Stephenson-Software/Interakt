@@ -4,7 +4,7 @@
  */
 package dansapps.interakt.data;
 
-import dansapps.interakt.objects.domain.*;
+import dansapps.interakt.objects.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
