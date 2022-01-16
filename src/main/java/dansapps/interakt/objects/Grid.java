@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.LocationFactory;
+import dansapps.interakt.misc.CONFIG;
 import preponderous.ponder.misc.abs.Savable;
 
 import java.lang.reflect.Type;
@@ -137,9 +138,21 @@ public class Grid implements Savable {
                     continue;
                 }
                 if (location.getEntityUUIDs().size() > 0) {
-                    UUID entityUUID = location.getEntityUUIDs().iterator().next();
-                    Entity entity = PersistentData.getInstance().getEntity(entityUUID);
-                    toReturn.append("[").append(entity.getName().charAt(0)).append("] ");
+                    switch(CONFIG.DISPLAY_TYPE) {
+                        case SIMPLE:
+                            toReturn.append("[x] ");
+                            break;
+                        case CHARACTER_AT_INDEX_ZERO:
+                            UUID entityUUID = location.getEntityUUIDs().iterator().next();
+                            Entity entity = PersistentData.getInstance().getEntity(entityUUID);
+                            toReturn.append("[").append(entity.getName().charAt(0)).append("] ");
+                            break;
+                        case NUMBER_OF_ENTITIES:
+                            int numberOfEntities = location.getEntityUUIDs().size();
+                            toReturn.append("[").append(numberOfEntities).append("] ");
+                            break;
+                    }
+
                 }
                 else {
                     toReturn.append("[ ] ");
@@ -162,5 +175,4 @@ public class Grid implements Savable {
     private UUID getFirstLocationUUID() {
         return locationUUIDs.get(0);
     }
-
 }
