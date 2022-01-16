@@ -124,6 +124,30 @@ public class Grid implements Savable {
         parentEnvironmentUUID = UUID.fromString(gson.fromJson(data.get("parentEnvironmentUUID"), String.class));
     }
 
+    @Override
+    public String toString() {
+        StringBuilder toReturn = new StringBuilder();
+        for (int x = 0; x < columns; x++) {
+            for (int y = 0; y < rows; y++) {
+                Location location;
+                try {
+                    location = getLocation(x, y);
+                } catch (Exception e) {
+                    toReturn.append("[N/A] ");
+                    continue;
+                }
+                if (location.getEntityUUIDs().size() > 0) {
+                    toReturn.append("[x] ");
+                }
+                else {
+                    toReturn.append("[ ] ");
+                }
+            }
+            toReturn.append("\n");
+        }
+        return toReturn.toString();
+    }
+
     private void createGrid() {
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
