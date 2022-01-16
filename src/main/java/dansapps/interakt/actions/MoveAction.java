@@ -1,4 +1,4 @@
-package dansapps.interakt.objects.actions;
+package dansapps.interakt.actions;
 
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Location;
@@ -28,5 +28,7 @@ public class MoveAction {
         currentLocation.removeEntity(entity);
         entity.setLocationUUID(newLocation.getUUID());
         newLocation.addEntity(entity);
+
+        Logger.getInstance().log(entity.getName() + " moved to " + newLocation.getX() + ", " + newLocation.getY() + " in " + entity.getEnvironment().getName());
     }
 }
