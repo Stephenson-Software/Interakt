@@ -1,6 +1,5 @@
-package dansapps.interakt.objects.actions;
+package dansapps.interakt.actions;
 
-import dansapps.interakt.objects.actions.abs.Action;
 import dansapps.interakt.objects.domain.Entity;
 import dansapps.interakt.objects.domain.Location;
 import dansapps.interakt.utils.Logger;
@@ -9,29 +8,26 @@ import dansapps.interakt.utils.Logger;
  * @author Daniel McCoy Stephenson
  * @since January 15th, 2022
  */
-public class Move extends Action {
+public class MoveAction {
 
-    public Move(String name) {
-        super(name);
-    }
-
-    public void performAction(Entity entity) {
+    public static void execute(Entity entity) {
         Location currentLocation;
         try {
             currentLocation = entity.getLocation();
         } catch (Exception e) {
+            Logger.getInstance().log(entity.getName() + " wanted to move, but their location wasn't found.");
             return;
         }
-
         Location newLocation;
         try {
             newLocation = currentLocation.getRandomAdjacentLocation();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             return;
         }
-
         currentLocation.removeEntity(entity);
         entity.setLocationUUID(newLocation.getUUID());
         newLocation.addEntity(entity);
+
+        Logger.getInstance().log(entity.getName() + " moved to " + newLocation.getX() + ", " + newLocation.getY() + " in " + entity.getEnvironment().getName());
     }
 }

@@ -22,7 +22,6 @@ public class GridFactory {
 
     public UUID createGrid(UUID environmentUUID) {
         Grid grid = new Grid(GRID_SIZE, GRID_SIZE, environmentUUID);
-        grid.createGrid();
         PersistentData.getInstance().addGrid(grid);
         return grid.getUUID();
     }
