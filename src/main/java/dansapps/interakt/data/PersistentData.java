@@ -4,6 +4,7 @@
  */
 package dansapps.interakt.data;
 
+import dansapps.interakt.objects.*;
 import dansapps.interakt.objects.domain.*;
 
 import java.util.ArrayList;

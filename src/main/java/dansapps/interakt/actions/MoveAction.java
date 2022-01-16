@@ -1,7 +1,7 @@
 package dansapps.interakt.actions;
 
-import dansapps.interakt.objects.domain.Entity;
-import dansapps.interakt.objects.domain.Location;
+import dansapps.interakt.objects.Entity;
+import dansapps.interakt.objects.Location;
 import dansapps.interakt.utils.Logger;
 
 /**
