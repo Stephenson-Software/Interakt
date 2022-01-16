@@ -5,6 +5,7 @@
 package dansapps.interakt.data;
 
 import dansapps.interakt.objects.*;
+import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,8 +46,16 @@ public class PersistentData {
         entities.add(entity);
     }
 
-    public void removeEntity(Entity entity) {
-        entities.remove(entity);
+    public void deleteEntity(String name, CommandSender sender) {
+        Entity entity;
+        try {
+            entity = PersistentData.getInstance().getEntity(name);
+        } catch (Exception e) {
+            sender.sendMessage("That entity wasn't found.");
+            return;
+        }
+        PersistentData.getInstance().removeEntity(entity);
+        sender.sendMessage("Entity removed.");
     }
 
     public Entity getEntity(String name) throws Exception {
@@ -79,8 +88,16 @@ public class PersistentData {
         environments.add(environment);
     }
 
-    public void removeEnvironment(Environment environment) {
-        environments.remove(environment);
+    public void deleteEnvironment(String name, CommandSender sender) {
+        Environment environment;
+        try {
+            environment = getEnvironment(name);
+        } catch (Exception e) {
+            sender.sendMessage("That environment wasn't found.");
+            return;
+        }
+        removeEnvironment(environment);
+        sender.sendMessage("Environment removed.");
     }
 
     public Environment getEnvironment(String name) throws Exception {
@@ -165,5 +182,13 @@ public class PersistentData {
         grids.clear();
         locations.clear();
         timeSlots.clear();
+    }
+
+    private void removeEntity(Entity entity) {
+        entities.remove(entity);
+    }
+
+    private void removeEnvironment(Environment environment) {
+        environments.remove(environment);
     }
 }

@@ -49,40 +49,16 @@ public class DeleteCommand extends InteraktCommand {
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("entity")) {
-            deleteEntity(name, sender);
+            PersistentData.getInstance().deleteEntity(name, sender);
             return true;
         }
         else if (type.equalsIgnoreCase("environment")) {
-            deleteEnvironment(name, sender);
+            PersistentData.getInstance().deleteEnvironment(name, sender);
             return true;
         }
         else {
             sender.sendMessage("That type isn't supported.");
             return false;
         }
-    }
-
-    private void deleteEntity(String name, CommandSender sender) {
-        Entity entity;
-        try {
-            entity = PersistentData.getInstance().getEntity(name);
-        } catch (Exception e) {
-            sender.sendMessage("That entity wasn't found.");
-            return;
-        }
-        PersistentData.getInstance().removeEntity(entity);
-        sender.sendMessage("Entity removed.");
-    }
-
-    private void deleteEnvironment(String name, CommandSender sender) {
-        Environment environment;
-        try {
-            environment = PersistentData.getInstance().getEnvironment(name);
-        } catch (Exception e) {
-            sender.sendMessage("That environment wasn't found.");
-            return;
-        }
-        PersistentData.getInstance().removeEnvironment(environment);
-        sender.sendMessage("Environment removed.");
     }
 }
