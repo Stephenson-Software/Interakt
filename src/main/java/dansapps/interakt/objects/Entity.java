@@ -14,6 +14,7 @@ import preponderous.ponder.system.abs.CommandSender;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ public class Entity implements Savable {
     private LocalDateTime creationDate;
     private UUID environmentUUID;
     private UUID locationUUID;
+    private LinkedList<UUID> associatedActionRecordUUIDs = new LinkedList<>();
 
     public Entity(String name) {
         uuid = UUID.randomUUID();
@@ -81,9 +83,14 @@ public class Entity implements Savable {
     private void sendEnvironmentInfo(CommandSender sender) {
         if (getEnvironmentUUID() == null) {
             sender.sendMessage("Environment: N/A");
+            return;
         }
-        else {
+
+        try {
             sender.sendMessage("Environment: " + getEnvironment().getName());
+        }
+        catch (Exception e) {
+            sender.sendMessage("Environment: ERROR");
         }
     }
 
@@ -96,7 +103,7 @@ public class Entity implements Savable {
         }
     }
 
-    public Environment getEnvironment() {
+    public Environment getEnvironment() throws Exception {
         return PersistentData.getInstance().getEnvironment(getEnvironmentUUID());
     }
 

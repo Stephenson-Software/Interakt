@@ -4,11 +4,13 @@
  */
 package dansapps.interakt.data;
 
+import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.objects.*;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.UUID;
 
 /**
@@ -22,6 +24,7 @@ public class PersistentData {
     private HashSet<Grid> grids = new HashSet<>();
     private HashSet<Location> locations = new HashSet<>();
     private ArrayList<TimeSlot> timeSlots = new ArrayList<>();
+    private ArrayList<ActionRecord> actionRecords = new ArrayList<>();
 
     private PersistentData() {
 
@@ -54,6 +57,10 @@ public class PersistentData {
             sender.sendMessage("That entity wasn't found.");
             return;
         }
+
+        performHousekeepingForEnvironment(entity);
+        performHousekeepingForLocation(entity);
+
         PersistentData.getInstance().removeEntity(entity);
         sender.sendMessage("Entity removed.");
     }
@@ -96,6 +103,9 @@ public class PersistentData {
             sender.sendMessage("That environment wasn't found.");
             return;
         }
+
+        // TODO: remove environment and locations from any entities
+
         removeEnvironment(environment);
         sender.sendMessage("Environment removed.");
     }
@@ -109,13 +119,13 @@ public class PersistentData {
         throw new Exception();
     }
 
-    public Environment getEnvironment(UUID environmentUUID) {
+    public Environment getEnvironment(UUID environmentUUID) throws Exception {
         for (Environment environment : environments) {
             if (environment.getUUID().equals(environmentUUID)) {
                 return environment;
             }
         }
-        return null;
+        throw new Exception();
     }
 
     public HashSet<Grid> getGrids() {
@@ -172,8 +182,16 @@ public class PersistentData {
         timeSlots.add(timeSlot);
     }
 
-    public void removeTimeSlot(TimeSlot timeSlot) {
-        timeSlots.remove(timeSlot);
+    public ArrayList<ActionRecord> getActionRecords() {
+        return actionRecords;
+    }
+
+    public void setActionRecords(ArrayList<ActionRecord> actionRecords) {
+        this.actionRecords = actionRecords;
+    }
+
+    public void addActionRecord(ActionRecord actionRecord) {
+        actionRecords.add(actionRecord);
     }
 
     public void clearData() {
@@ -190,5 +208,27 @@ public class PersistentData {
 
     private void removeEnvironment(Environment environment) {
         environments.remove(environment);
+    }
+
+    private void performHousekeepingForLocation(Entity entity) {
+        Location location;
+        try {
+            location = entity.getLocation();
+        }
+        catch (Exception e) {
+            return;
+        }
+        location.removeEntity(entity);
+    }
+
+    private void performHousekeepingForEnvironment(Entity entity) {
+        Environment environment;
+        try {
+            environment = entity.getEnvironment();
+        }
+        catch (Exception e) {
+            return;
+        }
+        environment.removeEntity(entity);
     }
 }
