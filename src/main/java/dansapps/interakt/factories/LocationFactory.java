@@ -29,7 +29,7 @@ public class LocationFactory {
 
     public UUID createLocation(int x, int y, UUID gridUUID) {
         Square square = new Square(x, y, gridUUID);
-        PersistentData.getInstance().addLocation(square);
+        PersistentData.getInstance().addSquare(square);
         return square.getUUID();
     }
 }

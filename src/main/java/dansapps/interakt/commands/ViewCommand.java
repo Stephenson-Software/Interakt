@@ -51,7 +51,7 @@ public class ViewCommand extends InteraktCommand {
         if (type.equalsIgnoreCase("entity")) {
             Actor actor;
             try {
-                actor = PersistentData.getInstance().getEntity(name);
+                actor = PersistentData.getInstance().getActor(name);
             } catch (Exception e) {
                 sender.sendMessage("That entity wasn't found.");
                 return false;
@@ -62,7 +62,7 @@ public class ViewCommand extends InteraktCommand {
         else if (type.equalsIgnoreCase("environment")) {
             World world;
             try {
-                world = PersistentData.getInstance().getEnvironment(name);
+                world = PersistentData.getInstance().getWorld(name);
             } catch (Exception e) {
                 sender.sendMessage("That environment wasn't found.");
                 return false;
