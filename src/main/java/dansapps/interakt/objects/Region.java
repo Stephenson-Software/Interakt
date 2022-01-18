@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.LocationFactory;
 import dansapps.interakt.misc.CONFIG;
+import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.objects.Grid;
 import preponderous.ponder.misc.abs.Savable;
 
@@ -52,7 +53,7 @@ public class Region extends Grid implements Savable {
             try {
                 square = PersistentData.getInstance().getLocation(locationUUID);
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.getInstance().log("Location of a region wasn't found.");
                 return null;
             }
             if (square.getX() == x && square.getY() == y) {
@@ -138,7 +139,8 @@ public class Region extends Grid implements Savable {
         }
     }
 
-    private UUID getFirstLocationUUID() {
+    @Override
+    public UUID getFirstLocationUUID() {
         return getLocationUUIDs().get(0);
     }
 }

@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.objects.Grid;
 import preponderous.environmentlib.abs.objects.Location;
 import preponderous.ponder.misc.abs.Savable;
@@ -134,7 +135,7 @@ public class Square extends Location implements Savable {
         try {
             return PersistentData.getInstance().getGrid(getParentGridUUID());
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getInstance().log("The parent grid of a square was not found.");
             return null;
         }
     }
