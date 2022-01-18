@@ -48,30 +48,30 @@ public class ViewCommand extends InteraktCommand {
         String type = doubleQuoteArgs.get(0);
         String name = doubleQuoteArgs.get(1);
 
-        if (type.equalsIgnoreCase("entity")) {
+        if (type.equalsIgnoreCase("actor")) {
             Actor actor;
             try {
                 actor = PersistentData.getInstance().getActor(name);
             } catch (Exception e) {
-                sender.sendMessage("That entity wasn't found.");
+                sender.sendMessage("That actor wasn't found.");
                 return false;
             }
             actor.sendInfo(sender);
             return true;
         }
-        else if (type.equalsIgnoreCase("environment")) {
+        else if (type.equalsIgnoreCase("world")) {
             World world;
             try {
                 world = PersistentData.getInstance().getWorld(name);
             } catch (Exception e) {
-                sender.sendMessage("That environment wasn't found.");
+                sender.sendMessage("That world wasn't found.");
                 return false;
             }
             world.sendInfo(sender);
             return true;
         }
         else {
-            sender.sendMessage("That type isn't supported.");
+            sender.sendMessage("That type isn't supported. Supported types include actor and world.");
             return false;
         }
     }

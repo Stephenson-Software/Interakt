@@ -48,12 +48,12 @@ public class DeleteCommand extends InteraktCommand {
         String type = doubleQuoteArgs.get(0);
         String name = doubleQuoteArgs.get(1);
 
-        if (type.equalsIgnoreCase("entity")) {
-            deleteEntity(name, sender);
+        if (type.equalsIgnoreCase("actor")) {
+            deleteActor(name, sender);
             return true;
         }
-        else if (type.equalsIgnoreCase("environment")) {
-            deleteEnvironment(name, sender);
+        else if (type.equalsIgnoreCase("world")) {
+            deleteWorld(name, sender);
             return true;
         }
         else {
@@ -62,27 +62,27 @@ public class DeleteCommand extends InteraktCommand {
         }
     }
 
-    private void deleteEntity(String name, CommandSender sender) {
+    private void deleteActor(String name, CommandSender sender) {
         Actor actor;
         try {
             actor = PersistentData.getInstance().getActor(name);
         } catch (Exception e) {
-            sender.sendMessage("That entity wasn't found.");
+            sender.sendMessage("That actor wasn't found.");
             return;
         }
         PersistentData.getInstance().removeActor(actor);
-        sender.sendMessage("Entity removed.");
+        sender.sendMessage("Actor removed.");
     }
 
-    private void deleteEnvironment(String name, CommandSender sender) {
+    private void deleteWorld(String name, CommandSender sender) {
         World world;
         try {
             world = PersistentData.getInstance().getWorld(name);
         } catch (Exception e) {
-            sender.sendMessage("That environment wasn't found.");
+            sender.sendMessage("That world wasn't found.");
             return;
         }
         PersistentData.getInstance().removeWorld(world);
-        sender.sendMessage("Environment removed.");
+        sender.sendMessage("World removed.");
     }
 }

@@ -28,7 +28,7 @@ public class GridFactory {
         return instance;
     }
 
-    public UUID createGrid(UUID environmentUUID) {
+    public UUID createRegion(UUID environmentUUID) {
         Region region = new Region(CONFIG.GRID_SIZE, CONFIG.GRID_SIZE, environmentUUID);
         PersistentData.getInstance().addRegion(region);
         return region.getUUID();

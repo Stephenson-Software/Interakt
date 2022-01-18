@@ -24,11 +24,11 @@ public class HelpCommand extends InteraktCommand {
     public boolean execute(CommandSender sender) {
         sender.sendMessage("=== Example Ponder Application Commands ===");
         sender.sendMessage("help - View a list of useful commands.");
-        sender.sendMessage("list - List entities and environments.");
-        sender.sendMessage("view - View an entity or environment.");
-        sender.sendMessage("create - Create an entity or environment.");
-        sender.sendMessage("delete - Delete an entity or environment.");
-        sender.sendMessage("place - Place an entity in an environment.");
+        sender.sendMessage("list - List entities and worlds.");
+        sender.sendMessage("view - View an actor or world.");
+        sender.sendMessage("create - Create an actor or world.");
+        sender.sendMessage("delete - Delete an actor or world.");
+        sender.sendMessage("place - Place an actor in an world.");
         sender.sendMessage("save - Force the application to save its data.");
         sender.sendMessage("info - View information about the application.");
         sender.sendMessage("stats - View statistics about the application.");

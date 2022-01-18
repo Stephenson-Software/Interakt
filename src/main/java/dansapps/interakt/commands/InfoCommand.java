@@ -26,7 +26,7 @@ public class InfoCommand extends InteraktCommand {
         abstractCommandSender.sendMessage("=== Interakt Info ===");
         abstractCommandSender.sendMessage("Developer: Daniel Stephenson");
         abstractCommandSender.sendMessage("Source: https://github.com/McCoy-Software-Solutions/Interakt");
-        abstractCommandSender.sendMessage("Dependencies: Ponder");
+        abstractCommandSender.sendMessage("Dependencies: Ponder, EnvironmentLib");
         return true;
     }
 

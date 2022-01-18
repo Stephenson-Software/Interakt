@@ -25,7 +25,7 @@ public class TimeSlotFactory {
         return instance;
     }
 
-    public void createTimeSlot(int length) {
+    public void createTimePartition(int length) {
         TimePartition timePartition = new TimePartition(length);
         PersistentData.getInstance().addTimePartition(timePartition);
     }

@@ -25,12 +25,12 @@ public class ListCommand extends InteraktCommand {
 
     @Override
     public boolean execute(CommandSender sender) {
-        sender.sendMessage("=== Entities ===");
+        sender.sendMessage("=== Actors ===");
         for (Actor actor : PersistentData.getInstance().getActors()) {
             sender.sendMessage(actor.getName());
         }
         sender.sendMessage("");
-        sender.sendMessage("=== Environments ===");
+        sender.sendMessage("=== Worlds ===");
         for (World world : PersistentData.getInstance().getWorlds()) {
             sender.sendMessage(world.getName());
         }

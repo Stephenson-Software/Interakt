@@ -25,7 +25,7 @@ public class EntityFactory {
         return instance;
     }
 
-    public void createEntity(String name) {
+    public void createActor(String name) {
         Actor actor = new Actor(name);
         PersistentData.getInstance().addActor(actor);
     }
