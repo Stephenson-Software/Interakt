@@ -65,7 +65,7 @@ public class LocalStorageService {
 
     private void saveEntities() {
         List<Map<String, String>> entities = new ArrayList<>();
-        for (Actor actor : PersistentData.getInstance().getEntities()){
+        for (Actor actor : PersistentData.getInstance().getActors()){
             entities.add(actor.save());
         }
         jsonWriterReader.writeOutFiles(entities, ENTITIES_FILE_NAME);
@@ -73,7 +73,7 @@ public class LocalStorageService {
 
     private void saveEnvironments() {
         List<Map<String, String>> environments = new ArrayList<>();
-        for (World world : PersistentData.getInstance().getEnvironments()){
+        for (World world : PersistentData.getInstance().getWorlds()){
             environments.add(world.save());
         }
         jsonWriterReader.writeOutFiles(environments, ENVIRONMENTS_FILE_NAME);
@@ -81,7 +81,7 @@ public class LocalStorageService {
 
     private void saveGrids() {
         List<Map<String, String>> twoDimensionalGrids = new ArrayList<>();
-        for (Region region : PersistentData.getInstance().getGrids()){
+        for (Region region : PersistentData.getInstance().getRegions()){
             twoDimensionalGrids.add(region.save());
         }
         jsonWriterReader.writeOutFiles(twoDimensionalGrids, TWO_DIMENSIONAL_GRIDS_FILE_NAME);
@@ -89,7 +89,7 @@ public class LocalStorageService {
 
     private void saveLocations() {
         List<Map<String, String>> locations = new ArrayList<>();
-        for (Square square : PersistentData.getInstance().getLocations()){
+        for (Square square : PersistentData.getInstance().getSquares()){
             locations.add(square.save());
         }
         jsonWriterReader.writeOutFiles(locations, LOCATIONS_FILE_NAME);
@@ -97,64 +97,64 @@ public class LocalStorageService {
 
     private void saveTimeSlots() {
         List<Map<String, String>> timeSlots = new ArrayList<>();
-        for (TimePartition timePartition : PersistentData.getInstance().getTimeSlots()){
+        for (TimePartition timePartition : PersistentData.getInstance().getTimePartitions()){
             timeSlots.add(timePartition.save());
         }
         jsonWriterReader.writeOutFiles(timeSlots, TIME_SLOTS_FILE_NAME);
     }
 
     private void loadEntities() {
-        PersistentData.getInstance().getEntities().clear();
+        PersistentData.getInstance().getActors().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ENTITIES_FILE_NAME);
         HashSet<Actor> entities = new HashSet<>();
         for (Map<String, String> entityData : data){
             Actor actor = new Actor(entityData);
             entities.add(actor);
         }
-        PersistentData.getInstance().setEntities(entities);
+        PersistentData.getInstance().setActors(entities);
     }
 
     private void loadEnvironments() {
-        PersistentData.getInstance().getEnvironments().clear();
+        PersistentData.getInstance().getWorlds().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ENVIRONMENTS_FILE_NAME);
         HashSet<World> worlds = new HashSet<>();
         for (Map<String, String> environmentData : data){
             World world = new World(environmentData);
             worlds.add(world);
         }
-        PersistentData.getInstance().setEnvironments(worlds);
+        PersistentData.getInstance().setWorlds(worlds);
     }
 
     private void loadGrids() {
-        PersistentData.getInstance().getGrids().clear();
+        PersistentData.getInstance().getRegions().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + TWO_DIMENSIONAL_GRIDS_FILE_NAME);
         HashSet<Region> regions = new HashSet<>();
         for (Map<String, String> twoDimensionalGridData : data){
             Region region = new Region(twoDimensionalGridData);
             regions.add(region);
         }
-        PersistentData.getInstance().setGrids(regions);
+        PersistentData.getInstance().setRegions(regions);
     }
 
     private void loadLocations() {
-        PersistentData.getInstance().getLocations().clear();
+        PersistentData.getInstance().getSquares().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + LOCATIONS_FILE_NAME);
         HashSet<Square> squares = new HashSet<>();
         for (Map<String, String> locationData : data){
             Square square = new Square(locationData);
             squares.add(square);
         }
-        PersistentData.getInstance().setLocations(squares);
+        PersistentData.getInstance().setSquares(squares);
     }
 
     private void loadTimeSlots() {
-        PersistentData.getInstance().getTimeSlots().clear();
+        PersistentData.getInstance().getTimePartitions().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + TIME_SLOTS_FILE_NAME);
         ArrayList<TimePartition> timePartitions = new ArrayList<>();
         for (Map<String, String> timeSlotData : data){
             TimePartition timePartition = new TimePartition(timeSlotData);
             timePartitions.add(timePartition);
         }
-        PersistentData.getInstance().setTimeSlots(timePartitions);
+        PersistentData.getInstance().setTimePartitions(timePartitions);
     }
 }

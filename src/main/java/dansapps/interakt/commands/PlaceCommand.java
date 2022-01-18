@@ -49,7 +49,7 @@ public class PlaceCommand extends InteraktCommand {
         String entityName = doubleQuoteArgs.get(0);
         Actor actor;
         try {
-            actor = PersistentData.getInstance().getEntity(entityName);
+            actor = PersistentData.getInstance().getActor(entityName);
         }
         catch (Exception e) {
             sender.sendMessage("That entity wasn't found.");
@@ -70,9 +70,10 @@ public class PlaceCommand extends InteraktCommand {
             sender.sendMessage("That environment wasn't found.");
             return false;
         }
-        try {
-            square = world.getFirstLocation();
-        } catch (Exception e) {
+
+        square = world.getFirstLocation();
+
+        if (square == null) {
             sender.sendMessage("There was a problem finding a location in that environment to place the entity.");
             return false;
         }
@@ -86,7 +87,7 @@ public class PlaceCommand extends InteraktCommand {
     private World getEnvironment(ArrayList<String> doubleQuoteArgs, CommandSender sender) throws Exception {
         String environmentName = doubleQuoteArgs.get(1);
         try {
-            return PersistentData.getInstance().getEnvironment(environmentName);
+            return PersistentData.getInstance().getWorld(environmentName);
         } catch (Exception e) {
             sender.sendMessage("That environment wasn't found.");
             throw new Exception();

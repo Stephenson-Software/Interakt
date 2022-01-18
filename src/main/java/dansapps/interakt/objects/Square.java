@@ -133,7 +133,7 @@ public class Square extends Location implements Savable {
     @Override
     public Region getParentGrid() {
         try {
-            return PersistentData.getInstance().getGrid(getParentGridUUID());
+            return PersistentData.getInstance().getRegion(getParentGridUUID());
         } catch (Exception e) {
             Logger.getInstance().log("The parent grid of a square was not found.");
             return null;

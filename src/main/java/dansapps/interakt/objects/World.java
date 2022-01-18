@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.GridFactory;
+import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.objects.Environment;
 import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
@@ -48,17 +49,32 @@ public class World extends Environment implements Savable {
         }
     }
 
-    public Square getFirstLocation() throws Exception {
-        Region region = PersistentData.getInstance().getGrid(getGridUUID());
-        return PersistentData.getInstance().getLocation(region.getFirstLocationUUID());
+    public Square getFirstLocation() {
+        Region region;
+        try {
+            region = PersistentData.getInstance().getRegion(getGridUUID());
+        } catch (Exception e) {
+            Logger.getInstance().log("A region wasn't found when attempting to find the first location in " + getName() + ".");
+            return null;
+        }
+
+        Square square;
+        try {
+            square = PersistentData.getInstance().getSquare(region.getFirstLocationUUID());
+        } catch (Exception e) {
+            Logger.getInstance().log("A square wasn't found when attempting to find the first location of a region.");
+            return null;
+        }
+
+        return square;
     }
 
     @Override
     public Region getGrid() {
         try {
-            return PersistentData.getInstance().getGrid(getGridUUID());
+            return PersistentData.getInstance().getRegion(getGridUUID());
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getInstance().log("There was a problem fetching a grid from a world's reference.");
             return null;
         }
     }

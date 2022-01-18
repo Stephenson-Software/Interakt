@@ -41,7 +41,7 @@ public class Region extends Grid implements Savable {
         for (UUID locationUUID : getLocationUUIDs()) {
             Square square;
             try {
-                square = PersistentData.getInstance().getLocation(locationUUID);
+                square = PersistentData.getInstance().getSquare(locationUUID);
             } catch (Exception e) {
                 Logger.getInstance().log("Location of a region wasn't found.");
                 return null;
@@ -98,7 +98,7 @@ public class Region extends Grid implements Savable {
                             break;
                         case CHARACTER_AT_INDEX_ZERO:
                             UUID entityUUID = square.getEntityUUIDs().iterator().next();
-                            Actor actor = PersistentData.getInstance().getEntity(entityUUID);
+                            Actor actor = PersistentData.getInstance().getActor(entityUUID);
                             toReturn.append("[").append(actor.getName().charAt(0)).append("] ");
                             break;
                         case NUMBER_OF_ENTITIES:

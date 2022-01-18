@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 public class PersistentData {
     private static PersistentData instance;
-    private HashSet<Actor> entities = new HashSet<>();
+    private HashSet<Actor> actors = new HashSet<>();
     private HashSet<World> worlds = new HashSet<>();
     private HashSet<Region> regions = new HashSet<>();
     private HashSet<Square> squares = new HashSet<>();
@@ -33,24 +33,24 @@ public class PersistentData {
         return instance;
     }
 
-    public HashSet<Actor> getEntities() {
-        return entities;
+    public HashSet<Actor> getActors() {
+        return actors;
     }
 
-    public void setEntities(HashSet<Actor> entities) {
-        this.entities = entities;
+    public void setActors(HashSet<Actor> actors) {
+        this.actors = actors;
     }
 
-    public void addEntity(Actor actor) {
-        entities.add(actor);
+    public void addActor(Actor actor) {
+        actors.add(actor);
     }
 
-    public void removeEntity(Actor actor) {
-        entities.remove(actor);
+    public void removeActor(Actor actor) {
+        actors.remove(actor);
     }
 
-    public Actor getEntity(String name) throws Exception {
-        for (Actor actor : entities) {
+    public Actor getActor(String name) throws Exception {
+        for (Actor actor : actors) {
             if (actor.getName().equalsIgnoreCase(name)) {
                 return actor;
             }
@@ -58,8 +58,8 @@ public class PersistentData {
         throw new Exception();
     }
 
-    public Actor getEntity(UUID entityUUID) {
-        for (Actor actor : entities) {
+    public Actor getActor(UUID entityUUID) {
+        for (Actor actor : actors) {
             if (actor.getUUID().equals(entityUUID)) {
                 return actor;
             }
@@ -67,23 +67,23 @@ public class PersistentData {
         return null;
     }
 
-    public HashSet<World> getEnvironments() {
+    public HashSet<World> getWorlds() {
         return worlds;
     }
 
-    public void setEnvironments(HashSet<World> worlds) {
+    public void setWorlds(HashSet<World> worlds) {
         this.worlds = worlds;
     }
 
-    public void addEnvironment(World world) {
+    public void addWorld(World world) {
         worlds.add(world);
     }
 
-    public void removeEnvironment(World world) {
+    public void removeWorld(World world) {
         worlds.remove(world);
     }
 
-    public World getEnvironment(String name) throws Exception {
+    public World getWorld(String name) throws Exception {
         for (World world : worlds) {
             if (world.getName().equalsIgnoreCase(name)) {
                 return world;
@@ -92,28 +92,28 @@ public class PersistentData {
         throw new Exception();
     }
 
-    public World getEnvironment(UUID environmentUUID) {
+    public World getWorld(UUID worldUUID) {
         for (World world : worlds) {
-            if (world.getUUID().equals(environmentUUID)) {
+            if (world.getUUID().equals(worldUUID)) {
                 return world;
             }
         }
         return null;
     }
 
-    public HashSet<Region> getGrids() {
+    public HashSet<Region> getRegions() {
         return regions;
     }
 
-    public void setGrids(HashSet<Region> regions) {
+    public void setRegions(HashSet<Region> regions) {
         this.regions = regions;
     }
 
-    public void addGrid(Region region) {
+    public void addRegion(Region region) {
         regions.add(region);
     }
 
-    public Region getGrid(UUID gridUUID) throws Exception {
+    public Region getRegion(UUID gridUUID) throws Exception {
         for (Region region : regions) {
             if (region.getUUID().equals(gridUUID)) {
                 return region;
@@ -122,45 +122,45 @@ public class PersistentData {
         throw new Exception();
     }
 
-    public HashSet<Square> getLocations() {
+    public HashSet<Square> getSquares() {
         return squares;
     }
 
-    public void setLocations(HashSet<Square> squares) {
+    public void setSquares(HashSet<Square> squares) {
         this.squares = squares;
     }
 
-    public void addLocation(Square square) {
+    public void addSquare(Square square) {
         squares.add(square);
     }
 
-    public Square getLocation(UUID locationUUID) throws Exception {
+    public Square getSquare(UUID squareUUID) throws Exception {
         for (Square square : squares) {
-            if (square.getUUID().equals(locationUUID)) {
+            if (square.getUUID().equals(squareUUID)) {
                 return square;
             }
         }
         throw new Exception();
     }
 
-    public ArrayList<TimePartition> getTimeSlots() {
+    public ArrayList<TimePartition> getTimePartitions() {
         return timePartitions;
     }
 
-    public void setTimeSlots(ArrayList<TimePartition> timePartitions) {
+    public void setTimePartitions(ArrayList<TimePartition> timePartitions) {
         this.timePartitions = timePartitions;
     }
 
-    public void addTimeSlot(TimePartition timePartition) {
+    public void addTimePartition(TimePartition timePartition) {
         timePartitions.add(timePartition);
     }
 
-    public void removeTimeSlot(TimePartition timePartition) {
+    public void removeTimePartition(TimePartition timePartition) {
         timePartitions.remove(timePartition);
     }
 
     public void clearData() {
-        entities.clear();
+        actors.clear();
         worlds.clear();
         regions.clear();
         squares.clear();
