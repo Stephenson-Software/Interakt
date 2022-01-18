@@ -6,9 +6,9 @@ package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
-import dansapps.interakt.objects.Environment;
-import dansapps.interakt.objects.Location;
+import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.World;
+import dansapps.interakt.objects.Square;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -47,43 +47,43 @@ public class PlaceCommand extends InteraktCommand {
         }
 
         String entityName = doubleQuoteArgs.get(0);
-        Entity entity;
+        Actor actor;
         try {
-            entity = PersistentData.getInstance().getEntity(entityName);
+            actor = PersistentData.getInstance().getEntity(entityName);
         }
         catch (Exception e) {
             sender.sendMessage("That entity wasn't found.");
             return false;
         }
 
-        if (entityIsAlreadyInAnEnvironment(entity)) {
+        if (entityIsAlreadyInAnEnvironment(actor)) {
             sender.sendMessage("That entity is already in an environment.");
             return false;
         }
 
         // place into environment
-        Environment environment;
-        Location location;
+        World world;
+        Square square;
         try {
-            environment = getEnvironment(doubleQuoteArgs, sender);
+            world = getEnvironment(doubleQuoteArgs, sender);
         } catch (Exception e) {
             sender.sendMessage("That environment wasn't found.");
             return false;
         }
         try {
-            location = environment.getPrimaryLocation();
+            square = world.getPrimaryLocation();
         } catch (Exception e) {
             sender.sendMessage("There was a problem finding a location in that environment to place the entity.");
             return false;
         }
 
-        environment.addEntity(entity);
-        location.addEntity(entity);
-        sender.sendMessage(entity.getName() + " was placed in the " + environment.getName() + " environment at location " + location);
+        world.addEntity(actor);
+        square.addEntity(actor);
+        sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " environment at location " + square);
         return true;
     }
 
-    private Environment getEnvironment(ArrayList<String> doubleQuoteArgs, CommandSender sender) throws Exception {
+    private World getEnvironment(ArrayList<String> doubleQuoteArgs, CommandSender sender) throws Exception {
         String environmentName = doubleQuoteArgs.get(1);
         try {
             return PersistentData.getInstance().getEnvironment(environmentName);
@@ -93,7 +93,7 @@ public class PlaceCommand extends InteraktCommand {
         }
     }
 
-    private boolean entityIsAlreadyInAnEnvironment(Entity entity) {
-        return entity.getEnvironmentUUID() != null;
+    private boolean entityIsAlreadyInAnEnvironment(Actor actor) {
+        return actor.getEnvironmentUUID() != null;
     }
 }

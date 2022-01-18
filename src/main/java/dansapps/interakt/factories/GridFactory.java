@@ -5,7 +5,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Grid;
+import dansapps.interakt.objects.Region;
 import dansapps.interakt.misc.CONFIG;
 
 import java.util.UUID;
@@ -29,8 +29,8 @@ public class GridFactory {
     }
 
     public UUID createGrid(UUID environmentUUID) {
-        Grid grid = new Grid(CONFIG.GRID_SIZE, CONFIG.GRID_SIZE, environmentUUID);
-        PersistentData.getInstance().addGrid(grid);
-        return grid.getUUID();
+        Region region = new Region(CONFIG.GRID_SIZE, CONFIG.GRID_SIZE, environmentUUID);
+        PersistentData.getInstance().addGrid(region);
+        return region.getUUID();
     }
 }

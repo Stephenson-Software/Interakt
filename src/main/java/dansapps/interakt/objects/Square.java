@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.data.PersistentData;
+import preponderous.environmentlib.abs.objects.Grid;
+import preponderous.environmentlib.abs.objects.Location;
 import preponderous.ponder.misc.abs.Savable;
 
 import java.lang.reflect.Type;
@@ -17,21 +19,19 @@ import java.util.*;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class Location implements Savable {
+public class Square extends Location implements Savable {
     private UUID uuid;
     private int x;
     private int y;
     private UUID parentGridUUID;
     private HashSet<UUID> entityUUIDs = new HashSet<>();
 
-    public Location(int x, int y, UUID gridUUID) {
-        uuid = UUID.randomUUID();
-        this.x = x;
-        this.y = y;
-        this.parentGridUUID = gridUUID;
+    public Square(int x, int y, UUID gridUUID) {
+        super(x, y, gridUUID);
     }
 
-    public Location(Map<String, String> data) {
+    public Square(Map<String, String> data) {
+        super(-1, -1, null);
         this.load(data);
     }
 
@@ -71,29 +71,30 @@ public class Location implements Savable {
         this.entityUUIDs = entityUUIDs;
     }
 
-    public void addEntity(Entity entity) {
-        entityUUIDs.add(entity.getUUID());
-        entity.setLocationUUID(getUUID());
+    public void addEntity(Actor actor) {
+        entityUUIDs.add(actor.getUUID());
+        actor.setLocationUUID(getUUID());
     }
 
-    public void removeEntity(Entity entity) {
-        entityUUIDs.remove(entity.getUUID());
+    public void removeEntity(Actor actor) {
+        entityUUIDs.remove(actor.getUUID());
     }
 
-    public boolean isEntityPresent(Entity entity) {
-        return entityUUIDs.contains(entity);
+    public boolean isEntityPresent(Actor actor) {
+        return entityUUIDs.contains(actor);
     }
 
-    public Location getRandomAdjacentLocation() throws Exception {
+    @Override
+    public Square getRandomAdjacentLocation() {
         Random random = new Random();
-        Grid grid = getParentGrid();
+        Region region = getParentGrid();
         int direction = random.nextInt(4);
         return switch (direction) {
-            case 0 -> getUp(grid);
-            case 1 -> getRight(grid);
-            case 2 -> getDown(grid);
-            case 3 -> getLeft(grid);
-            default -> throw new Exception();
+            case 0 -> getUp(region);
+            case 1 -> getRight(region);
+            case 2 -> getDown(region);
+            case 3 -> getLeft(region);
+            default -> throw new IllegalStateException("Unexpected value: " + direction);
         };
     }
 
@@ -128,23 +129,33 @@ public class Location implements Savable {
         return "(" + getX() + ", " + getY() + ")";
     }
 
-    private Grid getParentGrid() throws Exception {
-        return PersistentData.getInstance().getGrid(getParentGridUUID());
+    @Override
+    public Region getParentGrid() {
+        try {
+            return PersistentData.getInstance().getGrid(getParentGridUUID());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    private Location getUp(Grid grid) throws Exception {
-        return grid.getLocation(getX(), getY() + 1);
+    @Override
+    public Square getUp(Grid grid) {
+        return (Square) grid.getLocation(getX(), getY() + 1);
     }
 
-    private Location getRight(Grid grid) throws Exception {
-        return grid.getLocation(getX() + 1, getY());
+    @Override
+    public Square getRight(Grid grid) {
+        return (Square) grid.getLocation(getX() + 1, getY());
     }
 
-    private Location getDown(Grid grid) throws Exception {
-        return grid.getLocation(getX(), getY() - 1);
+    @Override
+    public Square getDown(Grid grid) {
+        return (Square) grid.getLocation(getX(), getY() - 1);
     }
 
-    private Location getLeft(Grid grid) throws Exception {
-        return grid.getLocation(getX() - 1, getY());
+    @Override
+    public Square getLeft(Grid grid) {
+        return (Square) grid.getLocation(getX() - 1, getY());
     }
 }

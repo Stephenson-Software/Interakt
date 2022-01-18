@@ -4,13 +4,10 @@
  */
 package dansapps.interakt.data;
 
-import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.objects.*;
-import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.UUID;
 
 /**
@@ -19,12 +16,11 @@ import java.util.UUID;
  */
 public class PersistentData {
     private static PersistentData instance;
-    private HashSet<Entity> entities = new HashSet<>();
-    private HashSet<Environment> environments = new HashSet<>();
-    private HashSet<Grid> grids = new HashSet<>();
-    private HashSet<Location> locations = new HashSet<>();
-    private ArrayList<TimeSlot> timeSlots = new ArrayList<>();
-    private ArrayList<ActionRecord> actionRecords = new ArrayList<>();
+    private HashSet<Actor> entities = new HashSet<>();
+    private HashSet<World> worlds = new HashSet<>();
+    private HashSet<Region> regions = new HashSet<>();
+    private HashSet<Square> squares = new HashSet<>();
+    private ArrayList<TimePartition> timePartitions = new ArrayList<>();
 
     private PersistentData() {
 
@@ -37,198 +33,137 @@ public class PersistentData {
         return instance;
     }
 
-    public HashSet<Entity> getEntities() {
+    public HashSet<Actor> getEntities() {
         return entities;
     }
 
-    public void setEntities(HashSet<Entity> entities) {
+    public void setEntities(HashSet<Actor> entities) {
         this.entities = entities;
     }
 
-    public void addEntity(Entity entity) {
-        entities.add(entity);
+    public void addEntity(Actor actor) {
+        entities.add(actor);
     }
 
-    public void deleteEntity(String name, CommandSender sender) {
-        Entity entity;
-        try {
-            entity = PersistentData.getInstance().getEntity(name);
-        } catch (Exception e) {
-            sender.sendMessage("That entity wasn't found.");
-            return;
-        }
-
-        performHousekeepingForEnvironment(entity);
-        performHousekeepingForLocation(entity);
-
-        PersistentData.getInstance().removeEntity(entity);
-        sender.sendMessage("Entity removed.");
+    public void removeEntity(Actor actor) {
+        entities.remove(actor);
     }
 
-    public Entity getEntity(String name) throws Exception {
-        for (Entity entity : entities) {
-            if (entity.getName().equalsIgnoreCase(name)) {
-                return entity;
+    public Actor getEntity(String name) throws Exception {
+        for (Actor actor : entities) {
+            if (actor.getName().equalsIgnoreCase(name)) {
+                return actor;
             }
         }
         throw new Exception();
     }
 
-    public Entity getEntity(UUID entityUUID) {
-        for (Entity entity : entities) {
-            if (entity.getUUID().equals(entityUUID)) {
-                return entity;
+    public Actor getEntity(UUID entityUUID) {
+        for (Actor actor : entities) {
+            if (actor.getUUID().equals(entityUUID)) {
+                return actor;
             }
         }
         return null;
     }
 
-    public HashSet<Environment> getEnvironments() {
-        return environments;
+    public HashSet<World> getEnvironments() {
+        return worlds;
     }
 
-    public void setEnvironments(HashSet<Environment> environments) {
-        this.environments = environments;
+    public void setEnvironments(HashSet<World> worlds) {
+        this.worlds = worlds;
     }
 
-    public void addEnvironment(Environment environment) {
-        environments.add(environment);
+    public void addEnvironment(World world) {
+        worlds.add(world);
     }
 
-    public void deleteEnvironment(String name, CommandSender sender) {
-        Environment environment;
-        try {
-            environment = getEnvironment(name);
-        } catch (Exception e) {
-            sender.sendMessage("That environment wasn't found.");
-            return;
-        }
-
-        // TODO: remove environment and locations from any entities
-
-        removeEnvironment(environment);
-        sender.sendMessage("Environment removed.");
+    public void removeEnvironment(World world) {
+        worlds.remove(world);
     }
 
-    public Environment getEnvironment(String name) throws Exception {
-        for (Environment environment : environments) {
-            if (environment.getName().equalsIgnoreCase(name)) {
-                return environment;
+    public World getEnvironment(String name) throws Exception {
+        for (World world : worlds) {
+            if (world.getName().equalsIgnoreCase(name)) {
+                return world;
             }
         }
         throw new Exception();
     }
 
-    public Environment getEnvironment(UUID environmentUUID) throws Exception {
-        for (Environment environment : environments) {
-            if (environment.getUUID().equals(environmentUUID)) {
-                return environment;
+    public World getEnvironment(UUID environmentUUID) {
+        for (World world : worlds) {
+            if (world.getUUID().equals(environmentUUID)) {
+                return world;
+            }
+        }
+        return null;
+    }
+
+    public HashSet<Region> getGrids() {
+        return regions;
+    }
+
+    public void setGrids(HashSet<Region> regions) {
+        this.regions = regions;
+    }
+
+    public void addGrid(Region region) {
+        regions.add(region);
+    }
+
+    public Region getGrid(UUID gridUUID) throws Exception {
+        for (Region region : regions) {
+            if (region.getUUID().equals(gridUUID)) {
+                return region;
             }
         }
         throw new Exception();
     }
 
-    public HashSet<Grid> getGrids() {
-        return grids;
+    public HashSet<Square> getLocations() {
+        return squares;
     }
 
-    public void setGrids(HashSet<Grid> grids) {
-        this.grids = grids;
+    public void setLocations(HashSet<Square> squares) {
+        this.squares = squares;
     }
 
-    public void addGrid(Grid grid) {
-        grids.add(grid);
+    public void addLocation(Square square) {
+        squares.add(square);
     }
 
-    public Grid getGrid(UUID gridUUID) throws Exception {
-        for (Grid grid : grids) {
-            if (grid.getUUID().equals(gridUUID)) {
-                return grid;
+    public Square getLocation(UUID locationUUID) throws Exception {
+        for (Square square : squares) {
+            if (square.getUUID().equals(locationUUID)) {
+                return square;
             }
         }
         throw new Exception();
     }
 
-    public HashSet<Location> getLocations() {
-        return locations;
+    public ArrayList<TimePartition> getTimeSlots() {
+        return timePartitions;
     }
 
-    public void setLocations(HashSet<Location> locations) {
-        this.locations = locations;
+    public void setTimeSlots(ArrayList<TimePartition> timePartitions) {
+        this.timePartitions = timePartitions;
     }
 
-    public void addLocation(Location location) {
-        locations.add(location);
+    public void addTimeSlot(TimePartition timePartition) {
+        timePartitions.add(timePartition);
     }
 
-    public Location getLocation(UUID locationUUID) throws Exception {
-        for (Location location : locations) {
-            if (location.getUUID().equals(locationUUID)) {
-                return location;
-            }
-        }
-        throw new Exception();
-    }
-
-    public ArrayList<TimeSlot> getTimeSlots() {
-        return timeSlots;
-    }
-
-    public void setTimeSlots(ArrayList<TimeSlot> timeSlots) {
-        this.timeSlots = timeSlots;
-    }
-
-    public void addTimeSlot(TimeSlot timeSlot) {
-        timeSlots.add(timeSlot);
-    }
-
-    public ArrayList<ActionRecord> getActionRecords() {
-        return actionRecords;
-    }
-
-    public void setActionRecords(ArrayList<ActionRecord> actionRecords) {
-        this.actionRecords = actionRecords;
-    }
-
-    public void addActionRecord(ActionRecord actionRecord) {
-        actionRecords.add(actionRecord);
+    public void removeTimeSlot(TimePartition timePartition) {
+        timePartitions.remove(timePartition);
     }
 
     public void clearData() {
         entities.clear();
-        environments.clear();
-        grids.clear();
-        locations.clear();
-        timeSlots.clear();
-    }
-
-    private void removeEntity(Entity entity) {
-        entities.remove(entity);
-    }
-
-    private void removeEnvironment(Environment environment) {
-        environments.remove(environment);
-    }
-
-    private void performHousekeepingForLocation(Entity entity) {
-        Location location;
-        try {
-            location = entity.getLocation();
-        }
-        catch (Exception e) {
-            return;
-        }
-        location.removeEntity(entity);
-    }
-
-    private void performHousekeepingForEnvironment(Entity entity) {
-        Environment environment;
-        try {
-            environment = entity.getEnvironment();
-        }
-        catch (Exception e) {
-            return;
-        }
-        environment.removeEntity(entity);
+        worlds.clear();
+        regions.clear();
+        squares.clear();
+        timePartitions.clear();
     }
 }
