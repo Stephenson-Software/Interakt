@@ -25,25 +25,15 @@ import java.util.UUID;
  * @since January 7th, 2022
  */
 public class Region extends Grid implements Savable {
-    private UUID primaryLocationUUID;
 
     public Region(int columns, int rows, UUID parentEnvironmentUUID) {
         super(columns, rows, parentEnvironmentUUID);
         createGrid();
-        this.primaryLocationUUID = getFirstLocationUUID();
     }
 
     public Region(Map<String, String> data) {
         super(-1, -1, null);
         this.load(data);
-    }
-
-    public UUID getPrimaryLocationUUID() {
-        return primaryLocationUUID;
-    }
-
-    public void setPrimaryLocationUUID(UUID primaryLocationUUID) {
-        this.primaryLocationUUID = primaryLocationUUID;
     }
 
     @Override
@@ -73,7 +63,6 @@ public class Region extends Grid implements Savable {
         saveMap.put("columns", gson.toJson(getColumns()));
         saveMap.put("rows", gson.toJson(getRows()));
         saveMap.put("parentEnvironmentUUID", gson.toJson(getParentEnvironmentUUID()));
-        saveMap.put("primaryLocationUUID", gson.toJson(primaryLocationUUID));
         return saveMap;
     }
 
@@ -88,7 +77,6 @@ public class Region extends Grid implements Savable {
         setColumns(Integer.parseInt(data.get("columns")));
         setRows(Integer.parseInt(data.get("rows")));
         setParentEnvironmentUUID(UUID.fromString(gson.fromJson(data.get("parentEnvironmentUUID"), String.class)));
-        primaryLocationUUID = UUID.fromString(gson.fromJson(data.get("primaryLocationUUID"), String.class));
     }
 
     @Override
