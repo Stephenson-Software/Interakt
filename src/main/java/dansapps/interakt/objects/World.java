@@ -27,7 +27,8 @@ import java.util.UUID;
 public class World extends Environment implements Savable {
 
     public World(String name) {
-        super(name, null); // TODO: replace null here
+        super(name, null);
+        setGridUUID(GridFactory.getInstance().createGrid(getUUID()));
     }
 
     public World(Map<String, String> data) {
@@ -47,9 +48,9 @@ public class World extends Environment implements Savable {
         }
     }
 
-    public Square getPrimaryLocation() throws Exception {
+    public Square getFirstLocation() throws Exception {
         Region region = PersistentData.getInstance().getGrid(getGridUUID());
-        return PersistentData.getInstance().getLocation(region.getPrimaryLocationUUID());
+        return PersistentData.getInstance().getLocation(region.getFirstLocationUUID());
     }
 
     @Override

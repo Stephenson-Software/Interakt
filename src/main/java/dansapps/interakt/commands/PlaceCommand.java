@@ -71,7 +71,7 @@ public class PlaceCommand extends InteraktCommand {
             return false;
         }
         try {
-            square = world.getPrimaryLocation();
+            square = world.getFirstLocation();
         } catch (Exception e) {
             sender.sendMessage("There was a problem finding a location in that environment to place the entity.");
             return false;
