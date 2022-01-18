@@ -49,7 +49,7 @@ public class World extends Environment implements Savable {
         }
     }
 
-    public Square getFirstLocation() {
+    public Square getFirstSquare() {
         Region region;
         try {
             region = PersistentData.getInstance().getRegion(getGridUUID());
@@ -69,7 +69,6 @@ public class World extends Environment implements Savable {
         return square;
     }
 
-    @Override
     public Region getGrid() {
         try {
             return PersistentData.getInstance().getRegion(getGridUUID());

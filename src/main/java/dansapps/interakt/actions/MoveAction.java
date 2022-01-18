@@ -24,9 +24,9 @@ public class MoveAction {
         } catch (Exception ignored) {
             return;
         }
-        currentSquare.removeEntity(actor);
+        currentSquare.removeActor(actor);
         actor.setLocationUUID(newSquare.getUUID());
-        newSquare.addEntity(actor);
+        newSquare.addActor(actor);
 
         Logger.getInstance().log(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getEnvironment().getName());
     }

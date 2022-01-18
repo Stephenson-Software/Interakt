@@ -71,7 +71,7 @@ public class PlaceCommand extends InteraktCommand {
             return false;
         }
 
-        square = world.getFirstLocation();
+        square = world.getFirstSquare();
 
         if (square == null) {
             sender.sendMessage("There was a problem finding a location in that environment to place the entity.");
@@ -79,7 +79,7 @@ public class PlaceCommand extends InteraktCommand {
         }
 
         world.addEntity(actor);
-        square.addEntity(actor);
+        square.addActor(actor);
         sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " environment at location " + square);
         return true;
     }
