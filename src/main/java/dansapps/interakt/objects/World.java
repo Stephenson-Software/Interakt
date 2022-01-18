@@ -53,6 +53,16 @@ public class World extends Environment implements Savable {
     }
 
     @Override
+    public Region getGrid() {
+        try {
+            return PersistentData.getInstance().getGrid(getGridUUID());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public Map<String, String> save() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -61,7 +71,7 @@ public class World extends Environment implements Savable {
         saveMap.put("name", gson.toJson(getName()));
         saveMap.put("creationDate", gson.toJson(getCreationDate().toString()));
         saveMap.put("gridUUID", gson.toJson(getGridUUID()));
-        saveMap.put("entities", gson.toJson(getEntities()));
+        saveMap.put("entities", gson.toJson(getEntityUUIDs()));
 
         return saveMap;
     }
@@ -75,11 +85,7 @@ public class World extends Environment implements Savable {
         setUUID(UUID.fromString(gson.fromJson(data.get("uuid"), String.class)));
         setName(gson.fromJson(data.get("name"), String.class));
         setCreationDate(LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)));
-        setGridUUID(UUID.fromString(gson.fromJson(data.get("gridUUID"), String.class));
-        setEntities(gson.fromJson(data.get("entities"), hashsetTypeUUID));
-    }
-
-    private Region getGrid() throws Exception {
-        return PersistentData.getInstance().getGrid(getGridUUID());
+        setGridUUID(UUID.fromString(gson.fromJson(data.get("gridUUID"), String.class)));
+        setEntityUUIDs(gson.fromJson(data.get("entities"), hashsetTypeUUID));
     }
 }

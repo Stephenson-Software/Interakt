@@ -67,7 +67,12 @@ public class Actor extends Entity implements Savable {
 
     @Override
     public Location getLocation() {
-        return PersistentData.getInstance().getLocation(getLocationUUID());
+        try {
+            return PersistentData.getInstance().getLocation(getLocationUUID());
+        } catch (Exception e) {
+            Logger.getInstance().log("Location for " + getName() + " was not found.");
+            return null;
+        }
     }
 
     public Square getSquare() {
