@@ -5,7 +5,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Environment;
+import dansapps.interakt.objects.World;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -25,8 +25,8 @@ public class EnvironmentFactory {
         return instance;
     }
 
-    public void createEnvironment(String name) {
-        Environment environment = new Environment(name);
-        PersistentData.getInstance().addEnvironment(environment);
+    public void createWorld(String name) {
+        World world = new World(name);
+        PersistentData.getInstance().addWorld(world);
     }
 }

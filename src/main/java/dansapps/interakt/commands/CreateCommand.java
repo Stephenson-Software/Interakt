@@ -47,18 +47,18 @@ public class CreateCommand extends InteraktCommand {
         String type = doubleQuoteArgs.get(0);
         String name = doubleQuoteArgs.get(1);
 
-        if (type.equalsIgnoreCase("entity")) {
-            EntityFactory.getInstance().createEntity(name);
-            sender.sendMessage("Entity created.");
+        if (type.equalsIgnoreCase("actor")) {
+            EntityFactory.getInstance().createActor(name);
+            sender.sendMessage("Actor created.");
             return true;
         }
-        else if (type.equalsIgnoreCase("environment")) {
-            EnvironmentFactory.getInstance().createEnvironment(name);
-            sender.sendMessage("Environment created.");
+        else if (type.equalsIgnoreCase("world")) {
+            EnvironmentFactory.getInstance().createWorld(name);
+            sender.sendMessage("World created.");
             return true;
         }
         else {
-            sender.sendMessage("'" + type + "' is not a supported type. Supported types include entity and environment.");
+            sender.sendMessage("'" + type + "' is not a supported type. Supported types include actor and world.");
             return false;
         }
     }

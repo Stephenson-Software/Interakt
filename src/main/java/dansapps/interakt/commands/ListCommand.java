@@ -6,8 +6,8 @@ package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
-import dansapps.interakt.objects.Environment;
+import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.World;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -25,14 +25,14 @@ public class ListCommand extends InteraktCommand {
 
     @Override
     public boolean execute(CommandSender sender) {
-        sender.sendMessage("=== Entities ===");
-        for (Entity entity : PersistentData.getInstance().getEntities()) {
-            sender.sendMessage(entity.getName());
+        sender.sendMessage("=== Actors ===");
+        for (Actor actor : PersistentData.getInstance().getActors()) {
+            sender.sendMessage(actor.getName());
         }
         sender.sendMessage("");
-        sender.sendMessage("=== Environments ===");
-        for (Environment environment : PersistentData.getInstance().getEnvironments()) {
-            sender.sendMessage(environment.getName());
+        sender.sendMessage("=== Worlds ===");
+        for (World world : PersistentData.getInstance().getWorlds()) {
+            sender.sendMessage(world.getName());
         }
         return true;
     }

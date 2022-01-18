@@ -6,8 +6,8 @@ package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
-import dansapps.interakt.objects.Environment;
+import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.World;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -48,17 +48,41 @@ public class DeleteCommand extends InteraktCommand {
         String type = doubleQuoteArgs.get(0);
         String name = doubleQuoteArgs.get(1);
 
-        if (type.equalsIgnoreCase("entity")) {
-            PersistentData.getInstance().deleteEntity(name, sender);
+        if (type.equalsIgnoreCase("actor")) {
+            deleteActor(name, sender);
             return true;
         }
-        else if (type.equalsIgnoreCase("environment")) {
-            PersistentData.getInstance().deleteEnvironment(name, sender);
+        else if (type.equalsIgnoreCase("world")) {
+            deleteWorld(name, sender);
             return true;
         }
         else {
             sender.sendMessage("That type isn't supported.");
             return false;
         }
+    }
+
+    private void deleteActor(String name, CommandSender sender) {
+        Actor actor;
+        try {
+            actor = PersistentData.getInstance().getActor(name);
+        } catch (Exception e) {
+            sender.sendMessage("That actor wasn't found.");
+            return;
+        }
+        PersistentData.getInstance().removeActor(actor);
+        sender.sendMessage("Actor removed.");
+    }
+
+    private void deleteWorld(String name, CommandSender sender) {
+        World world;
+        try {
+            world = PersistentData.getInstance().getWorld(name);
+        } catch (Exception e) {
+            sender.sendMessage("That world wasn't found.");
+            return;
+        }
+        PersistentData.getInstance().removeWorld(world);
+        sender.sendMessage("World removed.");
     }
 }
