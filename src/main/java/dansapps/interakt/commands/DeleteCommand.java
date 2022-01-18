@@ -6,8 +6,8 @@ package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
-import dansapps.interakt.objects.Environment;
+import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.World;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -63,26 +63,26 @@ public class DeleteCommand extends InteraktCommand {
     }
 
     private void deleteEntity(String name, CommandSender sender) {
-        Entity entity;
+        Actor actor;
         try {
-            entity = PersistentData.getInstance().getEntity(name);
+            actor = PersistentData.getInstance().getEntity(name);
         } catch (Exception e) {
             sender.sendMessage("That entity wasn't found.");
             return;
         }
-        PersistentData.getInstance().removeEntity(entity);
+        PersistentData.getInstance().removeEntity(actor);
         sender.sendMessage("Entity removed.");
     }
 
     private void deleteEnvironment(String name, CommandSender sender) {
-        Environment environment;
+        World world;
         try {
-            environment = PersistentData.getInstance().getEnvironment(name);
+            world = PersistentData.getInstance().getEnvironment(name);
         } catch (Exception e) {
             sender.sendMessage("That environment wasn't found.");
             return;
         }
-        PersistentData.getInstance().removeEnvironment(environment);
+        PersistentData.getInstance().removeEnvironment(world);
         sender.sendMessage("Environment removed.");
     }
 }

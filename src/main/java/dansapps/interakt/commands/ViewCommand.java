@@ -6,8 +6,8 @@ package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
-import dansapps.interakt.objects.Environment;
+import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.World;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -49,25 +49,25 @@ public class ViewCommand extends InteraktCommand {
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("entity")) {
-            Entity entity;
+            Actor actor;
             try {
-                entity = PersistentData.getInstance().getEntity(name);
+                actor = PersistentData.getInstance().getEntity(name);
             } catch (Exception e) {
                 sender.sendMessage("That entity wasn't found.");
                 return false;
             }
-            entity.sendInfo(sender);
+            actor.sendInfo(sender);
             return true;
         }
         else if (type.equalsIgnoreCase("environment")) {
-            Environment environment;
+            World world;
             try {
-                environment = PersistentData.getInstance().getEnvironment(name);
+                world = PersistentData.getInstance().getEnvironment(name);
             } catch (Exception e) {
                 sender.sendMessage("That environment wasn't found.");
                 return false;
             }
-            environment.sendInfo(sender);
+            world.sendInfo(sender);
             return true;
         }
         else {

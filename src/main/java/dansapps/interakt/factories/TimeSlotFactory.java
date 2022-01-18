@@ -5,7 +5,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.TimeSlot;
+import dansapps.interakt.objects.TimePartition;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -26,7 +26,7 @@ public class TimeSlotFactory {
     }
 
     public void createTimeSlot(int length) {
-        TimeSlot timeSlot = new TimeSlot(length);
-        PersistentData.getInstance().addTimeSlot(timeSlot);
+        TimePartition timePartition = new TimePartition(length);
+        PersistentData.getInstance().addTimeSlot(timePartition);
     }
 }

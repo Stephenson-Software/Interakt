@@ -7,7 +7,7 @@ package dansapps.interakt.services;
 import dansapps.interakt.Interakt;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.TimeSlotFactory;
-import dansapps.interakt.objects.Entity;
+import dansapps.interakt.objects.Actor;
 import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.utils.Logger;
 
@@ -52,8 +52,8 @@ public class LocalTimeService extends Thread {
     }
 
     private void makeEntitiesPerformMoveAction() {
-        for (Entity entity : PersistentData.getInstance().getEntities()) {
-            entity.attemptToPerformMoveAction();
+        for (Actor actor : PersistentData.getInstance().getEntities()) {
+            actor.attemptToPerformMoveAction();
         }
     }
 }

@@ -5,7 +5,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Location;
+import dansapps.interakt.objects.Square;
 
 import java.util.UUID;
 
@@ -28,8 +28,8 @@ public class LocationFactory {
     }
 
     public UUID createLocation(int x, int y, UUID gridUUID) {
-        Location location = new Location(x, y, gridUUID);
-        PersistentData.getInstance().addLocation(location);
-        return location.getUUID();
+        Square square = new Square(x, y, gridUUID);
+        PersistentData.getInstance().addLocation(square);
+        return square.getUUID();
     }
 }

@@ -5,7 +5,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
+import dansapps.interakt.objects.Actor;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -26,7 +26,7 @@ public class EntityFactory {
     }
 
     public void createEntity(String name) {
-        Entity entity = new Entity(name);
-        PersistentData.getInstance().addEntity(entity);
+        Actor actor = new Actor(name);
+        PersistentData.getInstance().addEntity(actor);
     }
 }

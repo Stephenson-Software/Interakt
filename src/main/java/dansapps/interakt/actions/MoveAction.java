@@ -1,7 +1,7 @@
 package dansapps.interakt.actions;
 
-import dansapps.interakt.objects.Entity;
-import dansapps.interakt.objects.Location;
+import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.Square;
 import dansapps.interakt.utils.Logger;
 
 /**
@@ -10,24 +10,24 @@ import dansapps.interakt.utils.Logger;
  */
 public class MoveAction {
 
-    public static void execute(Entity entity) {
-        Location currentLocation;
+    public static void execute(Actor actor) {
+        Square currentSquare;
         try {
-            currentLocation = entity.getLocation();
+            currentSquare = actor.getSquare();
         } catch (Exception e) {
-            Logger.getInstance().log(entity.getName() + " wanted to move, but their location wasn't found.");
+            Logger.getInstance().log(actor.getName() + " wanted to move, but their location wasn't found.");
             return;
         }
-        Location newLocation;
+        Square newSquare;
         try {
-            newLocation = currentLocation.getRandomAdjacentLocation();
+            newSquare = currentSquare.getRandomAdjacentLocation();
         } catch (Exception ignored) {
             return;
         }
-        currentLocation.removeEntity(entity);
-        entity.setLocationUUID(newLocation.getUUID());
-        newLocation.addEntity(entity);
+        currentSquare.removeEntity(actor);
+        actor.setLocationUUID(newSquare.getUUID());
+        newSquare.addEntity(actor);
 
-        Logger.getInstance().log(entity.getName() + " moved to " + newLocation.getX() + ", " + newLocation.getY() + " in " + entity.getEnvironment().getName());
+        Logger.getInstance().log(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getEnvironment().getName());
     }
 }
