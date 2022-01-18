@@ -15,11 +15,11 @@ public class StatsCommand extends InteraktCommand {
 
     @Override
     public boolean execute(CommandSender sender) {
-        sender.sendMessage("Number of entities: " + PersistentData.getInstance().getActors().size());
-        sender.sendMessage("Number of environments: " + PersistentData.getInstance().getWorlds().size());
-        sender.sendMessage("Number of grids: " + PersistentData.getInstance().getRegions().size());
-        sender.sendMessage("Number of locations: " + PersistentData.getInstance().getSquares().size());
-        sender.sendMessage("Number of elapsed time slots: " + PersistentData.getInstance().getTimePartitions().size());
+        sender.sendMessage("Number of actors: " + PersistentData.getInstance().getActors().size());
+        sender.sendMessage("Number of worlds: " + PersistentData.getInstance().getWorlds().size());
+        sender.sendMessage("Number of regions: " + PersistentData.getInstance().getRegions().size());
+        sender.sendMessage("Number of squares: " + PersistentData.getInstance().getSquares().size());
+        sender.sendMessage("Number of elapsed time partitions: " + PersistentData.getInstance().getTimePartitions().size());
         return true;
     }
 

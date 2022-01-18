@@ -26,7 +26,7 @@ public class PlaceCommand extends InteraktCommand {
 
     @Override
     public boolean execute(CommandSender sender) {
-        sender.sendMessage("Usage: place \"entity name\" \"environment name\"");
+        sender.sendMessage("Usage: place \"actor name\" \"world name\"");
         return false;
     }
 
@@ -46,17 +46,17 @@ public class PlaceCommand extends InteraktCommand {
             return false;
         }
 
-        String entityName = doubleQuoteArgs.get(0);
+        String actorName = doubleQuoteArgs.get(0);
         Actor actor;
         try {
-            actor = PersistentData.getInstance().getActor(entityName);
+            actor = PersistentData.getInstance().getActor(actorName);
         }
         catch (Exception e) {
             sender.sendMessage("That entity wasn't found.");
             return false;
         }
 
-        if (entityIsAlreadyInAnEnvironment(actor)) {
+        if (actorIsAlreadyInAWorld(actor)) {
             sender.sendMessage("That entity is already in an environment.");
             return false;
         }
@@ -65,7 +65,7 @@ public class PlaceCommand extends InteraktCommand {
         World world;
         Square square;
         try {
-            world = getEnvironment(doubleQuoteArgs, sender);
+            world = getWorld(doubleQuoteArgs, sender);
         } catch (Exception e) {
             sender.sendMessage("That environment wasn't found.");
             return false;
@@ -80,21 +80,21 @@ public class PlaceCommand extends InteraktCommand {
 
         world.addEntity(actor);
         square.addActor(actor);
-        sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " environment at location " + square);
+        sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " world at square " + square);
         return true;
     }
 
-    private World getEnvironment(ArrayList<String> doubleQuoteArgs, CommandSender sender) throws Exception {
+    private World getWorld(ArrayList<String> doubleQuoteArgs, CommandSender sender) throws Exception {
         String environmentName = doubleQuoteArgs.get(1);
         try {
             return PersistentData.getInstance().getWorld(environmentName);
         } catch (Exception e) {
-            sender.sendMessage("That environment wasn't found.");
+            sender.sendMessage("That world wasn't found.");
             throw new Exception();
         }
     }
 
-    private boolean entityIsAlreadyInAnEnvironment(Actor actor) {
+    private boolean actorIsAlreadyInAWorld(Actor actor) {
         return actor.getEnvironmentUUID() != null;
     }
 }

@@ -29,7 +29,7 @@ public class World extends Environment implements Savable {
 
     public World(String name) {
         super(name, null);
-        setGridUUID(GridFactory.getInstance().createGrid(getUUID()));
+        setGridUUID(GridFactory.getInstance().createRegion(getUUID()));
     }
 
     public World(Map<String, String> data) {

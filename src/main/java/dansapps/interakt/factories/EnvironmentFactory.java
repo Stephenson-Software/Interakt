@@ -25,7 +25,7 @@ public class EnvironmentFactory {
         return instance;
     }
 
-    public void createEnvironment(String name) {
+    public void createWorld(String name) {
         World world = new World(name);
         PersistentData.getInstance().addWorld(world);
     }

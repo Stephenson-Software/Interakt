@@ -46,7 +46,7 @@ public class LocalTimeService extends Thread {
     private void elapse() {
         Logger.getInstance().log("----------------------");
         int TIME_SLOT_LENGTH_IN_MILLISECONDS = CONFIG.TIME_SLOT_LENGTH_IN_SECONDS * 1000;
-        TimeSlotFactory.getInstance().createTimeSlot(TIME_SLOT_LENGTH_IN_MILLISECONDS);
+        TimeSlotFactory.getInstance().createTimePartition(TIME_SLOT_LENGTH_IN_MILLISECONDS);
         makeEntitiesPerformMoveAction();
         Logger.getInstance().log("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimePartitions().size());
     }

@@ -120,7 +120,7 @@ public class Region extends Grid implements Savable {
     public void createGrid() {
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                UUID locationUUID = LocationFactory.getInstance().createLocation(i, j, getUUID());
+                UUID locationUUID = LocationFactory.getInstance().createSquare(i, j, getUUID());
                 addLocationUUID(locationUUID);
             }
         }
