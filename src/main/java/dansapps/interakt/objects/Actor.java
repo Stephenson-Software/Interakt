@@ -16,7 +16,6 @@ import preponderous.ponder.system.abs.CommandSender;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,7 +24,6 @@ import java.util.UUID;
  * @since January 7th, 2022
  */
 public class Actor extends Entity implements Savable {
-    private LinkedList<UUID> associatedActionRecordUUIDs = new LinkedList<>();
 
     public Actor(String name) {
         super(name);
@@ -40,30 +38,25 @@ public class Actor extends Entity implements Savable {
         sender.sendMessage("=== Details of " + getName() + " ===");
         sender.sendMessage("UUID: " + getUUID());
         sender.sendMessage("Created: " + getCreationDate().toString());
-        sendEnvironmentInfo(sender);
-        sendLocationInfo(sender);
+        sendWorldInfo(sender);
+        sendSquareInfo(sender);
     }
 
-    private void sendEnvironmentInfo(CommandSender sender) {
+    private void sendWorldInfo(CommandSender sender) {
         if (getEnvironmentUUID() == null) {
-            sender.sendMessage("Environment: N/A");
-            return;
+            sender.sendMessage("World: N/A");
         }
-
-        try {
-            sender.sendMessage("Environment: " + getEnvironment().getName());
-        }
-        catch (Exception e) {
-            sender.sendMessage("Environment: ERROR");
+        else {
+            sender.sendMessage("World: " + getEnvironment().getName());
         }
     }
 
-    private void sendLocationInfo(CommandSender sender) {
+    private void sendSquareInfo(CommandSender sender) {
         try {
             Square square = getSquare();
-            sender.sendMessage("Location: " + square);
+            sender.sendMessage("Square: " + square);
         } catch (Exception e) {
-            sender.sendMessage("Location: N/A");
+            sender.sendMessage("Square: N/A");
         }
     }
 
@@ -109,11 +102,11 @@ public class Actor extends Entity implements Savable {
         setUUID(UUID.fromString(gson.fromJson(data.get("uuid"), String.class)));
         setName(gson.fromJson(data.get("name"), String.class));
         setCreationDate(LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)));
-        attemptToLoadEnvironment(gson, data);
-        attemptToLoadLocation(gson, data);
+        attemptToLoadWorld(gson, data);
+        attemptToLoadSquare(gson, data);
     }
 
-    private void attemptToLoadEnvironment(Gson gson, Map<String, String> data) {
+    private void attemptToLoadWorld(Gson gson, Map<String, String> data) {
         try {
             setEnvironmentUUID(UUID.fromString(gson.fromJson(data.get("environmentUUID"), String.class)));
         }
@@ -122,7 +115,7 @@ public class Actor extends Entity implements Savable {
         }
     }
 
-    private void attemptToLoadLocation(Gson gson, Map<String, String> data) {
+    private void attemptToLoadSquare(Gson gson, Map<String, String> data) {
         try {
             setLocationUUID(UUID.fromString(gson.fromJson(data.get("locationUUID"), String.class)));
         }

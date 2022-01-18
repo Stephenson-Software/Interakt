@@ -21,11 +21,6 @@ import java.util.*;
  * @since January 7th, 2022
  */
 public class Square extends Location implements Savable {
-    private UUID uuid;
-    private int x;
-    private int y;
-    private UUID parentGridUUID;
-    private HashSet<UUID> entityUUIDs = new HashSet<>();
 
     public Square(int x, int y, UUID gridUUID) {
         super(x, y, gridUUID);
@@ -36,56 +31,19 @@ public class Square extends Location implements Savable {
         this.load(data);
     }
 
-    public UUID getUUID() {
-        return uuid;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public UUID getParentGridUUID() {
-        return parentGridUUID;
-    }
-
-    public void setParentGridUUID(UUID parentGridUUID) {
-        this.parentGridUUID = parentGridUUID;
-    }
-
-    public HashSet<UUID> getEntityUUIDs() {
-        return entityUUIDs;
-    }
-
-    public void setEntityUUIDs(HashSet<UUID> entityUUIDs) {
-        this.entityUUIDs = entityUUIDs;
-    }
-
-    public void addEntity(Actor actor) {
-        entityUUIDs.add(actor.getUUID());
+    public void addActor(Actor actor) {
+        addEntity(actor);
         actor.setLocationUUID(getUUID());
     }
 
-    public void removeEntity(Actor actor) {
-        entityUUIDs.remove(actor.getUUID());
+    public void removeActor(Actor actor) {
+        removeEntity(actor);
     }
 
-    public boolean isEntityPresent(Actor actor) {
-        return entityUUIDs.contains(actor);
+    public boolean isActorPresent(Actor actor) {
+        return isEntityPresent(actor);
     }
 
-    @Override
     public Square getRandomAdjacentLocation() {
         Random random = new Random();
         Region region = getParentGrid();
@@ -104,11 +62,11 @@ public class Square extends Location implements Savable {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         Map<String, String> saveMap = new HashMap<>();
-        saveMap.put("uuid", gson.toJson(uuid));
-        saveMap.put("x", gson.toJson(x));
-        saveMap.put("y", gson.toJson(y));
-        saveMap.put("parentGridUUID", gson.toJson(parentGridUUID));
-        saveMap.put("entities", gson.toJson(entityUUIDs));
+        saveMap.put("uuid", gson.toJson(getUUID()));
+        saveMap.put("x", gson.toJson(getX()));
+        saveMap.put("y", gson.toJson(getY()));
+        saveMap.put("parentGridUUID", gson.toJson(getParentGridUUID()));
+        saveMap.put("entities", gson.toJson(getEntityUUIDs()));
         return saveMap;
     }
 
@@ -118,11 +76,11 @@ public class Square extends Location implements Savable {
 
         Type hashsetTypeUUID = new TypeToken<HashSet<UUID>>(){}.getType();
 
-        uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
-        x = Integer.parseInt(gson.fromJson(data.get("x"), String.class));
-        y = Integer.parseInt(gson.fromJson(data.get("y"), String.class));
-        parentGridUUID = UUID.fromString(gson.fromJson(data.get("parentGridUUID"), String.class));
-        entityUUIDs = gson.fromJson(data.get("entities"), hashsetTypeUUID);
+        setUUID(UUID.fromString(gson.fromJson(data.get("uuid"), String.class)));
+        setX(Integer.parseInt(gson.fromJson(data.get("x"), String.class)));
+        setY(Integer.parseInt(gson.fromJson(data.get("y"), String.class)));
+        setParentGridUUID(UUID.fromString(gson.fromJson(data.get("parentGridUUID"), String.class)));
+        setEntityUUIDs(gson.fromJson(data.get("entities"), hashsetTypeUUID));
     }
 
     @Override
@@ -130,7 +88,6 @@ public class Square extends Location implements Savable {
         return "(" + getX() + ", " + getY() + ")";
     }
 
-    @Override
     public Region getParentGrid() {
         try {
             return PersistentData.getInstance().getRegion(getParentGridUUID());
@@ -140,22 +97,18 @@ public class Square extends Location implements Savable {
         }
     }
 
-    @Override
     public Square getUp(Grid grid) {
         return (Square) grid.getLocation(getX(), getY() + 1);
     }
 
-    @Override
     public Square getRight(Grid grid) {
         return (Square) grid.getLocation(getX() + 1, getY());
     }
 
-    @Override
     public Square getDown(Grid grid) {
         return (Square) grid.getLocation(getX(), getY() - 1);
     }
 
-    @Override
     public Square getLeft(Grid grid) {
         return (Square) grid.getLocation(getX() - 1, getY());
     }
