@@ -3,6 +3,8 @@ package dansapps.interakt.actions;
 import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.Square;
+import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.Square;
 import dansapps.interakt.utils.Logger;
 
 /**
@@ -32,7 +34,7 @@ public class MoveAction implements Action {
         actor.setLocationUUID(newSquare.getUUID());
         newSquare.addActor(actor);
 
-        Logger.getInstance().log(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getEnvironment().getName());
+
         try {
             Logger.getInstance().log(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getEnvironment().getName());
         } catch (Exception e) {
