@@ -5,11 +5,13 @@
 package dansapps.interakt;
 
 import dansapps.interakt.commands.*;
+import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.misc.CommandSenderImpl;
 import dansapps.interakt.services.LocalCommandService;
 import dansapps.interakt.services.LocalStorageService;
 import dansapps.interakt.services.LocalTimeService;
 import dansapps.interakt.utils.Logger;
+import preponderous.environmentlib.EnvironmentLib;
 import preponderous.ponder.system.abs.ApplicationCommand;
 import preponderous.ponder.system.abs.CommandSender;
 import preponderous.ponder.system.abs.PonderApplication;
@@ -23,11 +25,10 @@ import java.util.Scanner;
  */
 public class Interakt extends PonderApplication {
     private static Interakt instance;
-    private boolean debug = false;
     private boolean running = true;
-
     private LocalCommandService commandService;
     private final Scanner scanner = new Scanner(System.in);
+    private final EnvironmentLib environmentLib = new EnvironmentLib();
 
     /**
      * This can be utilized to access the self-managed instance of the application.
@@ -132,7 +133,7 @@ public class Interakt extends PonderApplication {
      * @return Whether the debug flag is enabled.
      */
     public boolean isDebugEnabled() {
-        return debug;
+        return CONFIG.DEBUG_FLAG;
     }
 
     /**
@@ -140,7 +141,7 @@ public class Interakt extends PonderApplication {
      * @param debug Desired value for the debug flag.
      */
     public void setDebugEnabled(boolean debug) {
-        this.debug = debug;
+        CONFIG.DEBUG_FLAG = debug;
     }
 
     /**
@@ -157,6 +158,10 @@ public class Interakt extends PonderApplication {
      */
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public EnvironmentLib getEnvironmentLib() {
+        return environmentLib;
     }
 
     /**

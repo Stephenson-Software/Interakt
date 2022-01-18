@@ -6,8 +6,8 @@ package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
-import dansapps.interakt.objects.Environment;
+import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.World;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -48,12 +48,12 @@ public class DeleteCommand extends InteraktCommand {
         String type = doubleQuoteArgs.get(0);
         String name = doubleQuoteArgs.get(1);
 
-        if (type.equalsIgnoreCase("entity")) {
-            deleteEntity(name, sender);
+        if (type.equalsIgnoreCase("actor")) {
+            deleteActor(name, sender);
             return true;
         }
-        else if (type.equalsIgnoreCase("environment")) {
-            deleteEnvironment(name, sender);
+        else if (type.equalsIgnoreCase("world")) {
+            deleteWorld(name, sender);
             return true;
         }
         else {
@@ -62,27 +62,27 @@ public class DeleteCommand extends InteraktCommand {
         }
     }
 
-    private void deleteEntity(String name, CommandSender sender) {
-        Entity entity;
+    private void deleteActor(String name, CommandSender sender) {
+        Actor actor;
         try {
-            entity = PersistentData.getInstance().getEntity(name);
+            actor = PersistentData.getInstance().getActor(name);
         } catch (Exception e) {
-            sender.sendMessage("That entity wasn't found.");
+            sender.sendMessage("That actor wasn't found.");
             return;
         }
-        PersistentData.getInstance().removeEntity(entity);
-        sender.sendMessage("Entity removed.");
+        PersistentData.getInstance().removeActor(actor);
+        sender.sendMessage("Actor removed.");
     }
 
-    private void deleteEnvironment(String name, CommandSender sender) {
-        Environment environment;
+    private void deleteWorld(String name, CommandSender sender) {
+        World world;
         try {
-            environment = PersistentData.getInstance().getEnvironment(name);
+            world = PersistentData.getInstance().getWorld(name);
         } catch (Exception e) {
-            sender.sendMessage("That environment wasn't found.");
+            sender.sendMessage("That world wasn't found.");
             return;
         }
-        PersistentData.getInstance().removeEnvironment(environment);
-        sender.sendMessage("Environment removed.");
+        PersistentData.getInstance().removeWorld(world);
+        sender.sendMessage("World removed.");
     }
 }

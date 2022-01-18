@@ -6,8 +6,8 @@ package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Entity;
-import dansapps.interakt.objects.Environment;
+import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.World;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -48,30 +48,30 @@ public class ViewCommand extends InteraktCommand {
         String type = doubleQuoteArgs.get(0);
         String name = doubleQuoteArgs.get(1);
 
-        if (type.equalsIgnoreCase("entity")) {
-            Entity entity;
+        if (type.equalsIgnoreCase("actor")) {
+            Actor actor;
             try {
-                entity = PersistentData.getInstance().getEntity(name);
+                actor = PersistentData.getInstance().getActor(name);
             } catch (Exception e) {
-                sender.sendMessage("That entity wasn't found.");
+                sender.sendMessage("That actor wasn't found.");
                 return false;
             }
-            entity.sendInfo(sender);
+            actor.sendInfo(sender);
             return true;
         }
-        else if (type.equalsIgnoreCase("environment")) {
-            Environment environment;
+        else if (type.equalsIgnoreCase("world")) {
+            World world;
             try {
-                environment = PersistentData.getInstance().getEnvironment(name);
+                world = PersistentData.getInstance().getWorld(name);
             } catch (Exception e) {
-                sender.sendMessage("That environment wasn't found.");
+                sender.sendMessage("That world wasn't found.");
                 return false;
             }
-            environment.sendInfo(sender);
+            world.sendInfo(sender);
             return true;
         }
         else {
-            sender.sendMessage("That type isn't supported.");
+            sender.sendMessage("That type isn't supported. Supported types include actor and world.");
             return false;
         }
     }
