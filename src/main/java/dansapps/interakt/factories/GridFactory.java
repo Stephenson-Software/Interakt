@@ -5,8 +5,8 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.Region;
 import dansapps.interakt.misc.CONFIG;
+import dansapps.interakt.objects.Region;
 
 import java.util.UUID;
 
