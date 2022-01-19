@@ -154,11 +154,7 @@ public class PersistentData {
     public void addTimePartition(TimePartition timePartition) {
         timePartitions.add(timePartition);
     }
-
-    public void removeTimePartition(TimePartition timePartition) {
-        timePartitions.remove(timePartition);
-    }
-
+    
     public void clearData() {
         actors.clear();
         worlds.clear();

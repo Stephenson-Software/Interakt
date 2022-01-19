@@ -160,6 +160,10 @@ public class Interakt extends PonderApplication {
         this.running = running;
     }
 
+    /**
+     * This can be used to access the instance of EnvironmentLib managed by this application.
+     * @return
+     */
     public EnvironmentLib getEnvironmentLib() {
         return environmentLib;
     }
@@ -218,6 +222,9 @@ public class Interakt extends PonderApplication {
         application.run(sender);
     }
 
+    /**
+     * Shuts down the application.
+     */
     public void shutdownApplication() {
         Interakt.getInstance().onShutdown();
         System.exit(0);

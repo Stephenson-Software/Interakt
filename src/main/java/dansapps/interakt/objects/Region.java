@@ -28,7 +28,7 @@ public class Region extends Grid implements Savable {
 
     public Region(int columns, int rows, UUID parentEnvironmentUUID) {
         super(columns, rows, parentEnvironmentUUID);
-        createGrid();
+        generateGrid();
     }
 
     public Region(Map<String, String> data) {
@@ -117,21 +117,12 @@ public class Region extends Grid implements Savable {
         return toReturn.toString();
     }
 
-    public void createGrid() {
+    public void generateGrid() {
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
                 UUID locationUUID = LocationFactory.getInstance().createSquare(i, j, getUUID());
                 addLocationUUID(locationUUID);
             }
         }
-    }
-
-    @Override
-    public UUID getFirstLocationUUID() {
-        if (getLocationUUIDs().size() == 0) {
-            Logger.getInstance().log("A region had zero location UUIDs.");
-            return null;
-        }
-        return getLocationUUIDs().get(0);
     }
 }

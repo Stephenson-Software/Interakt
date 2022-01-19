@@ -20,7 +20,7 @@ public class ActionRecord implements Savable {
         timestamp = LocalDateTime.now();
     }
 
-    public UUID getUuid() {
+    public UUID getUUID() {
         return uuid;
     }
 

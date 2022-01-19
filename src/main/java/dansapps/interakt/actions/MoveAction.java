@@ -3,8 +3,6 @@ package dansapps.interakt.actions;
 import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.Square;
-import dansapps.interakt.objects.Actor;
-import dansapps.interakt.objects.Square;
 import dansapps.interakt.utils.Logger;
 
 /**
@@ -21,22 +19,24 @@ public class MoveAction implements Action {
             Logger.getInstance().log(actor.getName() + " wanted to move, but their location wasn't found.");
             return;
         }
+
         Square newSquare;
         try {
             newSquare = currentSquare.getRandomAdjacentLocation();
         } catch (Exception ignored) {
             return;
         }
+
         if (newSquare == null) {
             return;
         }
+
         currentSquare.removeActor(actor);
         actor.setLocationUUID(newSquare.getUUID());
         newSquare.addActor(actor);
 
-
         try {
-            Logger.getInstance().log(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getEnvironment().getName());
+            Logger.getInstance().log(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
         } catch (Exception e) {
             Logger.getInstance().log(actor.getName() + " moved, but their environment wasn't found. This is likely an error.");
         }

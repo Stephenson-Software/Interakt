@@ -47,7 +47,7 @@ public class Actor extends Entity implements Savable {
             sender.sendMessage("World: N/A");
         }
         else {
-            sender.sendMessage("World: " + getEnvironment().getName());
+            sender.sendMessage("World: " + getWorld().getName());
         }
     }
 
@@ -60,7 +60,7 @@ public class Actor extends Entity implements Savable {
         }
     }
 
-    public World getEnvironment() {
+    public World getWorld() {
         return PersistentData.getInstance().getWorld(getEnvironmentUUID());
     }
 
