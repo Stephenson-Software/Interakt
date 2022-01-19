@@ -20,6 +20,7 @@ public class StatsCommand extends InteraktCommand {
         sender.sendMessage("Number of regions: " + PersistentData.getInstance().getRegions().size());
         sender.sendMessage("Number of squares: " + PersistentData.getInstance().getSquares().size());
         sender.sendMessage("Number of elapsed time partitions: " + PersistentData.getInstance().getTimePartitions().size());
+        sender.sendMessage("Number of action records: " + PersistentData.getInstance().getActionRecords().size());
         return true;
     }
 

@@ -1,5 +1,10 @@
 package dansapps.interakt.factories;
 
+import dansapps.interakt.actions.abs.Action;
+import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.ActionRecord;
+import dansapps.interakt.objects.Actor;
+
 public class ActionRecordFactory {
     private static ActionRecordFactory instance;
 
@@ -14,7 +19,9 @@ public class ActionRecordFactory {
         return instance;
     }
 
-    public void createActionRecord() {
-        // TODO: implement
+    public void createActionRecord(Actor actor, Action action) {
+        ActionRecord actionRecord = new ActionRecord(actor.getUUID(), action);
+        PersistentData.getInstance().addActionRecord(actionRecord);
+        actor.addActionRecord(actionRecord);
     }
 }
