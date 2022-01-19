@@ -161,8 +161,7 @@ public class Interakt extends PonderApplication {
     }
 
     /**
-     * This can be used to access the instance of EnvironmentLib managed by this application.
-     * @return
+     * @return The instance of EnvironmentLib managed by this application.
      */
     public EnvironmentLib getEnvironmentLib() {
         return environmentLib;
