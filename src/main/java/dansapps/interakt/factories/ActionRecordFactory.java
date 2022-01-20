@@ -27,8 +27,8 @@ public class ActionRecordFactory {
         actor.addActionRecord(actionRecord);
     }
 
-    public void createActionRecord(Map<String, String> actionRecordData) {
-        ActionRecord actionRecord = new ActionRecord(actionRecordData);
+    public void createActionRecord(Map<String, String> data) {
+        ActionRecord actionRecord = new ActionRecord(data);
         PersistentData.getInstance().addActionRecord(actionRecord);
 
         Actor actor = PersistentData.getInstance().getActor(actionRecord.getEntityUUID());

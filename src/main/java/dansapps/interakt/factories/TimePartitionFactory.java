@@ -7,26 +7,33 @@ package dansapps.interakt.factories;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.TimePartition;
 
+import java.util.Map;
+
 /**
  * @author Daniel McCoy Stephenson
  * @since January 15th, 2022
  */
-public class TimeSlotFactory {
-    private static TimeSlotFactory instance;
+public class TimePartitionFactory {
+    private static TimePartitionFactory instance;
 
-    private TimeSlotFactory() {
+    private TimePartitionFactory() {
 
     }
 
-    public static TimeSlotFactory getInstance() {
+    public static TimePartitionFactory getInstance() {
         if (instance == null) {
-            instance = new TimeSlotFactory();
+            instance = new TimePartitionFactory();
         }
         return instance;
     }
 
     public void createTimePartition(int length) {
         TimePartition timePartition = new TimePartition(length);
+        PersistentData.getInstance().addTimePartition(timePartition);
+    }
+
+    public void createTimePartition(Map<String, String> data) {
+        TimePartition timePartition = new TimePartition(data);
         PersistentData.getInstance().addTimePartition(timePartition);
     }
 }
