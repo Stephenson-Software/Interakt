@@ -107,7 +107,11 @@ public class LocalStorageService {
     }
 
     private void saveActionRecords() {
-        // TODO
+        List<Map<String, String>> actionRecords = new ArrayList<>();
+        for (ActionRecord actionRecord : PersistentData.getInstance().getActionRecords()){
+            actionRecords.add(actionRecord.save());
+        }
+        jsonWriterReader.writeOutFiles(actionRecords, ACTION_RECORDS_FILE_NAME);
     }
 
     private void loadActors() {
@@ -166,6 +170,11 @@ public class LocalStorageService {
     }
 
     private void loadActionRecords() {
-        // TODO
+        PersistentData.getInstance().getActionRecords().clear();
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTION_RECORDS_FILE_NAME);
+        for (Map<String, String> timePartitionData : data){
+            TimePartition timePartition = new TimePartition(timePartitionData);
+            PersistentData.getInstance().addTimePartition(timePartition);
+        }
     }
 }
