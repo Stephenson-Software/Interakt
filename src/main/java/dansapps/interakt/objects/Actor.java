@@ -71,7 +71,7 @@ public class Actor extends Entity implements Savable {
         try {
             return PersistentData.getInstance().getSquare(getLocationUUID());
         } catch (Exception e) {
-            Logger.getInstance().log("Location for " + getName() + " was not found.");
+            Logger.getInstance().logError("Location for " + getName() + " was not found.");
             return null;
         }
     }
@@ -119,7 +119,7 @@ public class Actor extends Entity implements Savable {
             setEnvironmentUUID(UUID.fromString(gson.fromJson(data.get("environmentUUID"), String.class)));
         }
         catch(Exception ignored) {
-            Logger.getInstance().log("An environment wasn't found for " + getName());
+            Logger.getInstance().logError("An environment wasn't found for " + getName());
         }
     }
 
@@ -128,7 +128,7 @@ public class Actor extends Entity implements Savable {
             setLocationUUID(UUID.fromString(gson.fromJson(data.get("locationUUID"), String.class)));
         }
         catch(Exception ignored) {
-            Logger.getInstance().log("A location wasn't found for " + getName());
+            Logger.getInstance().logError("A location wasn't found for " + getName());
         }
     }
 }

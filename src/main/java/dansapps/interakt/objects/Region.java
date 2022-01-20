@@ -52,7 +52,7 @@ public class Region extends Grid implements Savable {
             try {
                 square = PersistentData.getInstance().getSquare(locationUUID);
             } catch (Exception e) {
-                Logger.getInstance().log("Location of a region wasn't found.");
+                Logger.getInstance().logError("Location of a region wasn't found.");
                 return null;
             }
             if (square.getX() == x && square.getY() == y) {

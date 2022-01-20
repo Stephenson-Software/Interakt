@@ -49,7 +49,7 @@ public class LocalStorageService {
             saveActionRecords();
         }
         catch(Exception e) {
-            Logger.getInstance().log("Something went wrong when saving the data of the application.");
+            Logger.getInstance().logError("Something went wrong when saving the data of the application.");
         }
     }
 
@@ -63,7 +63,7 @@ public class LocalStorageService {
             loadActionRecords();
         }
         catch(Exception e) {
-            Logger.getInstance().log("Something went wrong when loading the data of the application.");
+            Logger.getInstance().logError("Something went wrong when loading the data of the application.");
         }
     }
 

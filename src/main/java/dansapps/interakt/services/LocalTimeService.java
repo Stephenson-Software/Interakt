@@ -34,7 +34,7 @@ public class LocalTimeService extends Thread {
             try {
                 TimeUnit.SECONDS.sleep(CONFIG.TIME_SLOT_LENGTH_IN_SECONDS);
             } catch (Exception e) {
-                Logger.getInstance().log("Time stream was interrupted.");
+                Logger.getInstance().logError("Time stream was interrupted.");
             }
         }
     }
@@ -44,11 +44,11 @@ public class LocalTimeService extends Thread {
     }
 
     private void elapse() {
-        Logger.getInstance().log("----------------------");
+        Logger.getInstance().logInfo("----------------------");
         int TIME_SLOT_LENGTH_IN_MILLISECONDS = CONFIG.TIME_SLOT_LENGTH_IN_SECONDS * 1000;
         TimePartitionFactory.getInstance().createTimePartition(TIME_SLOT_LENGTH_IN_MILLISECONDS);
         makeEntitiesPerformMoveAction();
-        Logger.getInstance().log("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimePartitions().size());
+        Logger.getInstance().logInfo("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimePartitions().size());
     }
 
     private void makeEntitiesPerformMoveAction() {
