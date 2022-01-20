@@ -26,7 +26,7 @@ import java.util.UUID;
  * @since January 7th, 2022
  */
 public class Actor extends Entity implements Savable {
-    private LinkedList<ActionRecord> actionRecords = new LinkedList<>();
+    private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
 
     public Actor(String name) {
         super(name);

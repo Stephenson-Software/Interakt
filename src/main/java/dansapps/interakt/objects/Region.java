@@ -36,6 +36,15 @@ public class Region extends Grid implements Savable {
         this.load(data);
     }
 
+    public void generateGrid() {
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getColumns(); j++) {
+                UUID locationUUID = LocationFactory.getInstance().createSquare(i, j, getUUID());
+                addLocationUUID(locationUUID);
+            }
+        }
+    }
+
     @Override
     public Square getLocation(int x, int y) {
         for (UUID locationUUID : getLocationUUIDs()) {
@@ -115,14 +124,5 @@ public class Region extends Grid implements Savable {
             toReturn.append("\n");
         }
         return toReturn.toString();
-    }
-
-    public void generateGrid() {
-        for (int i = 0; i < getRows(); i++) {
-            for (int j = 0; j < getColumns(); j++) {
-                UUID locationUUID = LocationFactory.getInstance().createSquare(i, j, getUUID());
-                addLocationUUID(locationUUID);
-            }
-        }
     }
 }
