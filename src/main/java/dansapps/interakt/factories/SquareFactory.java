@@ -7,6 +7,7 @@ package dansapps.interakt.factories;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.Square;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -31,5 +32,10 @@ public class SquareFactory {
         Square square = new Square(x, y, gridUUID);
         PersistentData.getInstance().addSquare(square);
         return square.getUUID();
+    }
+
+    public void createSquare(Map<String, String> data) {
+        Square square = new Square(data);
+        PersistentData.getInstance().addSquare(square);
     }
 }

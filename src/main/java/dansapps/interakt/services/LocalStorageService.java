@@ -5,7 +5,7 @@
 package dansapps.interakt.services;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.factories.ActionRecordFactory;
+import dansapps.interakt.factories.*;
 import dansapps.interakt.objects.*;
 import dansapps.interakt.utils.Logger;
 import preponderous.ponder.misc.JsonWriterReader;
@@ -56,9 +56,9 @@ public class LocalStorageService {
     public void load() {
         try {
             loadActors();
-            loadEnvironments();
+            loadWorlds();
             loadRegions();
-            loadLocations();
+            loadSquares();
             loadTimePartitions();
             loadActionRecords();
         }
@@ -118,56 +118,41 @@ public class LocalStorageService {
     private void loadActors() {
         PersistentData.getInstance().getActors().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTORS_FILE_NAME);
-        HashSet<Actor> actors = new HashSet<>();
         for (Map<String, String> actorData : data){
-            Actor actor = new Actor(actorData);
-            actors.add(actor);
+            ActorFactory.getInstance().createActor(actorData);
         }
-        PersistentData.getInstance().setActors(actors);
     }
 
-    private void loadEnvironments() {
+    private void loadWorlds() {
         PersistentData.getInstance().getWorlds().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + WORLDS_FILE_NAME);
-        HashSet<World> worlds = new HashSet<>();
         for (Map<String, String> worldData : data){
-            World world = new World(worldData);
-            worlds.add(world);
+            WorldFactory.getInstance().createWorld(worldData);
         }
-        PersistentData.getInstance().setWorlds(worlds);
     }
 
     private void loadRegions() {
         PersistentData.getInstance().getRegions().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + REGIONS_FILE_NAME);
-        HashSet<Region> regions = new HashSet<>();
         for (Map<String, String> regionData : data){
-            Region region = new Region(regionData);
-            regions.add(region);
+            RegionFactory.getInstance().createRegion(regionData);
         }
-        PersistentData.getInstance().setRegions(regions);
     }
 
-    private void loadLocations() {
+    private void loadSquares() {
         PersistentData.getInstance().getSquares().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + SQUARES_FILE_NAME);
-        HashSet<Square> squares = new HashSet<>();
         for (Map<String, String> squareData : data){
-            Square square = new Square(squareData);
-            squares.add(square);
+            SquareFactory.getInstance().createSquare(squareData);
         }
-        PersistentData.getInstance().setSquares(squares);
     }
 
     private void loadTimePartitions() {
         PersistentData.getInstance().getTimePartitions().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + TIME_PARTITIONS_FILE_NAME);
-        ArrayList<TimePartition> timePartitions = new ArrayList<>();
         for (Map<String, String> timePartitionData : data){
-            TimePartition timePartition = new TimePartition(timePartitionData);
-            timePartitions.add(timePartition);
+            TimePartitionFactory.getInstance().createTimePartition(timePartitionData);
         }
-        PersistentData.getInstance().setTimePartitions(timePartitions);
     }
 
     private void loadActionRecords() {

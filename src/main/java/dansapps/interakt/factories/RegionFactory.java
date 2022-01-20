@@ -8,6 +8,7 @@ import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.objects.Region;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -32,5 +33,10 @@ public class RegionFactory {
         Region region = new Region(CONFIG.GRID_SIZE, CONFIG.GRID_SIZE, environmentUUID);
         PersistentData.getInstance().addRegion(region);
         return region.getUUID();
+    }
+
+    public void createRegion(Map<String, String> data) {
+        Region region = new Region(data);
+        PersistentData.getInstance().addRegion(region);
     }
 }
