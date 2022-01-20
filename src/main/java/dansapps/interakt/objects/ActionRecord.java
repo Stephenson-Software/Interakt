@@ -1,17 +1,20 @@
 package dansapps.interakt.objects;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dansapps.interakt.actions.abs.Action;
 import preponderous.ponder.misc.abs.Savable;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class ActionRecord implements Savable {
-    private final UUID uuid;
-    private final UUID entityUUID;
-    private final String actionName;
-    private final LocalDateTime timestamp;
+    private UUID uuid;
+    private UUID entityUUID;
+    private String actionName;
+    private LocalDateTime timestamp;
 
     public ActionRecord(UUID entityUUID, Action action) {
         uuid = UUID.randomUUID();
@@ -38,11 +41,24 @@ public class ActionRecord implements Savable {
 
     @Override
     public Map<String, String> save() {
-        return null;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Map<String, String> saveMap = new HashMap<>();
+        saveMap.put("uuid", gson.toJson(getUUID()));
+        saveMap.put("entityUUID", gson.toJson(getEntityUUID()));
+        saveMap.put("actionName", gson.toJson(getActionName()));
+        saveMap.put("timestamp", gson.toJson(getTimestamp().toString()));
+
+        return saveMap;
     }
 
     @Override
-    public void load(Map<String, String> map) {
+    public void load(Map<String, String> data) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+        uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
+        entityUUID = UUID.fromString(gson.fromJson(data.get("entityUUID"), String.class));
+        actionName = gson.fromJson(data.get("actionName"), String.class);
+        timestamp = LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class));
     }
 }
