@@ -172,9 +172,9 @@ public class LocalStorageService {
     private void loadActionRecords() {
         PersistentData.getInstance().getActionRecords().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTION_RECORDS_FILE_NAME);
-        for (Map<String, String> timePartitionData : data){
-            TimePartition timePartition = new TimePartition(timePartitionData);
-            PersistentData.getInstance().addTimePartition(timePartition);
+        for (Map<String, String> actionRecordData : data){
+            ActionRecord actionRecord = new ActionRecord(actionRecordData);
+            PersistentData.getInstance().addActionRecord(actionRecord);
         }
     }
 }

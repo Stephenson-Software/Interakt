@@ -23,6 +23,10 @@ public class ActionRecord implements Savable {
         timestamp = LocalDateTime.now();
     }
 
+    public ActionRecord(Map<String, String> data) {
+        this.load(data);
+    }
+
     public UUID getUUID() {
         return uuid;
     }
@@ -59,6 +63,6 @@ public class ActionRecord implements Savable {
         uuid = UUID.fromString(gson.fromJson(data.get("uuid"), String.class));
         entityUUID = UUID.fromString(gson.fromJson(data.get("entityUUID"), String.class));
         actionName = gson.fromJson(data.get("actionName"), String.class);
-        timestamp = LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class));
+        timestamp = LocalDateTime.parse(gson.fromJson(data.get("timestamp"), String.class));
     }
 }
