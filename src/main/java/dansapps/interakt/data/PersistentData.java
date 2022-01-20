@@ -175,5 +175,6 @@ public class PersistentData {
         regions.clear();
         squares.clear();
         timePartitions.clear();
+        actionRecords.clear();
     }
 }
