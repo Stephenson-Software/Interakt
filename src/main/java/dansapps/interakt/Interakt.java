@@ -53,6 +53,8 @@ public class Interakt extends PonderApplication {
     public void run(CommandSenderImpl user) {
         Logger.getInstance().log("Running application.");
 
+        Logger.getInstance().log("Using EnvironmentLib " + environmentLib.getVersion());
+
         String line;
         String label;
         String[] args;
@@ -212,6 +214,14 @@ public class Interakt extends PonderApplication {
     }
 
     /**
+     * Shuts down the application.
+     */
+    public void shutdownApplication() {
+        Interakt.getInstance().onShutdown();
+        System.exit(0);
+    }
+
+    /**
      * Instantiates and runs the application.
      * @param args The arguments given to the program.
      */
@@ -219,13 +229,5 @@ public class Interakt extends PonderApplication {
         Interakt application = new Interakt();
         CommandSenderImpl sender = new CommandSenderImpl();
         application.run(sender);
-    }
-
-    /**
-     * Shuts down the application.
-     */
-    public void shutdownApplication() {
-        Interakt.getInstance().onShutdown();
-        System.exit(0);
     }
 }
