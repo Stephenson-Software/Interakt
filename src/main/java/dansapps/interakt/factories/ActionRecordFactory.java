@@ -5,6 +5,8 @@ import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.ActionRecord;
 import dansapps.interakt.objects.Actor;
 
+import java.util.Map;
+
 public class ActionRecordFactory {
     private static ActionRecordFactory instance;
 
@@ -22,6 +24,14 @@ public class ActionRecordFactory {
     public void createActionRecord(Actor actor, Action action) {
         ActionRecord actionRecord = new ActionRecord(actor.getUUID(), action);
         PersistentData.getInstance().addActionRecord(actionRecord);
+        actor.addActionRecord(actionRecord);
+    }
+
+    public void createActionRecord(Map<String, String> actionRecordData) {
+        ActionRecord actionRecord = new ActionRecord(actionRecordData);
+        PersistentData.getInstance().addActionRecord(actionRecord);
+
+        Actor actor = PersistentData.getInstance().getActor(actionRecord.getEntityUUID());
         actor.addActionRecord(actionRecord);
     }
 }

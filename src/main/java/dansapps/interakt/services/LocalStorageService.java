@@ -5,6 +5,7 @@
 package dansapps.interakt.services;
 
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.objects.*;
 import dansapps.interakt.utils.Logger;
 import preponderous.ponder.misc.JsonWriterReader;
@@ -173,8 +174,7 @@ public class LocalStorageService {
         PersistentData.getInstance().getActionRecords().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTION_RECORDS_FILE_NAME);
         for (Map<String, String> actionRecordData : data){
-            ActionRecord actionRecord = new ActionRecord(actionRecordData);
-            PersistentData.getInstance().addActionRecord(actionRecord);
+            ActionRecordFactory.getInstance().createActionRecord(actionRecordData);
         }
     }
 }
