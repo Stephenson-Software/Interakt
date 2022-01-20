@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dansapps.interakt.actions.MoveAction;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.objects.Entity;
 import preponderous.environmentlib.abs.objects.Location;
@@ -16,6 +17,7 @@ import preponderous.ponder.system.abs.CommandSender;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,6 +26,7 @@ import java.util.UUID;
  * @since January 7th, 2022
  */
 public class Actor extends Entity implements Savable {
+    private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
 
     public Actor(String name) {
         super(name);
@@ -47,7 +50,7 @@ public class Actor extends Entity implements Savable {
             sender.sendMessage("World: N/A");
         }
         else {
-            sender.sendMessage("World: " + getEnvironment().getName());
+            sender.sendMessage("World: " + getWorld().getName());
         }
     }
 
@@ -60,7 +63,7 @@ public class Actor extends Entity implements Savable {
         }
     }
 
-    public World getEnvironment() {
+    public World getWorld() {
         return PersistentData.getInstance().getWorld(getEnvironmentUUID());
     }
 
@@ -79,6 +82,11 @@ public class Actor extends Entity implements Savable {
 
     public void attemptToPerformMoveAction() {
         MoveAction.execute(this);
+        ActionRecordFactory.getInstance().createActionRecord(this, new MoveAction());
+    }
+
+    public void addActionRecord(ActionRecord actionRecord) {
+        actionRecords.add(actionRecord);
     }
 
     @Override

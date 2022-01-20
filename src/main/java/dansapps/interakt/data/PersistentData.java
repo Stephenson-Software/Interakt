@@ -8,6 +8,7 @@ import dansapps.interakt.objects.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.UUID;
 
 /**
@@ -21,6 +22,7 @@ public class PersistentData {
     private HashSet<Region> regions = new HashSet<>();
     private HashSet<Square> squares = new HashSet<>();
     private ArrayList<TimePartition> timePartitions = new ArrayList<>();
+    private LinkedList<ActionRecord> actionRecords = new LinkedList<>();
 
     private PersistentData() {
 
@@ -155,8 +157,16 @@ public class PersistentData {
         timePartitions.add(timePartition);
     }
 
-    public void removeTimePartition(TimePartition timePartition) {
-        timePartitions.remove(timePartition);
+    public LinkedList<ActionRecord> getActionRecords() {
+        return actionRecords;
+    }
+
+    public void setActionRecords(LinkedList<ActionRecord> actionRecords) {
+        this.actionRecords = actionRecords;
+    }
+
+    public void addActionRecord(ActionRecord actionRecord) {
+        actionRecords.add(actionRecord);
     }
 
     public void clearData() {

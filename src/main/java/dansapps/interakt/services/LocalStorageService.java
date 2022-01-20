@@ -23,6 +23,7 @@ public class LocalStorageService {
     private final static String REGIONS_FILE_NAME = "regions.json";
     private final static String SQUARES_FILE_NAME = "squares.json";
     private final static String TIME_PARTITIONS_FILE_NAME = "timePartitions.json";
+    private final static String ACTION_RECORDS_FILE_NAME = "actionRecords.json";
 
     private final JsonWriterReader jsonWriterReader = new JsonWriterReader();
 
@@ -44,6 +45,7 @@ public class LocalStorageService {
             saveRegions();
             saveSquares();
             saveTimePartitions();
+            saveActionRecords();
         }
         catch(Exception e) {
             Logger.getInstance().log("Something went wrong when saving the data of the application.");
@@ -57,6 +59,7 @@ public class LocalStorageService {
             loadRegions();
             loadLocations();
             loadTimePartitions();
+            loadActionRecords();
         }
         catch(Exception e) {
             Logger.getInstance().log("Something went wrong when loading the data of the application.");
@@ -101,6 +104,14 @@ public class LocalStorageService {
             timeSlots.add(timePartition.save());
         }
         jsonWriterReader.writeOutFiles(timeSlots, TIME_PARTITIONS_FILE_NAME);
+    }
+
+    private void saveActionRecords() {
+        List<Map<String, String>> actionRecords = new ArrayList<>();
+        for (ActionRecord actionRecord : PersistentData.getInstance().getActionRecords()){
+            actionRecords.add(actionRecord.save());
+        }
+        jsonWriterReader.writeOutFiles(actionRecords, ACTION_RECORDS_FILE_NAME);
     }
 
     private void loadActors() {
@@ -156,5 +167,14 @@ public class LocalStorageService {
             timePartitions.add(timePartition);
         }
         PersistentData.getInstance().setTimePartitions(timePartitions);
+    }
+
+    private void loadActionRecords() {
+        PersistentData.getInstance().getActionRecords().clear();
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTION_RECORDS_FILE_NAME);
+        for (Map<String, String> timePartitionData : data){
+            TimePartition timePartition = new TimePartition(timePartitionData);
+            PersistentData.getInstance().addTimePartition(timePartition);
+        }
     }
 }
