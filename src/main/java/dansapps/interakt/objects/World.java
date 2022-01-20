@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.factories.GridFactory;
+import dansapps.interakt.factories.RegionFactory;
 import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.objects.Environment;
 import preponderous.ponder.misc.abs.Savable;
@@ -29,7 +29,7 @@ public class World extends Environment implements Savable {
 
     public World(String name) {
         super(name, null);
-        setGridUUID(GridFactory.getInstance().createRegion(getUUID()));
+        setGridUUID(RegionFactory.getInstance().createRegion(getUUID()));
     }
 
     public World(Map<String, String> data) {

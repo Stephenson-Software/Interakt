@@ -11,16 +11,16 @@ import dansapps.interakt.objects.World;
  * @author Daniel McCoy Stephenson
  * @since January 15th, 2022
  */
-public class EnvironmentFactory {
-    private static EnvironmentFactory instance;
+public class WorldFactory {
+    private static WorldFactory instance;
 
-    private EnvironmentFactory() {
+    private WorldFactory() {
 
     }
 
-    public static EnvironmentFactory getInstance() {
+    public static WorldFactory getInstance() {
         if (instance == null) {
-            instance = new EnvironmentFactory();
+            instance = new WorldFactory();
         }
         return instance;
     }

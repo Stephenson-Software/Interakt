@@ -14,16 +14,16 @@ import java.util.UUID;
  * @author Daniel McCoy Stephenson
  * @since January 15th, 2022
  */
-public class GridFactory {
-    private static GridFactory instance;
+public class RegionFactory {
+    private static RegionFactory instance;
 
-    private GridFactory() {
+    private RegionFactory() {
 
     }
 
-    public static GridFactory getInstance() {
+    public static RegionFactory getInstance() {
         if (instance == null) {
-            instance = new GridFactory();
+            instance = new RegionFactory();
         }
         return instance;
     }

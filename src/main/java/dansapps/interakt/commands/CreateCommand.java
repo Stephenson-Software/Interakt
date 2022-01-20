@@ -5,8 +5,8 @@
 package dansapps.interakt.commands;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
-import dansapps.interakt.factories.EntityFactory;
-import dansapps.interakt.factories.EnvironmentFactory;
+import dansapps.interakt.factories.ActorFactory;
+import dansapps.interakt.factories.WorldFactory;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -48,12 +48,12 @@ public class CreateCommand extends InteraktCommand {
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("actor")) {
-            EntityFactory.getInstance().createActor(name);
+            ActorFactory.getInstance().createActor(name);
             sender.sendMessage("Actor created.");
             return true;
         }
         else if (type.equalsIgnoreCase("world")) {
-            EnvironmentFactory.getInstance().createWorld(name);
+            WorldFactory.getInstance().createWorld(name);
             sender.sendMessage("World created.");
             return true;
         }

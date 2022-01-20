@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.factories.LocationFactory;
+import dansapps.interakt.factories.SquareFactory;
 import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.objects.Grid;
@@ -39,7 +39,7 @@ public class Region extends Grid implements Savable {
     public void generateGrid() {
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                UUID locationUUID = LocationFactory.getInstance().createSquare(i, j, getUUID());
+                UUID locationUUID = SquareFactory.getInstance().createSquare(i, j, getUUID());
                 addLocationUUID(locationUUID);
             }
         }
