@@ -199,7 +199,7 @@ public class PersistentData {
     }
 
     public boolean placeIntoEnvironment(World world, CommandSender sender, Actor actor) {
-        Square square = world.getFirstSquare();
+        Square square = world.getRandomSquare();
 
         if (square == null) {
             sender.sendMessage("There was a problem finding a location in that environment to place the entity.");

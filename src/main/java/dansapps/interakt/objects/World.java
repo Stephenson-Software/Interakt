@@ -16,10 +16,7 @@ import preponderous.ponder.system.abs.CommandSender;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -103,5 +100,16 @@ public class World extends Environment implements Savable {
         setCreationDate(LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)));
         setGridUUID(UUID.fromString(gson.fromJson(data.get("gridUUID"), String.class)));
         setEntityUUIDs(gson.fromJson(data.get("entities"), hashsetTypeUUID));
+    }
+
+    public Square getRandomSquare() {
+        Random random = new Random();
+        int row = random.nextInt(getGrid().getRows());
+        int column = random.nextInt(getGrid().getColumns());
+        return getGrid().getLocation(row, column);
+    }
+
+    private int getNumSquares() {
+        return getGrid().getRows() * getGrid().getColumns();
     }
 }
