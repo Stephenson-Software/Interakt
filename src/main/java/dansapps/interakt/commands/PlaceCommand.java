@@ -7,7 +7,6 @@ package dansapps.interakt.commands;
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.Actor;
-import dansapps.interakt.objects.Square;
 import dansapps.interakt.objects.World;
 import preponderous.ponder.system.abs.CommandSender;
 
