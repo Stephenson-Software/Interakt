@@ -24,12 +24,9 @@ import java.util.*;
  */
 public class Actor extends Entity implements Savable {
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
-    private int chanceToFight = 50;
-    private int chanceToBefriend = 50;
-    private HashSet<UUID> friends = new HashSet<>();
-    private int numOffspring = 0;
-    private int numKills = 0;
-    private int numFriends = 0;
+    private final HashSet<UUID> friends = new HashSet<>();
+    private final Personality personality = new Personality();
+    private final Statistics statistics = new Statistics();
 
     public Actor(String name) {
         super(name);
@@ -74,52 +71,16 @@ public class Actor extends Entity implements Savable {
         actionRecords.add(actionRecord);
     }
 
-    public int getChanceToFight() {
-        return chanceToFight;
-    }
-
-    public void setChanceToFight(int chanceToFight) {
-        this.chanceToFight = chanceToFight;
-    }
-
-    public int getChanceToBefriend() {
-        return chanceToBefriend;
-    }
-
-    public void setChanceToBefriend(int chanceToBefriend) {
-        this.chanceToBefriend = chanceToBefriend;
-    }
-
     public HashSet<UUID> getFriends() {
         return friends;
     }
 
-    public void setFriends(HashSet<UUID> friends) {
-        this.friends = friends;
+    public Personality getPersonality() {
+        return personality;
     }
 
-    public int getNumOffspring() {
-        return numOffspring;
-    }
-
-    public void setNumOffspring(int numOffspring) {
-        this.numOffspring = numOffspring;
-    }
-
-    public int getNumKills() {
-        return numKills;
-    }
-
-    public void setNumKills(int numKills) {
-        this.numKills = numKills;
-    }
-
-    public int getNumFriends() {
-        return numFriends;
-    }
-
-    public void setNumFriends(int numFriends) {
-        this.numFriends = numFriends;
+    public Statistics getStats() {
+        return statistics;
     }
 
     @Override
@@ -180,6 +141,57 @@ public class Actor extends Entity implements Savable {
         }
         catch(Exception ignored) {
             Logger.getInstance().logError("A location wasn't found for " + getName());
+        }
+    }
+
+    private static class Personality {
+        private int chanceToFight = 50;
+        private int chanceToBefriend = 50;
+
+        public int getChanceToFight() {
+            return chanceToFight;
+        }
+
+        public void setChanceToFight(int chanceToFight) {
+            this.chanceToFight = chanceToFight;
+        }
+
+        public int getChanceToBefriend() {
+            return chanceToBefriend;
+        }
+
+        public void setChanceToBefriend(int chanceToBefriend) {
+            this.chanceToBefriend = chanceToBefriend;
+        }
+    }
+
+    private static class Statistics {
+        private int numOffspring = 0;
+        private int numKills = 0;
+        private int numFriends = 0;
+
+        public int getNumOffspring() {
+            return numOffspring;
+        }
+
+        public void setNumOffspring(int numOffspring) {
+            this.numOffspring = numOffspring;
+        }
+
+        public int getNumKills() {
+            return numKills;
+        }
+
+        public void setNumKills(int numKills) {
+            this.numKills = numKills;
+        }
+
+        public int getNumFriends() {
+            return numFriends;
+        }
+
+        public void setNumFriends(int numFriends) {
+            this.numFriends = numFriends;
         }
     }
 }
