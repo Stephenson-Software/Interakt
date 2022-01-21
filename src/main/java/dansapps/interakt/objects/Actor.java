@@ -16,10 +16,7 @@ import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -27,6 +24,12 @@ import java.util.UUID;
  */
 public class Actor extends Entity implements Savable {
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
+    private int chanceToFight = 50;
+    private int chanceToBefriend = 50;
+    private HashSet<UUID> friends = new HashSet<>();
+    private int numOffspring = 0;
+    private int numKills = 0;
+    private int numFriends = 0;
 
     public Actor(String name) {
         super(name);
@@ -43,24 +46,6 @@ public class Actor extends Entity implements Savable {
         sender.sendMessage("Created: " + getCreationDate().toString());
         sendWorldInfo(sender);
         sendSquareInfo(sender);
-    }
-
-    private void sendWorldInfo(CommandSender sender) {
-        if (getEnvironmentUUID() == null) {
-            sender.sendMessage("World: N/A");
-        }
-        else {
-            sender.sendMessage("World: " + getWorld().getName());
-        }
-    }
-
-    private void sendSquareInfo(CommandSender sender) {
-        try {
-            Square square = getSquare();
-            sender.sendMessage("Square: " + square);
-        } catch (Exception e) {
-            sender.sendMessage("Square: N/A");
-        }
     }
 
     public World getWorld() {
@@ -89,6 +74,54 @@ public class Actor extends Entity implements Savable {
         actionRecords.add(actionRecord);
     }
 
+    public int getChanceToFight() {
+        return chanceToFight;
+    }
+
+    public void setChanceToFight(int chanceToFight) {
+        this.chanceToFight = chanceToFight;
+    }
+
+    public int getChanceToBefriend() {
+        return chanceToBefriend;
+    }
+
+    public void setChanceToBefriend(int chanceToBefriend) {
+        this.chanceToBefriend = chanceToBefriend;
+    }
+
+    public HashSet<UUID> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(HashSet<UUID> friends) {
+        this.friends = friends;
+    }
+
+    public int getNumOffspring() {
+        return numOffspring;
+    }
+
+    public void setNumOffspring(int numOffspring) {
+        this.numOffspring = numOffspring;
+    }
+
+    public int getNumKills() {
+        return numKills;
+    }
+
+    public void setNumKills(int numKills) {
+        this.numKills = numKills;
+    }
+
+    public int getNumFriends() {
+        return numFriends;
+    }
+
+    public void setNumFriends(int numFriends) {
+        this.numFriends = numFriends;
+    }
+
     @Override
     public Map<String, String> save() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -112,6 +145,24 @@ public class Actor extends Entity implements Savable {
         setCreationDate(LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)));
         attemptToLoadWorld(gson, data);
         attemptToLoadSquare(gson, data);
+    }
+
+    private void sendWorldInfo(CommandSender sender) {
+        if (getEnvironmentUUID() == null) {
+            sender.sendMessage("World: N/A");
+        }
+        else {
+            sender.sendMessage("World: " + getWorld().getName());
+        }
+    }
+
+    private void sendSquareInfo(CommandSender sender) {
+        try {
+            Square square = getSquare();
+            sender.sendMessage("Square: " + square);
+        } catch (Exception e) {
+            sender.sendMessage("Square: N/A");
+        }
     }
 
     private void attemptToLoadWorld(Gson gson, Map<String, String> data) {

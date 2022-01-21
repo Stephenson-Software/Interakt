@@ -5,6 +5,7 @@
 package dansapps.interakt.data;
 
 import dansapps.interakt.objects.*;
+import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -176,5 +177,42 @@ public class PersistentData {
         squares.clear();
         timePartitions.clear();
         actionRecords.clear();
+    }
+
+    public boolean isWorld(String name) {
+        try {
+            getWorld(name);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isActor(String name) {
+        try {
+            getActor(name);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean placeIntoEnvironment(World world, CommandSender sender, Actor actor) {
+        Square square = world.getFirstSquare();
+
+        if (square == null) {
+            sender.sendMessage("There was a problem finding a location in that environment to place the entity.");
+            return false;
+        }
+
+        if (actor.getWorld() != null) {
+            return false;
+        }
+
+        world.addEntity(actor);
+        square.addActor(actor);
+        sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " world at square " + square);
+        return true;
     }
 }
