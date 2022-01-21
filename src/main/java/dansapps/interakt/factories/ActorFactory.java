@@ -28,6 +28,9 @@ public class ActorFactory {
     }
 
     public void createActor(String name) {
+        if (isNameTaken(name)) {
+            return;
+        }
         Actor actor = new Actor(name);
         PersistentData.getInstance().addActor(actor);
     }
@@ -35,5 +38,9 @@ public class ActorFactory {
     public void createActor(Map<String, String> data) {
         Actor actor = new Actor(data);
         PersistentData.getInstance().addActor(actor);
+    }
+
+    private boolean isNameTaken(String name) {
+        return PersistentData.getInstance().isActor(name);
     }
 }

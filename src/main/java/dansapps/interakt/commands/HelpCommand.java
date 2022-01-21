@@ -29,6 +29,7 @@ public class HelpCommand extends InteraktCommand {
         sender.sendMessage("create - Create an actor or world.");
         sender.sendMessage("delete - Delete an actor or world.");
         sender.sendMessage("place - Place an actor in an world.");
+        sender.sendMessage("generatetestdata - Generate test data.");
         sender.sendMessage("save - Force the application to save its data.");
         sender.sendMessage("info - View information about the application.");
         sender.sendMessage("stats - View statistics about the application.");

@@ -61,9 +61,8 @@ public class PlaceCommand extends InteraktCommand {
             return false;
         }
 
-        // place into environment
         World world;
-        Square square;
+
         try {
             world = getWorld(doubleQuoteArgs, sender);
         } catch (Exception e) {
@@ -71,17 +70,7 @@ public class PlaceCommand extends InteraktCommand {
             return false;
         }
 
-        square = world.getFirstSquare();
-
-        if (square == null) {
-            sender.sendMessage("There was a problem finding a location in that environment to place the entity.");
-            return false;
-        }
-
-        world.addEntity(actor);
-        square.addActor(actor);
-        sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " world at square " + square);
-        return true;
+        return PersistentData.getInstance().placeIntoEnvironment(world, sender, actor);
     }
 
     private World getWorld(ArrayList<String> doubleQuoteArgs, CommandSender sender) throws Exception {

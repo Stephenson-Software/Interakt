@@ -92,7 +92,7 @@ public class Square extends Location implements Savable {
         try {
             return PersistentData.getInstance().getRegion(getParentGridUUID());
         } catch (Exception e) {
-            Logger.getInstance().log("The parent grid of a square was not found.");
+            Logger.getInstance().logError("The parent grid of a square was not found.");
             return null;
         }
     }

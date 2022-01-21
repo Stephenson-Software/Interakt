@@ -16,10 +16,7 @@ import preponderous.ponder.system.abs.CommandSender;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -54,7 +51,7 @@ public class World extends Environment implements Savable {
         try {
             region = PersistentData.getInstance().getRegion(getGridUUID());
         } catch (Exception e) {
-            Logger.getInstance().log("A region wasn't found when attempting to find the first location in " + getName() + ".");
+            Logger.getInstance().logError("A region wasn't found when attempting to find the first location in " + getName() + ".");
             return null;
         }
 
@@ -62,7 +59,7 @@ public class World extends Environment implements Savable {
         try {
             square = PersistentData.getInstance().getSquare(region.getFirstLocationUUID());
         } catch (Exception e) {
-            Logger.getInstance().log("A square wasn't found when attempting to find the first location of a region.");
+            Logger.getInstance().logError("A square wasn't found when attempting to find the first location of a region.");
             return null;
         }
 
@@ -73,7 +70,7 @@ public class World extends Environment implements Savable {
         try {
             return PersistentData.getInstance().getRegion(getGridUUID());
         } catch (Exception e) {
-            Logger.getInstance().log("There was a problem fetching a grid from a world's reference.");
+            Logger.getInstance().logError("There was a problem fetching a grid from a world's reference.");
             return null;
         }
     }
@@ -103,5 +100,16 @@ public class World extends Environment implements Savable {
         setCreationDate(LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)));
         setGridUUID(UUID.fromString(gson.fromJson(data.get("gridUUID"), String.class)));
         setEntityUUIDs(gson.fromJson(data.get("entities"), hashsetTypeUUID));
+    }
+
+    public Square getRandomSquare() {
+        Random random = new Random();
+        int row = random.nextInt(getGrid().getRows());
+        int column = random.nextInt(getGrid().getColumns());
+        return getGrid().getLocation(row, column);
+    }
+
+    private int getNumSquares() {
+        return getGrid().getRows() * getGrid().getColumns();
     }
 }

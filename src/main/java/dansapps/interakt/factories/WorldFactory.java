@@ -6,6 +6,7 @@ package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.World;
+import dansapps.interakt.utils.Logger;
 
 import java.util.Map;
 
@@ -28,6 +29,9 @@ public class WorldFactory {
     }
 
     public void createWorld(String name) {
+        if (isNameTaken(name)) {
+            return;
+        }
         World world = new World(name);
         PersistentData.getInstance().addWorld(world);
     }
@@ -35,5 +39,9 @@ public class WorldFactory {
     public void createWorld(Map<String, String> data) {
         World world = new World(data);
         PersistentData.getInstance().addWorld(world);
+    }
+
+    private boolean isNameTaken(String name) {
+        return PersistentData.getInstance().isWorld(name);
     }
 }

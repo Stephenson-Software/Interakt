@@ -51,7 +51,9 @@ public class Interakt extends PonderApplication {
      * @param user The user of the application.
      */
     public void run(CommandSenderImpl user) {
-        Logger.getInstance().log("Running application.");
+        Logger.getInstance().logInfo("Running application.");
+
+        Logger.getInstance().logInfo("Using EnvironmentLib " + environmentLib.getVersion());
 
         String line;
         String label;
@@ -78,7 +80,7 @@ public class Interakt extends PonderApplication {
 
             boolean success = onCommand(user, label, args);
             if (!success) {
-                Logger.getInstance().log("Something went wrong processing the " + label + " command.");
+                Logger.getInstance().logInfo("Something went wrong processing the " + label + " command.");
             }
         }
     }
@@ -100,7 +102,7 @@ public class Interakt extends PonderApplication {
     @Override
     public void onStartup() {
         instance = this;
-        Logger.getInstance().log("Initiating startup.");
+        Logger.getInstance().logInfo("Initiating startup.");
         initializeLocalCommandService();
         LocalStorageService.getInstance().load();
         LocalTimeService.getInstance().start();
@@ -111,7 +113,7 @@ public class Interakt extends PonderApplication {
      */
     @Override
     public void onShutdown() {
-        Logger.getInstance().log("Initiating shutdown.");
+        Logger.getInstance().logInfo("Initiating shutdown.");
         LocalStorageService.getInstance().save();
     }
 
@@ -124,7 +126,7 @@ public class Interakt extends PonderApplication {
      */
     @Override
     public boolean onCommand(CommandSender sender, String label, String[] args) {
-        Logger.getInstance().log("Interpreting command " + label);
+        Logger.getInstance().logInfo("Interpreting command " + label);
         return getLocalCommandService().interpretCommand(sender, label, args);
     }
 
@@ -184,6 +186,7 @@ public class Interakt extends PonderApplication {
         commands.add(new WipeCommand());
         commands.add(new ElapseCommand());
         commands.add(new SaveCommand());
+        commands.add(new GenerateTestDataCommand());
         setCommandService(new LocalCommandService((commands)));
     }
 
@@ -212,6 +215,14 @@ public class Interakt extends PonderApplication {
     }
 
     /**
+     * Shuts down the application.
+     */
+    public void shutdownApplication() {
+        Interakt.getInstance().onShutdown();
+        System.exit(0);
+    }
+
+    /**
      * Instantiates and runs the application.
      * @param args The arguments given to the program.
      */
@@ -219,13 +230,5 @@ public class Interakt extends PonderApplication {
         Interakt application = new Interakt();
         CommandSenderImpl sender = new CommandSenderImpl();
         application.run(sender);
-    }
-
-    /**
-     * Shuts down the application.
-     */
-    public void shutdownApplication() {
-        Interakt.getInstance().onShutdown();
-        System.exit(0);
     }
 }

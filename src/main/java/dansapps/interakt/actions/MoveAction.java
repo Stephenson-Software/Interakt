@@ -1,6 +1,7 @@
 package dansapps.interakt.actions;
 
 import dansapps.interakt.actions.abs.Action;
+import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.Square;
 import dansapps.interakt.utils.Logger;
@@ -16,7 +17,7 @@ public class MoveAction implements Action {
         try {
             currentSquare = actor.getSquare();
         } catch (Exception e) {
-            Logger.getInstance().log(actor.getName() + " wanted to move, but their location wasn't found.");
+            Logger.getInstance().logError(actor.getName() + " wanted to move, but their location wasn't found.");
             return;
         }
 
@@ -36,9 +37,11 @@ public class MoveAction implements Action {
         newSquare.addActor(actor);
 
         try {
-            Logger.getInstance().log(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
+            Logger.getInstance().logInfo(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
         } catch (Exception e) {
-            Logger.getInstance().log(actor.getName() + " moved, but their environment wasn't found. This is likely an error.");
+            Logger.getInstance().logError(actor.getName() + " moved, but their environment wasn't found.");
         }
+
+        ActionRecordFactory.getInstance().createActionRecord(actor, new MoveAction());
     }
 }

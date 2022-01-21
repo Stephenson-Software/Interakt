@@ -16,17 +16,18 @@ import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class Actor extends Entity implements Savable {
+    private static final int MOVE_CHANCE_THRESHOLD = 10;
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
+    private final HashSet<UUID> friends = new HashSet<>();
+    private final Personality personality = new Personality();
+    private final Statistics statistics = new Statistics();
 
     public Actor(String name) {
         super(name);
@@ -45,24 +46,6 @@ public class Actor extends Entity implements Savable {
         sendSquareInfo(sender);
     }
 
-    private void sendWorldInfo(CommandSender sender) {
-        if (getEnvironmentUUID() == null) {
-            sender.sendMessage("World: N/A");
-        }
-        else {
-            sender.sendMessage("World: " + getWorld().getName());
-        }
-    }
-
-    private void sendSquareInfo(CommandSender sender) {
-        try {
-            Square square = getSquare();
-            sender.sendMessage("Square: " + square);
-        } catch (Exception e) {
-            sender.sendMessage("Square: N/A");
-        }
-    }
-
     public World getWorld() {
         return PersistentData.getInstance().getWorld(getEnvironmentUUID());
     }
@@ -71,7 +54,7 @@ public class Actor extends Entity implements Savable {
         try {
             return PersistentData.getInstance().getSquare(getLocationUUID());
         } catch (Exception e) {
-            Logger.getInstance().log("Location for " + getName() + " was not found.");
+            Logger.getInstance().logError("Location for " + getName() + " was not found.");
             return null;
         }
     }
@@ -80,13 +63,32 @@ public class Actor extends Entity implements Savable {
         return (Square) getLocation();
     }
 
-    public void attemptToPerformMoveAction() {
-        MoveAction.execute(this);
-        ActionRecordFactory.getInstance().createActionRecord(this, new MoveAction());
+    public void performMoveActionIfRollSuccessful() {
+        if (roll(MOVE_CHANCE_THRESHOLD)) {
+            MoveAction.execute(this);
+        }
+    }
+
+    private boolean roll(int threshold) {
+        Random random = new Random();
+        int result = random.nextInt(100);
+        return result < threshold;
     }
 
     public void addActionRecord(ActionRecord actionRecord) {
         actionRecords.add(actionRecord);
+    }
+
+    public HashSet<UUID> getFriends() {
+        return friends;
+    }
+
+    public Personality getPersonality() {
+        return personality;
+    }
+
+    public Statistics getStatistics() {
+        return statistics;
     }
 
     @Override
@@ -114,12 +116,30 @@ public class Actor extends Entity implements Savable {
         attemptToLoadSquare(gson, data);
     }
 
+    private void sendWorldInfo(CommandSender sender) {
+        if (getEnvironmentUUID() == null) {
+            sender.sendMessage("World: N/A");
+        }
+        else {
+            sender.sendMessage("World: " + getWorld().getName());
+        }
+    }
+
+    private void sendSquareInfo(CommandSender sender) {
+        try {
+            Square square = getSquare();
+            sender.sendMessage("Square: " + square);
+        } catch (Exception e) {
+            sender.sendMessage("Square: N/A");
+        }
+    }
+
     private void attemptToLoadWorld(Gson gson, Map<String, String> data) {
         try {
             setEnvironmentUUID(UUID.fromString(gson.fromJson(data.get("environmentUUID"), String.class)));
         }
         catch(Exception ignored) {
-            Logger.getInstance().log("An environment wasn't found for " + getName());
+            Logger.getInstance().logError("An environment wasn't found for " + getName());
         }
     }
 
@@ -128,7 +148,58 @@ public class Actor extends Entity implements Savable {
             setLocationUUID(UUID.fromString(gson.fromJson(data.get("locationUUID"), String.class)));
         }
         catch(Exception ignored) {
-            Logger.getInstance().log("A location wasn't found for " + getName());
+            Logger.getInstance().logError("A location wasn't found for " + getName());
+        }
+    }
+
+    private static class Personality {
+        private int chanceToFight = 50;
+        private int chanceToBefriend = 50;
+
+        public int getChanceToFight() {
+            return chanceToFight;
+        }
+
+        public void setChanceToFight(int chanceToFight) {
+            this.chanceToFight = chanceToFight;
+        }
+
+        public int getChanceToBefriend() {
+            return chanceToBefriend;
+        }
+
+        public void setChanceToBefriend(int chanceToBefriend) {
+            this.chanceToBefriend = chanceToBefriend;
+        }
+    }
+
+    private static class Statistics {
+        private int numOffspring = 0;
+        private int numKills = 0;
+        private int numFriends = 0;
+
+        public int getNumOffspring() {
+            return numOffspring;
+        }
+
+        public void setNumOffspring(int numOffspring) {
+            this.numOffspring = numOffspring;
+        }
+
+        public int getNumKills() {
+            return numKills;
+        }
+
+        public void setNumKills(int numKills) {
+            this.numKills = numKills;
+        }
+
+        public int getNumFriends() {
+            return numFriends;
+        }
+
+        public void setNumFriends(int numFriends) {
+            this.numFriends = numFriends;
         }
     }
 }

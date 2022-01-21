@@ -29,9 +29,15 @@ public class Logger {
      * This can be used to send a debug message to the console.
      * @param message The message to log to the console.
      */
-    public void log(String message) {
+    public void logInfo(String message) {
         if (isLocalDebugFlagEnabled() || Interakt.getInstance().isDebugEnabled()) {
-            System.out.println("[DEBUG] " + message);
+            System.out.println("[INFO] " + message);
+        }
+    }
+
+    public void logError(String errorMessage) {
+        if (Interakt.getInstance().isDebugEnabled()) {
+            System.out.println("[ERROR] " + errorMessage);
         }
     }
 
