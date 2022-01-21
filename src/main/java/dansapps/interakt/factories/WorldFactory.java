@@ -6,7 +6,6 @@ package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.World;
-import dansapps.interakt.utils.Logger;
 
 import java.util.Map;
 
