@@ -53,7 +53,7 @@ public class LocalTimeService extends Thread {
 
     private void makeEntitiesPerformMoveAction() {
         for (Actor actor : PersistentData.getInstance().getActors()) {
-            actor.attemptToPerformMoveAction();
+            actor.performMoveActionIfRollSuccessful();
         }
     }
 }

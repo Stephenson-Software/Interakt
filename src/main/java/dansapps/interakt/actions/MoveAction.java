@@ -1,6 +1,7 @@
 package dansapps.interakt.actions;
 
 import dansapps.interakt.actions.abs.Action;
+import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.Square;
 import dansapps.interakt.utils.Logger;
@@ -40,5 +41,7 @@ public class MoveAction implements Action {
         } catch (Exception e) {
             Logger.getInstance().logError(actor.getName() + " moved, but their environment wasn't found.");
         }
+
+        ActionRecordFactory.getInstance().createActionRecord(actor, new MoveAction());
     }
 }

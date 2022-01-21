@@ -23,6 +23,7 @@ import java.util.*;
  * @since January 7th, 2022
  */
 public class Actor extends Entity implements Savable {
+    private static final int MOVE_CHANCE_THRESHOLD = 10;
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
     private final HashSet<UUID> friends = new HashSet<>();
     private final Personality personality = new Personality();
@@ -62,9 +63,16 @@ public class Actor extends Entity implements Savable {
         return (Square) getLocation();
     }
 
-    public void attemptToPerformMoveAction() {
-        MoveAction.execute(this);
-        ActionRecordFactory.getInstance().createActionRecord(this, new MoveAction());
+    public void performMoveActionIfRollSuccessful() {
+        if (roll(MOVE_CHANCE_THRESHOLD)) {
+            MoveAction.execute(this);
+        }
+    }
+
+    private boolean roll(int threshold) {
+        Random random = new Random();
+        int result = random.nextInt(100);
+        return result < threshold;
     }
 
     public void addActionRecord(ActionRecord actionRecord) {
@@ -79,7 +87,7 @@ public class Actor extends Entity implements Savable {
         return personality;
     }
 
-    public Statistics getStats() {
+    public Statistics getStatistics() {
         return statistics;
     }
 
