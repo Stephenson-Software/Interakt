@@ -49,4 +49,9 @@ public class MoveAction implements Action {
 
         ActionRecordFactory.getInstance().createActionRecord(actor, new MoveAction());
     }
+
+    @Override
+    public String getName() {
+        return "move";
+    }
 }
