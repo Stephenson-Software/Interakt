@@ -5,6 +5,7 @@
 package dansapps.interakt.utils;
 
 import dansapps.interakt.Interakt;
+import dansapps.interakt.objects.Event;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -39,6 +40,10 @@ public class Logger {
         if (Interakt.getInstance().isDebugEnabled()) {
             System.out.println("[ERROR] " + errorMessage);
         }
+    }
+
+    public void logEvent(Event event) {
+        System.out.println("[EVENT] " + event.getMessage());
     }
 
     public static void setInstance(Logger instance) {
