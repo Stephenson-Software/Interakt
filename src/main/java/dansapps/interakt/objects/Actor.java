@@ -28,9 +28,9 @@ public class Actor extends Entity implements Savable {
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
     private int moveChanceThreshold;
     private double health;
+    private HashSet<UUID> exploredSquares = new HashSet<>();
 
     // unused
-    private HashSet<UUID> exploredSquares = new HashSet<>();
     private final HashSet<UUID> friends = new HashSet<>();
     private final Personality personality = new Personality();
     private final Statistics statistics = new Statistics();
@@ -48,17 +48,6 @@ public class Actor extends Entity implements Savable {
 
     public void sendInfo(CommandSender sender) {
         sender.sendMessage(this.toString());
-    }
-
-    @Override
-    public String toString() {
-        return "=== Details of " + getName() + " ===" + "\n" +
-                "Health: " + getHealth() + "/" + getMaxHealth() + "\n" +
-                getWorldInfo() + "\n" +
-                getSquareInfo() + "\n" +
-                "Created: " + getCreationDate().toString() + "\n" +
-                "Num times moved: " + getNumTimesMoved() + "\n" +
-                "Chance to move: " + getMoveChanceThreshold();
     }
 
     public World getWorld() {
@@ -124,6 +113,18 @@ public class Actor extends Entity implements Savable {
 
     private double getMaxHealth() {
         return CONFIG.MAX_HEALTH;
+    }
+
+    @Override
+    public String toString() {
+        return "=== Details of " + getName() + " ===" + "\n" +
+                "Health: " + getHealth() + "/" + getMaxHealth() + "\n" +
+                getWorldInfo() + "\n" +
+                getSquareInfo() + "\n" +
+                "Created: " + getCreationDate().toString() + "\n" +
+                "Num times moved: " + getNumTimesMoved() + "\n" +
+                "Chance to move: " + getMoveChanceThreshold() + "\n" +
+                "Num square explored: " + exploredSquares.size();
     }
 
     @Override
@@ -208,6 +209,11 @@ public class Actor extends Entity implements Savable {
         catch(Exception ignored) {
             Logger.getInstance().logError("A location wasn't found for " + getName());
         }
+    }
+
+    public void addSquareIfNotExplored(Square square) {
+        exploredSquares.add(square.getUUID());
+        Logger.getInstance().logInfo(getName() + " has explored a new square.");
     }
 
     private static class Personality {

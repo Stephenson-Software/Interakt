@@ -42,6 +42,8 @@ public class MoveAction implements Action {
             Logger.getInstance().logError(actor.getName() + " moved, but their environment wasn't found.");
         }
 
+        actor.addSquareIfNotExplored(newSquare);
+
         ActionRecordFactory.getInstance().createActionRecord(actor, new MoveAction());
     }
 }
