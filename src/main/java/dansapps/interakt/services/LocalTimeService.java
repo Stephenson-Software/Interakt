@@ -47,13 +47,14 @@ public class LocalTimeService extends Thread {
         Logger.getInstance().logInfo("----------------------");
         int TIME_SLOT_LENGTH_IN_MILLISECONDS = CONFIG.TIME_SLOT_LENGTH_IN_SECONDS * 1000;
         TimePartitionFactory.getInstance().createTimePartition(TIME_SLOT_LENGTH_IN_MILLISECONDS);
-        makeEntitiesPerformMoveAction();
+        handleEntityActions();
         Logger.getInstance().logInfo("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimePartitions().size());
     }
 
-    private void makeEntitiesPerformMoveAction() {
+    private void handleEntityActions() {
         for (Actor actor : PersistentData.getInstance().getActors()) {
             actor.performMoveActionIfRollSuccessful();
+            actor.performBefriendActionIfActorPresentAndRollSuccessful();
         }
     }
 }

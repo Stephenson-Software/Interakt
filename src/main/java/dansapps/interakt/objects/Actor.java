@@ -29,9 +29,9 @@ public class Actor extends Entity implements Savable {
     private int moveChanceThreshold;
     private double health;
     private HashSet<UUID> exploredSquares = new HashSet<>();
+    private HashSet<UUID> friends = new HashSet<>();
 
     // unused
-    private final HashSet<UUID> friends = new HashSet<>();
     private final Personality personality = new Personality();
     private final Statistics statistics = new Statistics();
 
@@ -111,8 +111,31 @@ public class Actor extends Entity implements Savable {
         this.health = health;
     }
 
-    private double getMaxHealth() {
+    public double getMaxHealth() {
         return CONFIG.MAX_HEALTH;
+    }
+
+    public void addSquareIfNotExplored(Square square) {
+        boolean success = exploredSquares.add(square.getUUID());
+        if (success) {
+            Logger.getInstance().logInfo(getName() + " has explored a new square.");
+        }
+    }
+
+    public void addFriend(Actor actor) {
+        friends.add(actor.getUUID());
+    }
+
+    public void removeFriend(Actor actor) {
+        friends.remove(actor.getUUID());
+    }
+
+    public boolean isFriend(Actor other) {
+        return friends.contains(other.getUUID());
+    }
+
+    public void performBefriendActionIfActorPresentAndRollSuccessful() {
+        // TODO: implement
     }
 
     @Override
@@ -140,6 +163,11 @@ public class Actor extends Entity implements Savable {
         saveMap.put("moveChanceThreshold", gson.toJson(moveChanceThreshold));
         saveMap.put("exploredSquares", gson.toJson(exploredSquares));
         saveMap.put("health", gson.toJson(health));
+        saveMap.put("friends", gson.toJson(friends));
+
+        // TODO: save  personalty
+
+        // TODO: save statistics
 
         return saveMap;
     }
@@ -159,6 +187,11 @@ public class Actor extends Entity implements Savable {
             moveChanceThreshold = Integer.parseInt(gson.fromJson(data.get("moveChanceThreshold"), String.class));
             exploredSquares = gson.fromJson(data.get("exploredSquares"), hashsetTypeUUID);
             health = Double.parseDouble(gson.fromJson(data.get("health"), String.class));
+            friends = gson.fromJson(data.get("friends"), hashsetTypeUUID);
+
+            // TODO: load personality
+
+            // TODO: load statistics
         }
         catch(Exception e) {
             Logger.getInstance().logError("Something went wrong loading an actor.");
@@ -211,14 +244,7 @@ public class Actor extends Entity implements Savable {
         }
     }
 
-    public void addSquareIfNotExplored(Square square) {
-        boolean success = exploredSquares.add(square.getUUID());
-        if (success) {
-            Logger.getInstance().logInfo(getName() + " has explored a new square.");
-        }
-    }
-
-    private static class Personality {
+    private static class Personality implements Savable {
         private int chanceToFight = 50;
         private int chanceToBefriend = 50;
 
@@ -237,9 +263,20 @@ public class Actor extends Entity implements Savable {
         public void setChanceToBefriend(int chanceToBefriend) {
             this.chanceToBefriend = chanceToBefriend;
         }
+
+        @Override
+        public Map<String, String> save() {
+            // TODO: implement
+            return null;
+        }
+
+        @Override
+        public void load(Map<String, String> map) {
+            // TODO: implement
+        }
     }
 
-    private static class Statistics {
+    private static class Statistics implements Savable {
         private int numOffspring = 0;
         private int numKills = 0;
         private int numFriends = 0;
@@ -266,6 +303,17 @@ public class Actor extends Entity implements Savable {
 
         public void setNumFriends(int numFriends) {
             this.numFriends = numFriends;
+        }
+
+        @Override
+        public Map<String, String> save() {
+            // TODO: implement
+            return null;
+        }
+
+        @Override
+        public void load(Map<String, String> map) {
+            // TODO: implement
         }
     }
 }
