@@ -6,6 +6,7 @@ package dansapps.interakt.objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.actions.MoveAction;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.misc.CONFIG;
@@ -15,6 +16,7 @@ import preponderous.environmentlib.abs.objects.Location;
 import preponderous.ponder.misc.abs.Savable;
 import preponderous.ponder.system.abs.CommandSender;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -25,6 +27,9 @@ import java.util.*;
 public class Actor extends Entity implements Savable {
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
     private int moveChanceThreshold;
+
+    // unused
+    private HashSet<UUID> exploredSquares = new HashSet<>();
     private final HashSet<UUID> friends = new HashSet<>();
     private final Personality personality = new Personality();
     private final Statistics statistics = new Statistics();
@@ -119,6 +124,7 @@ public class Actor extends Entity implements Savable {
         saveMap.put("environmentUUID", gson.toJson(getEnvironmentUUID()));
         saveMap.put("locationUUID", gson.toJson(getLocationUUID()));
         saveMap.put("moveChanceThreshold", gson.toJson(moveChanceThreshold));
+        saveMap.put("exploredSquares", gson.toJson(exploredSquares));
 
         return saveMap;
     }
@@ -127,12 +133,20 @@ public class Actor extends Entity implements Savable {
     public void load(Map<String, String> data) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        setUUID(UUID.fromString(gson.fromJson(data.get("uuid"), String.class)));
-        setName(gson.fromJson(data.get("name"), String.class));
-        setCreationDate(LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)));
-        attemptToLoadWorld(gson, data);
-        attemptToLoadSquare(gson, data);
-        moveChanceThreshold = Integer.parseInt(gson.fromJson(data.get("moveChanceThreshold"), String.class));
+        Type hashsetTypeUUID = new TypeToken<HashSet<UUID>>(){}.getType();
+
+        try {
+            setUUID(UUID.fromString(gson.fromJson(data.get("uuid"), String.class)));
+            setName(gson.fromJson(data.get("name"), String.class));
+            setCreationDate(LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)));
+            attemptToLoadWorld(gson, data);
+            attemptToLoadSquare(gson, data);
+            moveChanceThreshold = Integer.parseInt(gson.fromJson(data.get("moveChanceThreshold"), String.class));
+            exploredSquares = gson.fromJson(data.get("exploredSquares"), hashsetTypeUUID);
+        }
+        catch(Exception e) {
+            Logger.getInstance().logError("Something went wrong loading an actor.");
+        }
     }
 
     private void sendWorldInfo(CommandSender sender) {

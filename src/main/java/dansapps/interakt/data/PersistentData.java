@@ -231,4 +231,20 @@ public class PersistentData {
         }
         return toReturn;
     }
+
+    public Actor getActorWithLeastActionRecords() {
+        Actor toReturn = null;
+        int min = 9999;
+        for (Actor actor : actors) {
+            int numRecords = actor.getNumActionRecords();
+            if (numRecords < min) {
+                min = numRecords;
+                toReturn = actor;
+            }
+        }
+        if (toReturn == null) {
+            throw new NullPointerException();
+        }
+        return toReturn;
+    }
 }
