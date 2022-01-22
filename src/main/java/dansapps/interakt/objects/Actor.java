@@ -34,10 +34,6 @@ public class Actor extends Entity implements Savable {
     private HashSet<UUID> exploredSquares = new HashSet<>();
     private HashSet<UUID> friends = new HashSet<>();
 
-    // unused
-    private final Personality personality = new Personality();
-    private final Statistics statistics = new Statistics();
-
     public Actor(String name) {
         super(name);
         chanceToMove = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
@@ -97,14 +93,6 @@ public class Actor extends Entity implements Savable {
 
     public HashSet<UUID> getFriends() {
         return friends;
-    }
-
-    public Personality getPersonality() {
-        return personality;
-    }
-
-    public Statistics getStatistics() {
-        return statistics;
     }
 
     public int getNumActionRecords() {
@@ -265,79 +253,6 @@ public class Actor extends Entity implements Savable {
         }
         catch(Exception ignored) {
             Logger.getInstance().logError("A location wasn't found for " + getName());
-        }
-    }
-
-    private static class Personality implements Savable {
-        private int chanceToFight = 50;
-        private int chanceToBefriend = 50;
-
-        public int getChanceToFight() {
-            return chanceToFight;
-        }
-
-        public void setChanceToFight(int chanceToFight) {
-            this.chanceToFight = chanceToFight;
-        }
-
-        public int getChanceToBefriend() {
-            return chanceToBefriend;
-        }
-
-        public void setChanceToBefriend(int chanceToBefriend) {
-            this.chanceToBefriend = chanceToBefriend;
-        }
-
-        @Override
-        public Map<String, String> save() {
-            // TODO: implement
-            return null;
-        }
-
-        @Override
-        public void load(Map<String, String> map) {
-            // TODO: implement
-        }
-    }
-
-    private static class Statistics implements Savable {
-        private int numOffspring = 0;
-        private int numKills = 0;
-        private int numFriends = 0;
-
-        public int getNumOffspring() {
-            return numOffspring;
-        }
-
-        public void setNumOffspring(int numOffspring) {
-            this.numOffspring = numOffspring;
-        }
-
-        public int getNumKills() {
-            return numKills;
-        }
-
-        public void setNumKills(int numKills) {
-            this.numKills = numKills;
-        }
-
-        public int getNumFriends() {
-            return numFriends;
-        }
-
-        public void setNumFriends(int numFriends) {
-            this.numFriends = numFriends;
-        }
-
-        @Override
-        public Map<String, String> save() {
-            // TODO: implement
-            return null;
-        }
-
-        @Override
-        public void load(Map<String, String> map) {
-            // TODO: implement
         }
     }
 }
