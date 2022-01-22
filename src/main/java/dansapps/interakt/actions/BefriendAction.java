@@ -24,4 +24,9 @@ public class BefriendAction implements Action {
 
         ActionRecordFactory.getInstance().createActionRecord(actor, new BefriendAction());
     }
+
+    @Override
+    public String getName() {
+        return "befriend";
+    }
 }

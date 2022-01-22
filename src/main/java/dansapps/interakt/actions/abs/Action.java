@@ -5,9 +5,5 @@ package dansapps.interakt.actions.abs;
  * @since January 17th, 2022
  */
 public interface Action {
-    String name = "move";
-
-    default String getName() {
-        return name;
-    }
+    String getName();
 }
