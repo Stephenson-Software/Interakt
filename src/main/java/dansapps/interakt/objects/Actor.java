@@ -43,6 +43,7 @@ public class Actor extends Entity implements Savable {
         sender.sendMessage("Created: " + getCreationDate().toString());
         sendWorldInfo(sender);
         sendSquareInfo(sender);
+        sender.sendMessage("Num times moved: " + getNumTimesMoved());
     }
 
     public World getWorld() {
@@ -88,6 +89,16 @@ public class Actor extends Entity implements Savable {
 
     public Statistics getStatistics() {
         return statistics;
+    }
+
+    private int getNumTimesMoved() {
+        int count = 0;
+        for (ActionRecord actionRecord : actionRecords) {
+            if (actionRecord.getActionName().equals("move")) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
@@ -149,6 +160,10 @@ public class Actor extends Entity implements Savable {
         catch(Exception ignored) {
             Logger.getInstance().logError("A location wasn't found for " + getName());
         }
+    }
+
+    public int getNumActionRecords() {
+        return actionRecords.size();
     }
 
     private static class Personality {

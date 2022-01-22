@@ -21,6 +21,7 @@ public class StatsCommand extends InteraktCommand {
         sender.sendMessage("Number of squares: " + PersistentData.getInstance().getSquares().size());
         sender.sendMessage("Number of elapsed time partitions: " + PersistentData.getInstance().getTimePartitions().size());
         sender.sendMessage("Number of action records: " + PersistentData.getInstance().getActionRecords().size());
+        sender.sendMessage("Most active actor: " + PersistentData.getInstance().getActorWithMostActionRecords().getName());
         return true;
     }
 
