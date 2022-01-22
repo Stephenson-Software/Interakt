@@ -24,7 +24,7 @@ public class LocalAutoSaveService extends Thread {
     public void run() {
         while (Interakt.getInstance().isRunning()) {
             LocalStorageService.getInstance().save();
-            Logger.getInstance().logInfo("Data has been saved.");
+            Logger.getInstance().logInfo("Data has been saved. This will happen every " + CONFIG.SECONDS_BETWEEN_AUTO_SAVES + " seconds.");
 
             try {
                 TimeUnit.SECONDS.sleep(CONFIG.SECONDS_BETWEEN_AUTO_SAVES);
