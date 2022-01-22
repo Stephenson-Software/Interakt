@@ -112,4 +112,13 @@ public class Square extends Location implements Savable {
     public Square getLeft(Grid grid) {
         return (Square) grid.getLocation(getX() - 1, getY());
     }
+
+    public int getNumActors() {
+        return getNumEntities();
+    }
+
+    public Actor getRandomActor() {
+        UUID randomUUID = getRandomEntityUUID();
+        return PersistentData.getInstance().getActor(randomUUID);
+    }
 }
