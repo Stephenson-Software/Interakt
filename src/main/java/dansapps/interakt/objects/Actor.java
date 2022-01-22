@@ -7,6 +7,7 @@ package dansapps.interakt.objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import dansapps.interakt.actions.BefriendAction;
 import dansapps.interakt.actions.MoveAction;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.misc.CONFIG;
@@ -26,18 +27,20 @@ import java.util.*;
  */
 public class Actor extends Entity implements Savable {
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
-    private int moveChanceThreshold;
+    private int chanceToMove;
+    private int chanceToBefriend;
     private double health;
     private HashSet<UUID> exploredSquares = new HashSet<>();
+    private HashSet<UUID> friends = new HashSet<>();
 
     // unused
-    private final HashSet<UUID> friends = new HashSet<>();
     private final Personality personality = new Personality();
     private final Statistics statistics = new Statistics();
 
     public Actor(String name) {
         super(name);
-        moveChanceThreshold = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
+        chanceToMove = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
+        chanceToBefriend = new Random().nextInt(CONFIG.MAX_CHANCE_TO_BEFRIEND);
         health = 100.0;
     }
 
@@ -68,7 +71,7 @@ public class Actor extends Entity implements Savable {
     }
 
     public void performMoveActionIfRollSuccessful() {
-        if (roll(getMoveChanceThreshold())) {
+        if (roll(getChanceToMove())) {
             MoveAction.execute(this);
         }
     }
@@ -83,8 +86,12 @@ public class Actor extends Entity implements Savable {
         actionRecords.add(actionRecord);
     }
 
-    public int getMoveChanceThreshold() {
-        return moveChanceThreshold;
+    public int getChanceToMove() {
+        return chanceToMove;
+    }
+
+    public int getChanceToBefriend() {
+        return chanceToBefriend;
     }
 
     public HashSet<UUID> getFriends() {
@@ -111,9 +118,43 @@ public class Actor extends Entity implements Savable {
         this.health = health;
     }
 
-    private double getMaxHealth() {
+    public double getMaxHealth() {
         return CONFIG.MAX_HEALTH;
     }
+
+    public void addSquareIfNotExplored(Square square) {
+        boolean success = exploredSquares.add(square.getUUID());
+        if (success) {
+            Logger.getInstance().logInfo(getName() + " has explored a new square.");
+        }
+    }
+
+    public void addFriend(Actor actor) {
+        friends.add(actor.getUUID());
+    }
+
+    public void removeFriend(Actor actor) {
+        friends.remove(actor.getUUID());
+    }
+
+    public boolean isFriend(Actor other) {
+        return friends.contains(other.getUUID());
+    }
+
+    public void performBefriendActionIfActorPresentAndRollSuccessful() {
+        if (getSquare().getNumActors() < 2) {
+            return;
+        }
+
+        if (!roll(getChanceToBefriend())) {
+            return;
+        }
+        Actor actor = getSquare().getRandomActor();
+        if (actor.getUUID().equals(getUUID())) {
+            return;
+        }
+        BefriendAction.befriend(this, actor);
+     }
 
     @Override
     public String toString() {
@@ -122,9 +163,11 @@ public class Actor extends Entity implements Savable {
                 getWorldInfo() + "\n" +
                 getSquareInfo() + "\n" +
                 "Created: " + getCreationDate().toString() + "\n" +
+                "Chance to move: " + getChanceToMove() + "\n" +
+                "Chance to befriend: " + getChanceToBefriend() + "\n" +
                 "Num times moved: " + getNumTimesMoved() + "\n" +
-                "Chance to move: " + getMoveChanceThreshold() + "\n" +
-                "Num square explored: " + exploredSquares.size();
+                "Num square explored: " + exploredSquares.size() + "\n" +
+                "Num friends: " + friends.size();
     }
 
     @Override
@@ -137,9 +180,15 @@ public class Actor extends Entity implements Savable {
         saveMap.put("creationDate", gson.toJson(getCreationDate().toString()));
         saveMap.put("environmentUUID", gson.toJson(getEnvironmentUUID()));
         saveMap.put("locationUUID", gson.toJson(getLocationUUID()));
-        saveMap.put("moveChanceThreshold", gson.toJson(moveChanceThreshold));
+        saveMap.put("moveChanceThreshold", gson.toJson(chanceToMove));
         saveMap.put("exploredSquares", gson.toJson(exploredSquares));
         saveMap.put("health", gson.toJson(health));
+        saveMap.put("friends", gson.toJson(friends));
+        saveMap.put("chanceToBefriend", gson.toJson(chanceToBefriend));
+
+        // TODO: save  personalty
+
+        // TODO: save statistics
 
         return saveMap;
     }
@@ -156,9 +205,15 @@ public class Actor extends Entity implements Savable {
             setCreationDate(LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)));
             attemptToLoadWorld(gson, data);
             attemptToLoadSquare(gson, data);
-            moveChanceThreshold = Integer.parseInt(gson.fromJson(data.get("moveChanceThreshold"), String.class));
+            chanceToMove = Integer.parseInt(gson.fromJson(data.get("moveChanceThreshold"), String.class));
             exploredSquares = gson.fromJson(data.get("exploredSquares"), hashsetTypeUUID);
             health = Double.parseDouble(gson.fromJson(data.get("health"), String.class));
+            friends = gson.fromJson(data.get("friends"), hashsetTypeUUID);
+            chanceToBefriend = Integer.parseInt(gson.fromJson(data.get("chanceToBefriend"), String.class));
+
+            // TODO: load personality
+
+            // TODO: load statistics
         }
         catch(Exception e) {
             Logger.getInstance().logError("Something went wrong loading an actor.");
@@ -211,14 +266,7 @@ public class Actor extends Entity implements Savable {
         }
     }
 
-    public void addSquareIfNotExplored(Square square) {
-        boolean success = exploredSquares.add(square.getUUID());
-        if (success) {
-            Logger.getInstance().logInfo(getName() + " has explored a new square.");
-        }
-    }
-
-    private static class Personality {
+    private static class Personality implements Savable {
         private int chanceToFight = 50;
         private int chanceToBefriend = 50;
 
@@ -237,9 +285,20 @@ public class Actor extends Entity implements Savable {
         public void setChanceToBefriend(int chanceToBefriend) {
             this.chanceToBefriend = chanceToBefriend;
         }
+
+        @Override
+        public Map<String, String> save() {
+            // TODO: implement
+            return null;
+        }
+
+        @Override
+        public void load(Map<String, String> map) {
+            // TODO: implement
+        }
     }
 
-    private static class Statistics {
+    private static class Statistics implements Savable {
         private int numOffspring = 0;
         private int numKills = 0;
         private int numFriends = 0;
@@ -266,6 +325,17 @@ public class Actor extends Entity implements Savable {
 
         public void setNumFriends(int numFriends) {
             this.numFriends = numFriends;
+        }
+
+        @Override
+        public Map<String, String> save() {
+            // TODO: implement
+            return null;
+        }
+
+        @Override
+        public void load(Map<String, String> map) {
+            // TODO: implement
         }
     }
 }
