@@ -24,7 +24,7 @@ public class ElapseCommand extends InteraktCommand {
     @Override
     public boolean execute(CommandSender sender) {
         sender.sendMessage("Forcing time elapse.");
-        LocalTimeService.getInstance().forceElapse();
+        LocalTimeService.getInstance().elapse();
         return true;
     }
 
