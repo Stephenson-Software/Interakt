@@ -27,6 +27,7 @@ import java.util.*;
 public class Actor extends Entity implements Savable {
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
     private int moveChanceThreshold;
+    private double health;
 
     // unused
     private HashSet<UUID> exploredSquares = new HashSet<>();
@@ -37,6 +38,7 @@ public class Actor extends Entity implements Savable {
     public Actor(String name) {
         super(name);
         moveChanceThreshold = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
+        health = 100.0;
     }
 
     public Actor(Map<String, String> data) {
@@ -45,13 +47,18 @@ public class Actor extends Entity implements Savable {
     }
 
     public void sendInfo(CommandSender sender) {
-        sender.sendMessage("=== Details of " + getName() + " ===");
-        sender.sendMessage("UUID: " + getUUID());
-        sender.sendMessage("Created: " + getCreationDate().toString());
-        sendWorldInfo(sender);
-        sendSquareInfo(sender);
-        sender.sendMessage("Num times moved: " + getNumTimesMoved());
-        sender.sendMessage("Chance to move: " + getMoveChanceThreshold());
+        sender.sendMessage(this.toString());
+    }
+
+    @Override
+    public String toString() {
+        return "=== Details of " + getName() + " ===" + "\n" +
+                "Health: " + getHealth() + "/" + getMaxHealth() + "\n" +
+                getWorldInfo() + "\n" +
+                getSquareInfo() + "\n" +
+                "Created: " + getCreationDate().toString() + "\n" +
+                "Num times moved: " + getNumTimesMoved() + "\n" +
+                "Chance to move: " + getMoveChanceThreshold();
     }
 
     public World getWorld() {
@@ -103,14 +110,20 @@ public class Actor extends Entity implements Savable {
         return statistics;
     }
 
-    private int getNumTimesMoved() {
-        int count = 0;
-        for (ActionRecord actionRecord : actionRecords) {
-            if (actionRecord.getActionName().equals("move")) {
-                count++;
-            }
-        }
-        return count;
+    public int getNumActionRecords() {
+        return actionRecords.size();
+    }
+
+    public double getHealth() {
+        return health;
+    }
+
+    public void setHealth(double health) {
+        this.health = health;
+    }
+
+    private double getMaxHealth() {
+        return CONFIG.MAX_HEALTH;
     }
 
     @Override
@@ -125,6 +138,7 @@ public class Actor extends Entity implements Savable {
         saveMap.put("locationUUID", gson.toJson(getLocationUUID()));
         saveMap.put("moveChanceThreshold", gson.toJson(moveChanceThreshold));
         saveMap.put("exploredSquares", gson.toJson(exploredSquares));
+        saveMap.put("health", gson.toJson(health));
 
         return saveMap;
     }
@@ -143,28 +157,39 @@ public class Actor extends Entity implements Savable {
             attemptToLoadSquare(gson, data);
             moveChanceThreshold = Integer.parseInt(gson.fromJson(data.get("moveChanceThreshold"), String.class));
             exploredSquares = gson.fromJson(data.get("exploredSquares"), hashsetTypeUUID);
+            health = Double.parseDouble(gson.fromJson(data.get("health"), String.class));
         }
         catch(Exception e) {
             Logger.getInstance().logError("Something went wrong loading an actor.");
         }
     }
 
-    private void sendWorldInfo(CommandSender sender) {
+    private String getWorldInfo() {
         if (getEnvironmentUUID() == null) {
-            sender.sendMessage("World: N/A");
+            return "World: N/A";
         }
         else {
-            sender.sendMessage("World: " + getWorld().getName());
+            return "World: " + getWorld().getName();
         }
     }
 
-    private void sendSquareInfo(CommandSender sender) {
+    private String getSquareInfo() {
         try {
             Square square = getSquare();
-            sender.sendMessage("Square: " + square);
+            return "Square: " + square;
         } catch (Exception e) {
-            sender.sendMessage("Square: N/A");
+            return "Square: N/A";
         }
+    }
+
+    private int getNumTimesMoved() {
+        int count = 0;
+        for (ActionRecord actionRecord : actionRecords) {
+            if (actionRecord.getActionName().equals("move")) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void attemptToLoadWorld(Gson gson, Map<String, String> data) {
@@ -183,10 +208,6 @@ public class Actor extends Entity implements Savable {
         catch(Exception ignored) {
             Logger.getInstance().logError("A location wasn't found for " + getName());
         }
-    }
-
-    public int getNumActionRecords() {
-        return actionRecords.size();
     }
 
     private static class Personality {
