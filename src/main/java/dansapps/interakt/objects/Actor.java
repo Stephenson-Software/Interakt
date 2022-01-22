@@ -212,8 +212,10 @@ public class Actor extends Entity implements Savable {
     }
 
     public void addSquareIfNotExplored(Square square) {
-        exploredSquares.add(square.getUUID());
-        Logger.getInstance().logInfo(getName() + " has explored a new square.");
+        boolean success = exploredSquares.add(square.getUUID());
+        if (success) {
+            Logger.getInstance().logInfo(getName() + " has explored a new square.");
+        }
     }
 
     private static class Personality {
