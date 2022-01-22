@@ -7,6 +7,8 @@ package dansapps.interakt.utils;
 import dansapps.interakt.Interakt;
 import dansapps.interakt.objects.Event;
 
+import java.time.format.DateTimeFormatter;
+
 /**
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
@@ -43,7 +45,9 @@ public class Logger {
     }
 
     public void logEvent(Event event) {
-        System.out.println("[EVENT] " + event.getMessage());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = event.getTimestamp().format(formatter);
+        System.out.println("[" + formattedDateTime + "] " + event.getMessage());
     }
 
     public static void setInstance(Logger instance) {
