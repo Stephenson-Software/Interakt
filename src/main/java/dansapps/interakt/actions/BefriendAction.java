@@ -1,6 +1,7 @@
 package dansapps.interakt.actions;
 
 import dansapps.interakt.actions.abs.Action;
+import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.factories.EventFactory;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.Event;
@@ -20,5 +21,7 @@ public class BefriendAction implements Action {
         other.addFriend(actor);
         Event event = EventFactory.getInstance().createEvent(actor.getName() + " and " + other.getName() + " are now friends.");
         Logger.getInstance().logEvent(event);
+
+        ActionRecordFactory.getInstance().createActionRecord(actor, new BefriendAction());
     }
 }
