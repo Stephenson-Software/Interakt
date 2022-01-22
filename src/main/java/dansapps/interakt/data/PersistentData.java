@@ -215,4 +215,20 @@ public class PersistentData {
         sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " world at square " + square);
         return true;
     }
+
+    public Actor getActorWithMostActionRecords() {
+        Actor toReturn = null;
+        int max = 0;
+        for (Actor actor : actors) {
+            int numRecords = actor.getNumActionRecords();
+            if (numRecords > max) {
+                max = numRecords;
+                toReturn = actor;
+            }
+        }
+        if (toReturn == null) {
+            throw new NullPointerException();
+        }
+        return toReturn;
+    }
 }
