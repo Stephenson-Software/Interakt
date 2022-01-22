@@ -24,7 +24,7 @@ public class GenerateTestDataCommand extends InteraktCommand {
     ));
 
     public GenerateTestDataCommand() {
-        super(new ArrayList<>(List.of("generatetestdata")), new ArrayList<>(List.of("interakt.generatetestdata")));
+        super(new ArrayList<>(List.of("generatetestdata", "gtd")), new ArrayList<>(List.of("interakt.generatetestdata")));
     }
 
     @Override
