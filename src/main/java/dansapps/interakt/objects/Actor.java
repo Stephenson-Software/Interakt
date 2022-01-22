@@ -27,9 +27,9 @@ import java.util.*;
 public class Actor extends Entity implements Savable {
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
     private int moveChanceThreshold;
-    private HashSet<UUID> exploredSquares = new HashSet<>();
 
     // unused
+    private HashSet<UUID> exploredSquares = new HashSet<>();
     private final HashSet<UUID> friends = new HashSet<>();
     private final Personality personality = new Personality();
     private final Statistics statistics = new Statistics();
