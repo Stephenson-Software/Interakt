@@ -7,6 +7,7 @@ package dansapps.interakt;
 import dansapps.interakt.commands.*;
 import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.misc.CommandSenderImpl;
+import dansapps.interakt.services.LocalAutoSaveService;
 import dansapps.interakt.services.LocalCommandService;
 import dansapps.interakt.services.LocalStorageService;
 import dansapps.interakt.services.LocalTimeService;
@@ -106,6 +107,7 @@ public class Interakt extends PonderApplication {
         initializeLocalCommandService();
         LocalStorageService.getInstance().load();
         LocalTimeService.getInstance().start();
+        LocalAutoSaveService.getInstance().start();
     }
 
     /**
