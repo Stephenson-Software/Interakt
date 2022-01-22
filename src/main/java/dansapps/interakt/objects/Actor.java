@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dansapps.interakt.actions.MoveAction;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.objects.Entity;
 import preponderous.environmentlib.abs.objects.Location;
@@ -22,14 +23,15 @@ import java.util.*;
  * @since January 7th, 2022
  */
 public class Actor extends Entity implements Savable {
-    private static final int MOVE_CHANCE_THRESHOLD = 10;
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
+    private int moveChanceThreshold;
     private final HashSet<UUID> friends = new HashSet<>();
     private final Personality personality = new Personality();
     private final Statistics statistics = new Statistics();
 
     public Actor(String name) {
         super(name);
+        moveChanceThreshold = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
     }
 
     public Actor(Map<String, String> data) {
@@ -44,6 +46,7 @@ public class Actor extends Entity implements Savable {
         sendWorldInfo(sender);
         sendSquareInfo(sender);
         sender.sendMessage("Num times moved: " + getNumTimesMoved());
+        sender.sendMessage("Chance to move: " + getMoveChanceThreshold());
     }
 
     public World getWorld() {
@@ -64,7 +67,7 @@ public class Actor extends Entity implements Savable {
     }
 
     public void performMoveActionIfRollSuccessful() {
-        if (roll(MOVE_CHANCE_THRESHOLD)) {
+        if (roll(getMoveChanceThreshold())) {
             MoveAction.execute(this);
         }
     }
@@ -77,6 +80,10 @@ public class Actor extends Entity implements Savable {
 
     public void addActionRecord(ActionRecord actionRecord) {
         actionRecords.add(actionRecord);
+    }
+
+    public int getMoveChanceThreshold() {
+        return moveChanceThreshold;
     }
 
     public HashSet<UUID> getFriends() {
@@ -111,6 +118,7 @@ public class Actor extends Entity implements Savable {
         saveMap.put("creationDate", gson.toJson(getCreationDate().toString()));
         saveMap.put("environmentUUID", gson.toJson(getEnvironmentUUID()));
         saveMap.put("locationUUID", gson.toJson(getLocationUUID()));
+        saveMap.put("moveChanceThreshold", gson.toJson(moveChanceThreshold));
 
         return saveMap;
     }
@@ -124,6 +132,7 @@ public class Actor extends Entity implements Savable {
         setCreationDate(LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)));
         attemptToLoadWorld(gson, data);
         attemptToLoadSquare(gson, data);
+        moveChanceThreshold = Integer.parseInt(gson.fromJson(data.get("moveChanceThreshold"), String.class));
     }
 
     private void sendWorldInfo(CommandSender sender) {
