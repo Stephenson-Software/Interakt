@@ -1,7 +1,9 @@
 package dansapps.interakt.actions;
 
 import dansapps.interakt.actions.abs.Action;
+import dansapps.interakt.factories.EventFactory;
 import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.Event;
 import dansapps.interakt.utils.Logger;
 
 /**
@@ -16,6 +18,7 @@ public class BefriendAction implements Action {
         }
         actor.addFriend(other);
         other.addFriend(actor);
-        Logger.getInstance().logInfo(actor.getName() + " and " + other.getName() + " are now friends.");
+        Event event = EventFactory.getInstance().createEvent(actor.getName() + " and " + other.getName() + " are now friends.");
+        Logger.getInstance().logEvent(event);
     }
 }

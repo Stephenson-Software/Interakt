@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.actions.BefriendAction;
 import dansapps.interakt.actions.MoveAction;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.factories.EventFactory;
 import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.objects.Entity;
@@ -125,7 +126,8 @@ public class Actor extends Entity implements Savable {
     public void addSquareIfNotExplored(Square square) {
         boolean success = exploredSquares.add(square.getUUID());
         if (success) {
-            Logger.getInstance().logInfo(getName() + " has explored a new square.");
+            Event event = EventFactory.getInstance().createEvent(getName() + " has explored a new square.");
+            Logger.getInstance().logEvent(event);
         }
     }
 

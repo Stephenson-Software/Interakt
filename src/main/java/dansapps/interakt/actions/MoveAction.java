@@ -2,7 +2,9 @@ package dansapps.interakt.actions;
 
 import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.factories.ActionRecordFactory;
+import dansapps.interakt.factories.EventFactory;
 import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.Event;
 import dansapps.interakt.objects.Square;
 import dansapps.interakt.utils.Logger;
 
@@ -37,7 +39,8 @@ public class MoveAction implements Action {
         newSquare.addActor(actor);
 
         try {
-            Logger.getInstance().logInfo(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
+            Event event = EventFactory.getInstance().createEvent(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
+            Logger.getInstance().logEvent(event);
         } catch (Exception e) {
             Logger.getInstance().logError(actor.getName() + " moved, but their environment wasn't found.");
         }
