@@ -21,14 +21,16 @@ import java.util.Map;
  */
 public class LocalStorageService {
     private static LocalStorageService instance;
-    private final static String FILE_PATH = "/Interakt/";
+
+    public final static String FILE_PATH = "/Interakt/";
+    public final static String LOG_FILE_NAME = "log.txt";
+
     private final static String ACTORS_FILE_NAME = "actors.json";
     private final static String WORLDS_FILE_NAME = "worlds.json";
     private final static String REGIONS_FILE_NAME = "regions.json";
     private final static String SQUARES_FILE_NAME = "squares.json";
     private final static String TIME_PARTITIONS_FILE_NAME = "timePartitions.json";
     private final static String ACTION_RECORDS_FILE_NAME = "actionRecords.json";
-
     private final JsonWriterReader jsonWriterReader = new JsonWriterReader();
 
     private LocalStorageService() {

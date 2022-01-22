@@ -6,7 +6,11 @@ package dansapps.interakt.utils;
 
 import dansapps.interakt.Interakt;
 import dansapps.interakt.objects.Event;
+import dansapps.interakt.services.LocalStorageService;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -16,8 +20,19 @@ import java.time.format.DateTimeFormatter;
 public class Logger {
     private static Logger instance;
     private boolean localDebugFlag = false;
+    private File logFile;
+    private FileWriter fileWriter;
 
     private Logger() {
+        String filePath = LocalStorageService.FILE_PATH + LocalStorageService.LOG_FILE_NAME;
+        logFile = new File(filePath);
+        try {
+            logFile.createNewFile();
+            fileWriter = new FileWriter(logFile.getName());
+        }
+        catch(Exception e) {
+            Logger.getInstance().logError("Something went wrong instantiating the file writer for the Logger.");
+        }
 
     }
 
@@ -47,7 +62,9 @@ public class Logger {
     public void logEvent(Event event) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = event.getTimestamp().format(formatter);
-        System.out.println("[" + formattedDateTime + "] " + event.getMessage());
+        String message = "[" + formattedDateTime + "] " + event.getMessage();
+        System.out.println(message);
+        logToFile(message);
     }
 
     public static void setInstance(Logger instance) {
@@ -60,5 +77,14 @@ public class Logger {
 
     public void setLocalDebugFlagEnabled(boolean localDebugFlag) {
         this.localDebugFlag = localDebugFlag;
+    }
+
+    private void logToFile(String message) {
+        try {
+            fileWriter.append(message);
+        }
+        catch (IOException e) {
+            logError("There was a problem logging a message to the log file.");
+        }
     }
 }
