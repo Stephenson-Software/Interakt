@@ -6,7 +6,6 @@ package dansapps.interakt.data;
 
 import dansapps.interakt.objects.*;
 import preponderous.ponder.system.abs.CommandSender;
-import preponderous.ponder.system.abs.PonderApplication;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,7 +49,38 @@ public class PersistentData {
     }
 
     public void removeActor(Actor actor) {
-        actors.remove(actor); // TODO: ensure this doesn't mess anything up
+        removeReferencesToActor(actor);
+        actors.remove(actor);
+    }
+
+    private void removeReferencesToActor(Actor actor) {
+        removeActorReferencesFromEnvironments(actor);
+        removeActorReferencesFromSquares(actor);
+        removeActorReferencesFromActors(actor);
+    }
+
+    private void removeActorReferencesFromEnvironments(Actor actor) {
+        for (World world : worlds) {
+            if (world.isEntityPresent(actor)) {
+                world.removeEntity(actor);
+            }
+        }
+    }
+
+    private void removeActorReferencesFromSquares(Actor actor) {
+        for (Square square : squares) {
+            if (square.isEntityPresent(actor)) {
+                square.removeActor(actor);
+            }
+        }
+    }
+
+    private void removeActorReferencesFromActors(Actor targetActor) {
+        for (Actor actor : actors) {
+            if (actor.isFriend(targetActor)) {
+                actor.removeFriend(targetActor);
+            }
+        }
     }
 
     public Actor getActor(String name) throws Exception {
