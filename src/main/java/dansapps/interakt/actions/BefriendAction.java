@@ -1,3 +1,7 @@
+/*
+  Copyright (c) 2022 Daniel McCoy Stephenson
+  Apache License 2.0
+ */
 package dansapps.interakt.actions;
 
 import dansapps.interakt.actions.abs.Action;
@@ -13,7 +17,7 @@ import dansapps.interakt.utils.Logger;
  */
 public class BefriendAction implements Action {
 
-    public static void befriend(Actor actor, Actor other) {
+    public static void execute(Actor actor, Actor other) {
         if (actor.isFriend(other)) {
             return;
         }

@@ -7,6 +7,7 @@ package dansapps.interakt.objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import dansapps.interakt.actions.AttackAction;
 import dansapps.interakt.actions.BefriendAction;
 import dansapps.interakt.actions.MoveAction;
 import dansapps.interakt.data.PersistentData;
@@ -30,6 +31,7 @@ public class Actor extends Entity implements Savable {
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
     private int chanceToMove;
     private int chanceToBefriend;
+    private int chanceToAttack;
     private double health;
     private HashSet<UUID> exploredSquares = new HashSet<>();
     private HashSet<UUID> friends = new HashSet<>();
@@ -38,7 +40,8 @@ public class Actor extends Entity implements Savable {
         super(name);
         chanceToMove = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
         chanceToBefriend = new Random().nextInt(CONFIG.MAX_CHANCE_TO_BEFRIEND);
-        health = 100.0;
+        chanceToAttack = new Random().nextInt(CONFIG.MAX_CHANCE_TO_ATTACK);
+        health = CONFIG.MAX_HEALTH;
     }
 
     public Actor(Map<String, String> data) {
@@ -91,6 +94,10 @@ public class Actor extends Entity implements Savable {
         return chanceToBefriend;
     }
 
+    public int getChanceToAttack() {
+        return chanceToAttack;
+    }
+
     public HashSet<UUID> getFriends() {
         return friends;
     }
@@ -135,15 +142,17 @@ public class Actor extends Entity implements Savable {
         if (getSquare().getNumActors() < 2) {
             return;
         }
-
         if (!roll(getChanceToBefriend())) {
             return;
         }
         Actor actor = getSquare().getRandomActor();
+        if (actor == null) {
+            return;
+        }
         if (actor.getUUID().equals(getUUID())) {
             return;
         }
-        BefriendAction.befriend(this, actor);
+        BefriendAction.execute(this, actor);
      }
 
     public int getNumExploredChunks() {
@@ -152,6 +161,27 @@ public class Actor extends Entity implements Savable {
 
     public int getNumFriends() {
         return friends.size();
+    }
+
+    public void performAttackActionIfActorPresentAndRollSuccessful() {
+        if (getSquare().getNumActors() < 2) {
+            return;
+        }
+        if (!roll(getChanceToAttack())) {
+            return;
+        }
+        Actor actor = getSquare().getRandomActor();
+        if (actor == null) {
+            return;
+        }
+        if (actor.getUUID().equals(getUUID())) {
+            return;
+        }
+        AttackAction.execute(this, actor);
+    }
+
+    public boolean isDead() {
+        return getHealth() <= 0;
     }
 
     @Override
@@ -163,8 +193,9 @@ public class Actor extends Entity implements Savable {
                 "Created: " + getCreationDate().toString() + "\n" +
                 "Chance to move: " + getChanceToMove() + "\n" +
                 "Chance to befriend: " + getChanceToBefriend() + "\n" +
+                "Chance to attack: " + getChanceToAttack() + "\n" +
                 "Num times moved: " + getNumTimesMoved() + "\n" +
-                "Num square explored: " + exploredSquares.size() + "\n" +
+                "Num squares explored: " + exploredSquares.size() + "\n" +
                 "Num friends: " + friends.size();
     }
 
@@ -183,10 +214,7 @@ public class Actor extends Entity implements Savable {
         saveMap.put("health", gson.toJson(health));
         saveMap.put("friends", gson.toJson(friends));
         saveMap.put("chanceToBefriend", gson.toJson(chanceToBefriend));
-
-        // TODO: save  personalty
-
-        // TODO: save statistics
+        saveMap.put("chanceToAttack", gson.toJson(chanceToAttack));
 
         return saveMap;
     }
@@ -208,10 +236,7 @@ public class Actor extends Entity implements Savable {
             health = Double.parseDouble(gson.fromJson(data.get("health"), String.class));
             friends = gson.fromJson(data.get("friends"), hashsetTypeUUID);
             chanceToBefriend = Integer.parseInt(gson.fromJson(data.get("chanceToBefriend"), String.class));
-
-            // TODO: load personality
-
-            // TODO: load statistics
+            chanceToAttack = Integer.parseInt(gson.fromJson(data.get("chanceToAttack"), String.class));
         }
         catch(Exception e) {
             Logger.getInstance().logError("Something went wrong loading an actor.");
