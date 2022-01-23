@@ -50,7 +50,7 @@ public class PersistentData {
     }
 
     public void removeActor(Actor actor) {
-        actors.remove(actor);
+        actors.remove(actor); // TODO: ensure this doesn't mess anything up
     }
 
     public Actor getActor(String name) throws Exception {
@@ -279,5 +279,18 @@ public class PersistentData {
             throw new NullPointerException();
         }
         return toReturn;
+    }
+
+    public void removeDeadActors() {
+        ArrayList<Actor> toRemove = new ArrayList<>();
+        for (Actor actor : getActors()) {
+            if (actor.isDead()) {
+                toRemove.add(actor);
+            }
+        }
+        for (int i = 0; i < toRemove.size(); i++) {
+            Actor actor = toRemove.get(i);
+            removeActor(actor);
+        }
     }
 }

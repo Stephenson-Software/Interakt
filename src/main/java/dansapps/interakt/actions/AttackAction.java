@@ -5,7 +5,6 @@
 package dansapps.interakt.actions;
 
 import dansapps.interakt.actions.abs.Action;
-import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.factories.EventFactory;
 import dansapps.interakt.misc.CONFIG;
@@ -38,9 +37,7 @@ public class AttackAction implements Action {
     }
 
     private static void checkForDeath(Actor victim) {
-        if (victim.getHealth() <= 0) {
-            PersistentData.getInstance().removeActor(victim);
-
+        if (victim.isDead()) {
             Event event = new Event(victim.getName() + " has died.");
             Logger.getInstance().logEvent(event);
         }

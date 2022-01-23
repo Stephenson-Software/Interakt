@@ -180,6 +180,10 @@ public class Actor extends Entity implements Savable {
         AttackAction.execute(this, actor);
     }
 
+    public boolean isDead() {
+        return getHealth() <= 0;
+    }
+
     @Override
     public String toString() {
         return "=== Details of " + getName() + " ===" + "\n" +

@@ -50,9 +50,13 @@ public class LocalTimeService extends TimeService {
 
     private void handleEntityActions() {
         for (Actor actor : PersistentData.getInstance().getActors()) {
+            if (actor.isDead()) {
+                continue;
+            }
             actor.performMoveActionIfRollSuccessful();
             actor.performBefriendActionIfActorPresentAndRollSuccessful();
             actor.performAttackActionIfActorPresentAndRollSuccessful();
         }
+        PersistentData.getInstance().removeDeadActors();
     }
 }
