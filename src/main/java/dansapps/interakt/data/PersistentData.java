@@ -6,6 +6,7 @@ package dansapps.interakt.data;
 
 import dansapps.interakt.objects.*;
 import preponderous.ponder.system.abs.CommandSender;
+import preponderous.ponder.system.abs.PonderApplication;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -239,6 +240,38 @@ public class PersistentData {
             int numRecords = actor.getNumActionRecords();
             if (numRecords < min) {
                 min = numRecords;
+                toReturn = actor;
+            }
+        }
+        if (toReturn == null) {
+            throw new NullPointerException();
+        }
+        return toReturn;
+    }
+
+    public Actor getMostWellTravelledActor() {
+        Actor toReturn = null;
+        int max = 0;
+        for (Actor actor : actors) {
+            int numExploredChunks = actor.getNumExploredChunks();
+            if (numExploredChunks > max) {
+                max = numExploredChunks;
+                toReturn = actor;
+            }
+        }
+        if (toReturn == null) {
+            throw new NullPointerException();
+        }
+        return toReturn;
+    }
+
+    public Actor getMostFriendlyActor() {
+        Actor toReturn = null;
+        int max = 0;
+        for (Actor actor : actors) {
+            int numFriends = actor.getNumFriends();
+            if (numFriends > max) {
+                max = numFriends;
                 toReturn = actor;
             }
         }

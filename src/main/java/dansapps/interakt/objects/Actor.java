@@ -146,6 +146,14 @@ public class Actor extends Entity implements Savable {
         BefriendAction.befriend(this, actor);
      }
 
+    public int getNumExploredChunks() {
+        return exploredSquares.size();
+    }
+
+    public int getNumFriends() {
+        return friends.size();
+    }
+
     @Override
     public String toString() {
         return "=== Details of " + getName() + " ===" + "\n" +
