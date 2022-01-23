@@ -195,7 +195,7 @@ public class Actor extends Entity implements Savable {
                 "Chance to befriend: " + getChanceToBefriend() + "\n" +
                 "Chance to attack: " + getChanceToAttack() + "\n" +
                 "Num times moved: " + getNumTimesMoved() + "\n" +
-                "Num square explored: " + exploredSquares.size() + "\n" +
+                "Num squares explored: " + exploredSquares.size() + "\n" +
                 "Num friends: " + friends.size();
     }
 
