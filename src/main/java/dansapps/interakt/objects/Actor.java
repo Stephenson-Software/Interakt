@@ -146,6 +146,9 @@ public class Actor extends Entity implements Savable {
             return;
         }
         Actor actor = getSquare().getRandomActor();
+        if (actor == null) {
+            return;
+        }
         if (actor.getUUID().equals(getUUID())) {
             return;
         }
@@ -168,6 +171,9 @@ public class Actor extends Entity implements Savable {
             return;
         }
         Actor actor = getSquare().getRandomActor();
+        if (actor == null) {
+            return;
+        }
         if (actor.getUUID().equals(getUUID())) {
             return;
         }

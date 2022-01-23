@@ -5,8 +5,10 @@
 package dansapps.interakt.actions;
 
 import dansapps.interakt.actions.abs.Action;
+import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.factories.EventFactory;
+import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.Event;
 import dansapps.interakt.utils.Logger;
@@ -15,7 +17,7 @@ import java.util.Random;
 
 /**
  * @author Daniel McCoy Stephenson
- * @since January 1st, 2022
+ * @since January 22nd, 2022
  */
 public class AttackAction implements Action {
 
@@ -23,11 +25,25 @@ public class AttackAction implements Action {
         if (attacker.isFriend(victim)) {
             return;
         }
-        victim.setHealth(victim.getHealth() - new Random().nextInt(10)); // TODO: improve
-        Event event = EventFactory.getInstance().createEvent(attacker.getName() + " has attacked " + victim.getName());
+
+        int damage = new Random().nextInt((int) CONFIG.MAX_DAMAGE);
+        victim.setHealth(victim.getHealth() - damage);
+
+        Event event = EventFactory.getInstance().createEvent(attacker.getName() + " has attacked " + victim.getName() + " and dealt " + damage + " damage.");
         Logger.getInstance().logEvent(event);
 
         ActionRecordFactory.getInstance().createActionRecord(attacker, new AttackAction());
+
+        checkForDeath(victim);
+    }
+
+    private static void checkForDeath(Actor victim) {
+        if (victim.getHealth() <= 0) {
+            PersistentData.getInstance().removeActor(victim);
+
+            Event event = new Event(victim.getName() + " has died.");
+            Logger.getInstance().logEvent(event);
+        }
     }
 
     @Override
