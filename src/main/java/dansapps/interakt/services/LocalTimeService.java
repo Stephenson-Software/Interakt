@@ -52,6 +52,7 @@ public class LocalTimeService extends TimeService {
         for (Actor actor : PersistentData.getInstance().getActors()) {
             actor.performMoveActionIfRollSuccessful();
             actor.performBefriendActionIfActorPresentAndRollSuccessful();
+            actor.performAttackActionIfActorPresentAndRollSuccessful();
         }
     }
 }

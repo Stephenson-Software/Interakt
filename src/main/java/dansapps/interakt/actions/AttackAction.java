@@ -11,26 +11,27 @@ import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.Event;
 import dansapps.interakt.utils.Logger;
 
+import java.util.Random;
+
 /**
  * @author Daniel McCoy Stephenson
- * @since January 22nd, 2022
+ * @since January 1st, 2022
  */
-public class BefriendAction implements Action {
+public class AttackAction implements Action {
 
-    public static void execute(Actor actor, Actor other) {
-        if (actor.isFriend(other)) {
+    public static void execute(Actor attacker, Actor victim) {
+        if (attacker.isFriend(victim)) {
             return;
         }
-        actor.addFriend(other);
-        other.addFriend(actor);
-        Event event = EventFactory.getInstance().createEvent(actor.getName() + " and " + other.getName() + " are now friends.");
+        victim.setHealth(victim.getHealth() - new Random().nextInt(10)); // TODO: improve
+        Event event = EventFactory.getInstance().createEvent(attacker.getName() + " has attacked " + victim.getName());
         Logger.getInstance().logEvent(event);
 
-        ActionRecordFactory.getInstance().createActionRecord(actor, new BefriendAction());
+        ActionRecordFactory.getInstance().createActionRecord(attacker, new AttackAction());
     }
 
     @Override
     public String getName() {
-        return "befriend";
+        return "attack";
     }
 }
