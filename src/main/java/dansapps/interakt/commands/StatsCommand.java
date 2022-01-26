@@ -27,6 +27,7 @@ public class StatsCommand extends InteraktCommand {
             sender.sendMessage("Least active actor: " + PersistentData.getInstance().getActorWithLeastActionRecords().getName());
             sender.sendMessage("Most well travelled: " + PersistentData.getInstance().getMostWellTravelledActor().getName());
             sender.sendMessage("Most friendly actor: " + PersistentData.getInstance().getMostFriendlyActor().getName());
+            sender.sendMessage("Minutes elapsed: " + PersistentData.getInstance().getSecondsElapsed()/60);
             return true;
         }
         catch (Exception e) {
