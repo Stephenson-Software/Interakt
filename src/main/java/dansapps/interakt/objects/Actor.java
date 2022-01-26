@@ -139,13 +139,18 @@ public class Actor extends Entity implements Savable {
     }
 
     public void performBefriendActionIfActorPresentAndRollSuccessful() {
-        if (getSquare().getNumActors() < 2) {
+        Square square = getSquare();
+        if (square == null) {
+            Logger.getInstance().logError("A square was unexpectedly null.");
+            return;
+        }
+        if (square.getNumActors() < 2) {
             return;
         }
         if (!roll(getChanceToBefriend())) {
             return;
         }
-        Actor actor = getSquare().getRandomActor();
+        Actor actor = square.getRandomActor();
         if (actor == null) {
             return;
         }
@@ -164,13 +169,17 @@ public class Actor extends Entity implements Savable {
     }
 
     public void performAttackActionIfActorPresentAndRollSuccessful() {
-        if (getSquare().getNumActors() < 2) {
+        Square square = getSquare();
+        if (square == null) {
+            return;
+        }
+        if (square.getNumActors() < 2) {
             return;
         }
         if (!roll(getChanceToAttack())) {
             return;
         }
-        Actor actor = getSquare().getRandomActor();
+        Actor actor = square.getRandomActor();
         if (actor == null) {
             return;
         }
