@@ -23,7 +23,7 @@ public class BefriendAction implements Action {
         }
         actor.addFriend(other);
         other.addFriend(actor);
-        Event event = EventFactory.getInstance().createEvent(actor.getName() + " and " + other.getName() + " are now friends.");
+        Event event = EventFactory.getInstance().createEvent(actor.getName() + " befriended " + other.getName());
         Logger.getInstance().logEvent(event);
 
         ActionRecordFactory.getInstance().createActionRecord(actor, new BefriendAction());

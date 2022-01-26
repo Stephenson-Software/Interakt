@@ -323,4 +323,16 @@ public class PersistentData {
             removeActor(actor);
         }
     }
+
+    public int getSecondsElapsed() {
+        return getMillisecondsElapsed() / 1000;
+    }
+
+    private int getMillisecondsElapsed() {
+        int sum = 0;
+        for (TimePartition timePartition : timePartitions) {
+            sum += timePartition.getMilliseconds();
+        }
+        return sum;
+    }
 }
