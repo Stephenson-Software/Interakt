@@ -4,6 +4,7 @@ import dansapps.interakt.Interakt;
 import dansapps.interakt.commands.ElapseCommand;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.misc.User;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ElapseCommandTest {
@@ -20,6 +21,6 @@ public class ElapseCommandTest {
 
         int after = PersistentData.getInstance().getSecondsElapsed();
 
-        assert(after > before);
+        Assert.assertTrue(after > before);
     }
 }
