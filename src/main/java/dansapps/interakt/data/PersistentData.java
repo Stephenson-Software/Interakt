@@ -335,4 +335,12 @@ public class PersistentData {
         }
         return sum;
     }
+
+    public int getNumActors() {
+        return actors.size();
+    }
+
+    public int getNumWorlds() {
+        return worlds.size();
+    }
 }
