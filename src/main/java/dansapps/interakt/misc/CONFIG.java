@@ -11,6 +11,7 @@ public class CONFIG {
     public static final int MAX_CHANCE_TO_MOVE = 25;
     public static final int MAX_CHANCE_TO_BEFRIEND = 50;
     public static final int MAX_CHANCE_TO_ATTACK = 50;
+    public static final int MAX_CHANCE_TO_REPRODUCE = 10;
     public static final int SECONDS_BETWEEN_AUTO_SAVES = 300;
     public static final double MAX_HEALTH = 100;
     public static final double MAX_DAMAGE = 50;

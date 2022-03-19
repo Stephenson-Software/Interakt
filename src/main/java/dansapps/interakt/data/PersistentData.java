@@ -230,10 +230,21 @@ public class PersistentData {
     }
 
     public boolean placeIntoEnvironment(World world, CommandSender sender, Actor actor) {
+        boolean success = placeIntoEnvironment(world, actor);
+
+        if (!success) {
+            sender.sendMessage("A problem occurred during placement.");
+        }
+        else {
+            sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " world.");
+        }
+        return success;
+    }
+
+    public boolean placeIntoEnvironment(World world, Actor actor) {
         Square square = world.getRandomSquare();
 
         if (square == null) {
-            sender.sendMessage("There was a problem finding a location in that environment to place the entity.");
             return false;
         }
 
@@ -243,7 +254,6 @@ public class PersistentData {
 
         world.addEntity(actor);
         square.addActor(actor);
-        sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " world at square " + square);
         return true;
     }
 

@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.actions.AttackAction;
 import dansapps.interakt.actions.BefriendAction;
 import dansapps.interakt.actions.MoveAction;
+import dansapps.interakt.actions.ReproduceAction;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.EventFactory;
 import dansapps.interakt.misc.CONFIG;
@@ -32,6 +33,7 @@ public class Actor extends Entity implements Savable {
     private int chanceToMove;
     private int chanceToBefriend;
     private int chanceToAttack;
+    private int chanceToReproduce;
     private double health;
     private HashSet<UUID> exploredSquares = new HashSet<>();
     private HashSet<UUID> friends = new HashSet<>();
@@ -41,6 +43,7 @@ public class Actor extends Entity implements Savable {
         chanceToMove = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
         chanceToBefriend = new Random().nextInt(CONFIG.MAX_CHANCE_TO_BEFRIEND);
         chanceToAttack = new Random().nextInt(CONFIG.MAX_CHANCE_TO_ATTACK);
+        chanceToReproduce = new Random().nextInt(CONFIG.MAX_CHANCE_TO_REPRODUCE);
         health = CONFIG.MAX_HEALTH;
     }
 
@@ -70,7 +73,7 @@ public class Actor extends Entity implements Savable {
         return (Square) getLocation();
     }
 
-    public void performMoveActionIfRollSuccessful() {
+    public void attemptToMove() {
         if (roll(getChanceToMove())) {
             MoveAction.execute(this);
         }
@@ -96,6 +99,10 @@ public class Actor extends Entity implements Savable {
 
     public int getChanceToAttack() {
         return chanceToAttack;
+    }
+
+    private int getChanceToReproduce() {
+        return chanceToReproduce;
     }
 
     public HashSet<UUID> getFriends() {
@@ -138,7 +145,7 @@ public class Actor extends Entity implements Savable {
         return friends.contains(other.getUUID());
     }
 
-    public void performBefriendActionIfActorPresentAndRollSuccessful() {
+    public void attemptToBefriend() {
         Square square = getSquare();
         if (square == null) {
             Logger.getInstance().logError("A square was unexpectedly null.");
@@ -150,14 +157,14 @@ public class Actor extends Entity implements Savable {
         if (!roll(getChanceToBefriend())) {
             return;
         }
-        Actor actor = square.getRandomActor();
-        if (actor == null) {
+        Actor target = square.getRandomActor();
+        if (target == null) {
             return;
         }
-        if (actor.getUUID().equals(getUUID())) {
+        if (target.getUUID().equals(getUUID())) {
             return;
         }
-        BefriendAction.execute(this, actor);
+        BefriendAction.execute(this, target);
      }
 
     public int getNumExploredChunks() {
@@ -168,7 +175,7 @@ public class Actor extends Entity implements Savable {
         return friends.size();
     }
 
-    public void performAttackActionIfActorPresentAndRollSuccessful() {
+    public void attemptToAttack() {
         Square square = getSquare();
         if (square == null) {
             return;
@@ -179,14 +186,35 @@ public class Actor extends Entity implements Savable {
         if (!roll(getChanceToAttack())) {
             return;
         }
-        Actor actor = square.getRandomActor();
-        if (actor == null) {
+        Actor target = square.getRandomActor();
+        if (target == null) {
             return;
         }
-        if (actor.getUUID().equals(getUUID())) {
+        if (target.getUUID().equals(getUUID())) {
             return;
         }
-        AttackAction.execute(this, actor);
+        AttackAction.execute(this, target);
+    }
+
+    public void attemptToPerformReproduceAction() {
+        Square square = getSquare();
+        if (square == null) {
+            return;
+        }
+        if (square.getNumActors() < 2) {
+            return;
+        }
+        if (!roll(getChanceToReproduce())) {
+            return;
+        }
+        Actor target = square.getRandomActor();
+        if (target == null) {
+            return;
+        }
+        if (target.getUUID().equals(getUUID())) {
+            return;
+        }
+        ReproduceAction.execute(this, target);
     }
 
     public boolean isDead() {

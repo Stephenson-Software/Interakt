@@ -8,6 +8,7 @@ import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.Actor;
 
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -15,6 +16,7 @@ import java.util.Map;
  */
 public class ActorFactory {
     private static ActorFactory instance;
+    private final char[] alphabetArray = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 
     private ActorFactory() {
 
@@ -27,12 +29,21 @@ public class ActorFactory {
         return instance;
     }
 
-    public void createActor(String name) {
+    public Actor createActor(String name) {
         if (isNameTaken(name)) {
-            return;
+            return null;
         }
         Actor actor = new Actor(name);
         PersistentData.getInstance().addActor(actor);
+        return actor;
+    }
+
+    public Actor createActor() {
+        String name;
+        do {
+            name = generateRandomString(5);
+        } while (isNameTaken(name));
+        return createActor(name);
     }
 
     public void createActor(Map<String, String> data) {
@@ -42,5 +53,14 @@ public class ActorFactory {
 
     private boolean isNameTaken(String name) {
         return PersistentData.getInstance().isActor(name);
+    }
+
+    private String generateRandomString(int length) {
+        Random random = new Random();
+        StringBuilder toReturn = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            toReturn.append(alphabetArray[random.nextInt(alphabetArray.length)]);
+        }
+        return toReturn.toString();
     }
 }
