@@ -231,6 +231,7 @@ public class Actor extends Entity implements Savable {
                 "Chance to move: " + getChanceToMove() + "\n" +
                 "Chance to befriend: " + getChanceToBefriend() + "\n" +
                 "Chance to attack: " + getChanceToAttack() + "\n" +
+                "Chance to reproduce: " + getChanceToReproduce() + "\n" +
                 "Num times moved: " + getNumTimesMoved() + "\n" +
                 "Num squares explored: " + exploredSquares.size() + "\n" +
                 "Num friends: " + friends.size();
@@ -252,6 +253,7 @@ public class Actor extends Entity implements Savable {
         saveMap.put("friends", gson.toJson(friends));
         saveMap.put("chanceToBefriend", gson.toJson(chanceToBefriend));
         saveMap.put("chanceToAttack", gson.toJson(chanceToAttack));
+        saveMap.put("chanceToReproduce", gson.toJson(chanceToReproduce));
 
         return saveMap;
     }
@@ -274,6 +276,7 @@ public class Actor extends Entity implements Savable {
             friends = gson.fromJson(data.get("friends"), hashsetTypeUUID);
             chanceToBefriend = Integer.parseInt(gson.fromJson(data.get("chanceToBefriend"), String.class));
             chanceToAttack = Integer.parseInt(gson.fromJson(data.get("chanceToAttack"), String.class));
+            chanceToReproduce = Integer.parseInt(gson.fromJson(data.get("chanceToReproduce"), String.class));
         }
         catch(Exception e) {
             Logger.getInstance().logError("Something went wrong loading an actor.");

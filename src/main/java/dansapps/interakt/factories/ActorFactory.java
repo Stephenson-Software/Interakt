@@ -16,7 +16,6 @@ import java.util.Random;
  */
 public class ActorFactory {
     private static ActorFactory instance;
-    private final char[] alphabetArray = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 
     private ActorFactory() {
 
@@ -56,6 +55,7 @@ public class ActorFactory {
     }
 
     private String generateRandomString(int length) {
+        final char[] alphabetArray = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         Random random = new Random();
         StringBuilder toReturn = new StringBuilder();
         for (int i = 0; i < length; i++) {
