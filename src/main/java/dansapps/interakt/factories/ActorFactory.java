@@ -28,7 +28,7 @@ public class ActorFactory {
         return instance;
     }
 
-    public Actor createActor(String name) {
+    public Actor createActorWithRandomName(String name) {
         if (isNameTaken(name)) {
             return null;
         }
@@ -37,15 +37,24 @@ public class ActorFactory {
         return actor;
     }
 
-    public Actor createActor() {
+    public Actor createActorFromParents(Actor parent1, Actor parent2) {
+        Actor child = createActorWithRandomName();
+        child.addParent(parent1.getUUID());
+        child.addParent(parent2.getUUID());
+        parent1.addChild(child.getUUID());
+        parent2.addChild(child.getUUID());
+        return child;
+    }
+
+    public Actor createActorWithRandomName() {
         String name;
         do {
             name = generateRandomString(5);
         } while (isNameTaken(name));
-        return createActor(name);
+        return createActorWithRandomName(name);
     }
 
-    public void createActor(Map<String, String> data) {
+    public void createActorWithRandomName(Map<String, String> data) {
         Actor actor = new Actor(data);
         PersistentData.getInstance().addActor(actor);
     }

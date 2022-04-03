@@ -122,7 +122,7 @@ public class LocalStorageService {
         PersistentData.getInstance().getActors().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTORS_FILE_NAME);
         for (Map<String, String> actorData : data){
-            ActorFactory.getInstance().createActor(actorData);
+            ActorFactory.getInstance().createActorWithRandomName(actorData);
         }
     }
 

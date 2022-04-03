@@ -38,7 +38,7 @@ public class GenerateTestDataCommand extends InteraktCommand {
             return false;
         }
         for (String name : names) {
-            ActorFactory.getInstance().createActor(name);
+            ActorFactory.getInstance().createActorWithRandomName(name);
             Actor actor;
             try {
                 actor = PersistentData.getInstance().getActor(name);

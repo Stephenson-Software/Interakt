@@ -48,7 +48,7 @@ public class CreateCommand extends InteraktCommand {
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("actor")) {
-            ActorFactory.getInstance().createActor(name);
+            ActorFactory.getInstance().createActorWithRandomName(name);
             sender.sendMessage("Actor created.");
             return true;
         }

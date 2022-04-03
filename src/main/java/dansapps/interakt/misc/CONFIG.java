@@ -11,9 +11,10 @@ public class CONFIG {
     public static final int MAX_CHANCE_TO_MOVE = 25;
     public static final int MAX_CHANCE_TO_BEFRIEND = 50;
     public static final int MAX_CHANCE_TO_ATTACK = 50;
-    public static final int MAX_CHANCE_TO_REPRODUCE = 50;
+    public static final int MAX_CHANCE_TO_REPRODUCE = 10;
     public static final int SECONDS_BETWEEN_AUTO_SAVES = 300;
     public static final double MAX_HEALTH = 100;
     public static final double MAX_DAMAGE = 50;
     public static final GRID_DISPLAY_TYPE DISPLAY_TYPE = GRID_DISPLAY_TYPE.NUMBER_OF_ENTITIES;
+    public static final boolean SHOW_LINEAGE_INFO = true;
 }

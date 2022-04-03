@@ -28,7 +28,7 @@ import java.util.*;
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
-public class Actor extends Entity implements Savable {
+public class Actor extends AbstractFamilialEntity implements Savable {
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
     private int chanceToMove;
     private int chanceToBefriend;
@@ -221,9 +221,43 @@ public class Actor extends Entity implements Savable {
         return getHealth() <= 0;
     }
 
+    private String getParentNamesSeparatedByCommas() {
+        String toReturn = "";
+        int count = 0;
+        for (UUID uuid : parentIDs) {
+            Actor actor = PersistentData.getInstance().getActor(uuid);
+            if (actor == null) {
+                continue;
+            }
+            toReturn = toReturn + actor.getName();
+            count++;
+            if (count != parentIDs.size()) {
+                toReturn = toReturn + ", ";
+            }
+        }
+        return toReturn;
+    }
+
+    private String getChildrenNamesSeparatedByCommas() {
+        String toReturn = "";
+        int count = 0;
+        for (UUID uuid : childIDs) {
+            Actor actor = PersistentData.getInstance().getActor(uuid);
+            if (actor == null) {
+                continue;
+            }
+            toReturn = toReturn + actor.getName();
+            count++;
+            if (count != childIDs.size()) {
+                toReturn = toReturn + ", ";
+            }
+        }
+        return toReturn;
+    }
+
     @Override
     public String toString() {
-        return "=== Details of " + getName() + " ===" + "\n" +
+        String toReturn = "=== Details of " + getName() + " ===" + "\n" +
                 "Health: " + getHealth() + "/" + getMaxHealth() + "\n" +
                 getWorldInfo() + "\n" +
                 getSquareInfo() + "\n" +
@@ -234,7 +268,16 @@ public class Actor extends Entity implements Savable {
                 "Chance to reproduce: " + getChanceToReproduce() + "\n" +
                 "Num times moved: " + getNumTimesMoved() + "\n" +
                 "Num squares explored: " + exploredSquares.size() + "\n" +
-                "Num friends: " + friends.size();
+                "Num friends: " + friends.size() + "\n";
+        if (CONFIG.SHOW_LINEAGE_INFO) {
+            if (parentIDs.size() > 0) {
+                toReturn += "Parents: " + getParentNamesSeparatedByCommas();
+            }
+            if (childIDs.size() > 0) {
+                toReturn += "Children: " + getChildrenNamesSeparatedByCommas();
+            }
+        }
+        return toReturn;
     }
 
     @Override
@@ -254,6 +297,8 @@ public class Actor extends Entity implements Savable {
         saveMap.put("chanceToBefriend", gson.toJson(chanceToBefriend));
         saveMap.put("chanceToAttack", gson.toJson(chanceToAttack));
         saveMap.put("chanceToReproduce", gson.toJson(chanceToReproduce));
+        saveMap.put("parentIDs", gson.toJson(parentIDs));
+        saveMap.put("childIDs", gson.toJson(childIDs));
 
         return saveMap;
     }
@@ -277,6 +322,8 @@ public class Actor extends Entity implements Savable {
             chanceToBefriend = Integer.parseInt(gson.fromJson(data.get("chanceToBefriend"), String.class));
             chanceToAttack = Integer.parseInt(gson.fromJson(data.get("chanceToAttack"), String.class));
             chanceToReproduce = Integer.parseInt(gson.fromJson(data.get("chanceToReproduce"), String.class));
+            parentIDs = gson.fromJson(data.get("parentIDs"), hashsetTypeUUID);
+            childIDs = gson.fromJson(data.get("childIDs"), hashsetTypeUUID);
         }
         catch(Exception e) {
             Logger.getInstance().logError("Something went wrong loading an actor.");
