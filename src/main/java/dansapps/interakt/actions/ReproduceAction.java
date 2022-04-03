@@ -16,7 +16,7 @@ public class ReproduceAction implements Action {
         if (!actor.isFriend(other)) {
             return;
         }
-        Actor offspring = ActorFactory.getInstance().createActor();
+        Actor offspring = ActorFactory.getInstance().createActorFromParents(actor, other);
         World world = actor.getWorld();
         boolean success = PersistentData.getInstance().placeIntoEnvironment(world, offspring); // TODO: place in same square as parents
 
