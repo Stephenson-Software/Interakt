@@ -7,10 +7,8 @@ package dansapps.interakt.data;
 import dansapps.interakt.objects.*;
 import preponderous.ponder.system.abs.CommandSender;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -18,10 +16,10 @@ import java.util.UUID;
  */
 public class PersistentData {
     private static PersistentData instance;
-    private HashSet<Actor> actors = new HashSet<>();
-    private HashSet<World> worlds = new HashSet<>();
-    private HashSet<Region> regions = new HashSet<>();
-    private HashSet<Square> squares = new HashSet<>();
+    private Set<Actor> actors = new ConcurrentHashMap<Actor, Boolean>().newKeySet();
+    private Set<World> worlds = new ConcurrentHashMap<Actor, Boolean>().newKeySet();
+    private Set<Region> regions = new ConcurrentHashMap<Actor, Boolean>().newKeySet();
+    private Set<Square> squares = new ConcurrentHashMap<Actor, Boolean>().newKeySet();
     private ArrayList<TimePartition> timePartitions = new ArrayList<>();
     private LinkedList<ActionRecord> actionRecords = new LinkedList<>();
 
@@ -36,11 +34,11 @@ public class PersistentData {
         return instance;
     }
 
-    public HashSet<Actor> getActors() {
+    public Set<Actor> getActors() {
         return actors;
     }
 
-    public void setActors(HashSet<Actor> actors) {
+    public void setActors(Set<Actor> actors) {
         this.actors = actors;
     }
 
@@ -101,11 +99,11 @@ public class PersistentData {
         return null;
     }
 
-    public HashSet<World> getWorlds() {
+    public Set<World> getWorlds() {
         return worlds;
     }
 
-    public void setWorlds(HashSet<World> worlds) {
+    public void setWorlds(Set<World> worlds) {
         this.worlds = worlds;
     }
 
@@ -135,11 +133,11 @@ public class PersistentData {
         return null;
     }
 
-    public HashSet<Region> getRegions() {
+    public Set<Region> getRegions() {
         return regions;
     }
 
-    public void setRegions(HashSet<Region> regions) {
+    public void setRegions(Set<Region> regions) {
         this.regions = regions;
     }
 
@@ -156,11 +154,11 @@ public class PersistentData {
         throw new Exception();
     }
 
-    public HashSet<Square> getSquares() {
+    public Set<Square> getSquares() {
         return squares;
     }
 
-    public void setSquares(HashSet<Square> squares) {
+    public void setSquares(Set<Square> squares) {
         this.squares = squares;
     }
 
@@ -230,10 +228,21 @@ public class PersistentData {
     }
 
     public boolean placeIntoEnvironment(World world, CommandSender sender, Actor actor) {
+        boolean success = placeIntoEnvironment(world, actor);
+
+        if (!success) {
+            sender.sendMessage("A problem occurred during placement.");
+        }
+        else {
+            sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " world.");
+        }
+        return success;
+    }
+
+    public boolean placeIntoEnvironment(World world, Actor actor) {
         Square square = world.getRandomSquare();
 
         if (square == null) {
-            sender.sendMessage("There was a problem finding a location in that environment to place the entity.");
             return false;
         }
 
@@ -243,7 +252,6 @@ public class PersistentData {
 
         world.addEntity(actor);
         square.addActor(actor);
-        sender.sendMessage(actor.getName() + " was placed in the " + world.getName() + " world at square " + square);
         return true;
     }
 

@@ -53,9 +53,10 @@ public class LocalTimeService extends TimeService {
             if (actor.isDead()) {
                 continue;
             }
-            actor.performMoveActionIfRollSuccessful();
-            actor.performBefriendActionIfActorPresentAndRollSuccessful();
-            actor.performAttackActionIfActorPresentAndRollSuccessful();
+            actor.attemptToMove();
+            actor.attemptToBefriend();
+            actor.attemptToAttack();
+            actor.attemptToPerformReproduceAction();
         }
         PersistentData.getInstance().removeDeadActors();
     }
