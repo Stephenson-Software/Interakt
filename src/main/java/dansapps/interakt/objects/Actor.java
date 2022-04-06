@@ -271,7 +271,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
                 "Num friends: " + friends.size() + "\n";
         if (CONFIG.SHOW_LINEAGE_INFO) {
             if (parentIDs.size() > 0) {
-                toReturn += "Parents: " + getParentNamesSeparatedByCommas();
+                toReturn += "Parents: " + getParentNamesSeparatedByCommas() + "\n";
             }
             if (childIDs.size() > 0) {
                 toReturn += "Children: " + getChildrenNamesSeparatedByCommas();

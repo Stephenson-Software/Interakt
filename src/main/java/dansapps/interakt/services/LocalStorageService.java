@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class LocalStorageService {
     private static LocalStorageService instance;
-    private final static String FILE_PATH = "/Interakt/";
+    public final static String FILE_PATH = "/Interakt/";
     private final static String ACTORS_FILE_NAME = "actors.json";
     private final static String WORLDS_FILE_NAME = "worlds.json";
     private final static String REGIONS_FILE_NAME = "regions.json";
