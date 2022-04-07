@@ -34,6 +34,8 @@ public class AttackAction implements Action {
         ActionRecordFactory.getInstance().createActionRecord(attacker, new AttackAction());
 
         checkForDeath(victim);
+
+        victim.decreaseRelation(attacker, 10);
     }
 
     private static void checkForDeath(Actor victim) {

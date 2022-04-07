@@ -29,6 +29,9 @@ public class ReproduceAction implements Action {
         Logger.getInstance().logEvent(event);
 
         ActionRecordFactory.getInstance().createActionRecord(actor, new ReproduceAction());
+
+        actor.increaseRelation(other, 100);
+        other.increaseRelation(actor, 100);
     }
 
     @Override

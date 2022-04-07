@@ -37,6 +37,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     private double health;
     private HashSet<UUID> exploredSquares = new HashSet<>();
     private HashSet<UUID> friends = new HashSet<>();
+    private HashMap<UUID, Integer> relations = new HashMap<>();
 
     public Actor(String name) {
         super(name);
@@ -221,38 +222,37 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         return getHealth() <= 0;
     }
 
-    private String getParentNamesSeparatedByCommas() {
-        String toReturn = "";
-        int count = 0;
-        for (UUID uuid : parentIDs) {
-            Actor actor = PersistentData.getInstance().getActor(uuid);
-            if (actor == null) {
-                continue;
-            }
-            toReturn = toReturn + actor.getName();
-            count++;
-            if (count != parentIDs.size()) {
-                toReturn = toReturn + ", ";
-            }
+    public int getRelation(Actor actor) {
+        if (!relations.containsKey(actor.getUUID())) {
+            relations.put(actor.getUUID(), 0);
+            return 0;
         }
-        return toReturn;
+        return relations.get(actor.getUUID());
     }
 
-    private String getChildrenNamesSeparatedByCommas() {
-        String toReturn = "";
-        int count = 0;
-        for (UUID uuid : childIDs) {
-            Actor actor = PersistentData.getInstance().getActor(uuid);
-            if (actor == null) {
-                continue;
-            }
-            toReturn = toReturn + actor.getName();
-            count++;
-            if (count != childIDs.size()) {
-                toReturn = toReturn + ", ";
-            }
+    public void setRelation(Actor actor, int newRelation) {
+        if (!relations.containsKey(actor.getUUID())) {
+            relations.put(actor.getUUID(), newRelation);
         }
-        return toReturn;
+        else {
+            relations.replace(actor.getUUID(), newRelation);
+        }
+    }
+
+    public void increaseRelation(Actor actor, int amount) {
+        int toSet = getRelation(actor) + amount;
+        if (toSet > 100) {
+            toSet = 100;
+        }
+        setRelation(actor, toSet);
+    }
+
+    public void decreaseRelation(Actor actor, int amount) {
+        int toSet = getRelation(actor) - amount;
+        if (toSet < -100) {
+            toSet = -100;
+        }
+        setRelation(actor, toSet);
     }
 
     @Override
@@ -299,6 +299,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         saveMap.put("chanceToReproduce", gson.toJson(chanceToReproduce));
         saveMap.put("parentIDs", gson.toJson(parentIDs));
         saveMap.put("childIDs", gson.toJson(childIDs));
+        saveMap.put("relations", gson.toJson(relations));
 
         return saveMap;
     }
@@ -308,6 +309,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         Type hashsetTypeUUID = new TypeToken<HashSet<UUID>>(){}.getType();
+        Type hashMapTypeUUIDToInteger = new TypeToken<HashMap<UUID, Integer>>(){}.getType();
 
         try {
             setUUID(UUID.fromString(gson.fromJson(data.get("uuid"), String.class)));
@@ -324,10 +326,45 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             chanceToReproduce = Integer.parseInt(gson.fromJson(data.get("chanceToReproduce"), String.class));
             parentIDs = gson.fromJson(data.get("parentIDs"), hashsetTypeUUID);
             childIDs = gson.fromJson(data.get("childIDs"), hashsetTypeUUID);
+            relations = gson.fromJson(data.get("relations"), hashMapTypeUUIDToInteger);
         }
         catch(Exception e) {
             Logger.getInstance().logError("Something went wrong loading an actor.");
         }
+    }
+
+    private String getParentNamesSeparatedByCommas() {
+        String toReturn = "";
+        int count = 0;
+        for (UUID uuid : parentIDs) {
+            Actor actor = PersistentData.getInstance().getActor(uuid);
+            if (actor == null) {
+                continue;
+            }
+            toReturn = toReturn + actor.getName();
+            count++;
+            if (count != parentIDs.size()) {
+                toReturn = toReturn + ", ";
+            }
+        }
+        return toReturn;
+    }
+
+    private String getChildrenNamesSeparatedByCommas() {
+        String toReturn = "";
+        int count = 0;
+        for (UUID uuid : childIDs) {
+            Actor actor = PersistentData.getInstance().getActor(uuid);
+            if (actor == null) {
+                continue;
+            }
+            toReturn = toReturn + actor.getName();
+            count++;
+            if (count != childIDs.size()) {
+                toReturn = toReturn + ", ";
+            }
+        }
+        return toReturn;
     }
 
     private String getWorldInfo() {
