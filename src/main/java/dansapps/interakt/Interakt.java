@@ -190,6 +190,7 @@ public class Interakt extends PonderApplication {
         commands.add(new ElapseCommand());
         commands.add(new SaveCommand());
         commands.add(new GenerateTestDataCommand());
+        commands.add(new RelationsCommand());
         setCommandService(new LocalCommandService((commands)));
     }
 

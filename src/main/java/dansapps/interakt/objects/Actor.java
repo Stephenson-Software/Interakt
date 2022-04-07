@@ -255,6 +255,15 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         setRelation(actor, toSet);
     }
 
+    public String getRelationsString() {
+        String toReturn = "";
+        for (UUID actorUUID : relations.keySet()) {
+            Actor actor = PersistentData.getInstance().getActor(actorUUID);
+            toReturn += actor.getName() + ": " + getRelation(actor) + "\n";
+        }
+        return toReturn;
+    }
+
     @Override
     public String toString() {
         String toReturn = "=== Details of " + getName() + " ===" + "\n" +
