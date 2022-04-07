@@ -7,7 +7,7 @@ package dansapps.interakt.misc;
 public class CONFIG {
     public static boolean DEBUG_FLAG = false;
     public static final int TIME_SLOT_LENGTH_IN_SECONDS = 16;
-    public static final int GRID_SIZE = 10;
+    public static final int GRID_SIZE = 5;
     public static final int MAX_CHANCE_TO_MOVE = 25;
     public static final int MAX_CHANCE_TO_BEFRIEND = 50;
     public static final int MAX_CHANCE_TO_ATTACK = 50;
