@@ -253,7 +253,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         String toReturn = "";
         for (UUID actorUUID : relations.keySet()) {
             Actor actor = PersistentData.getInstance().getActor(actorUUID);
-            toReturn += actor.getName() + ": " + getRelation(actor) + "\n";
+            try {
+                toReturn += actor.getName() + ": " + getRelation(actor) + "\n";
+            } catch(NullPointerException e) {
+                toReturn += "N/A: " + relations.get(actorUUID) + "\n";
+            }
+
         }
         return toReturn;
     }
