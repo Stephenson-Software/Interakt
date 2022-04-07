@@ -17,4 +17,5 @@ public class CONFIG {
     public static final double MAX_DAMAGE = 50;
     public static final GRID_DISPLAY_TYPE DISPLAY_TYPE = GRID_DISPLAY_TYPE.NUMBER_OF_ENTITIES;
     public static final boolean SHOW_LINEAGE_INFO = true;
+    public static final boolean LOG_EVENTS_TO_CONSOLE = true;
 }

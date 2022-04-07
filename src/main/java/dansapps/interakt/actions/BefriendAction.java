@@ -27,6 +27,9 @@ public class BefriendAction implements Action {
         Logger.getInstance().logEvent(event);
 
         ActionRecordFactory.getInstance().createActionRecord(actor, new BefriendAction());
+
+        actor.increaseRelation(other, 50);
+        other.increaseRelation(actor, 50);
     }
 
     @Override

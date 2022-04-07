@@ -18,7 +18,7 @@ public abstract class InteraktCommand extends ApplicationCommand {
     public ArrayList<String> extractArgumentsInsideDoubleQuotes(String[] args) throws Exception {
         ArgumentParser argumentParser = new ArgumentParser();
         ArrayList<String> doubleQuoteArgs = argumentParser.getArgumentsInsideDoubleQuotes(args);
-        if (doubleQuoteArgs.size() < 2) {
+        if (doubleQuoteArgs.size() < 1) {
             throw new Exception();
         }
         return doubleQuoteArgs;

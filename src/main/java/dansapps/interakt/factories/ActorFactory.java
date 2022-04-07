@@ -39,10 +39,19 @@ public class ActorFactory {
 
     public Actor createActorFromParents(Actor parent1, Actor parent2) {
         Actor child = createActorWithRandomName();
+
+        // genealogy
         child.addParent(parent1.getUUID());
         child.addParent(parent2.getUUID());
         parent1.addChild(child.getUUID());
         parent2.addChild(child.getUUID());
+
+        // relations
+        child.setRelation(parent1, 100);
+        child.setRelation(parent2, 100);
+        parent1.setRelation(child, 100);
+        parent2.setRelation(child, 100);
+
         return child;
     }
 
