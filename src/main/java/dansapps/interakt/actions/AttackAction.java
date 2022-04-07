@@ -35,7 +35,7 @@ public class AttackAction implements Action {
 
         checkForDeath(victim);
 
-        victim.decreaseRelation(attacker, 10);
+        victim.decreaseRelation(attacker, (int) (damage * 0.10));
     }
 
     private static void checkForDeath(Actor victim) {
