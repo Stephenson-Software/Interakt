@@ -5,6 +5,7 @@
 package dansapps.interakt.utils;
 
 import dansapps.interakt.Interakt;
+import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.objects.Event;
 
 import java.io.BufferedWriter;
@@ -22,7 +23,6 @@ import static dansapps.interakt.services.LocalStorageService.FILE_PATH;
 public class Logger {
     private static Logger instance;
     private boolean localDebugFlag = false;
-    private boolean logEventsToConsoleFlag = true;
     private static String PATH = FILE_PATH + "log.txt";
     private File file = new File(PATH);
 
@@ -64,7 +64,7 @@ public class Logger {
         String formattedDateTime = event.getTimestamp().format(formatter);
         String datemessage = "[" + formattedDateTime + "] " + event.getMessage();
         writeToFile(datemessage);
-        if (logEventsToConsoleFlag) {
+        if (CONFIG.LOG_EVENTS_TO_CONSOLE) {
             System.out.println(datemessage);
         }
     }
