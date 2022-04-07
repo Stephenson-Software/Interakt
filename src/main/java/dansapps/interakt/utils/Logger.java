@@ -46,17 +46,13 @@ public class Logger {
      * @param message The message to log to the console.
      */
     public void logInfo(String message) {
-        writeToFile(message);
         if (isLocalDebugFlagEnabled() || Interakt.getInstance().isDebugEnabled()) {
             System.out.println("[INFO] " + message);
         }
     }
 
     public void logError(String errorMessage) {
-        writeToFile(errorMessage);
-        if (Interakt.getInstance().isDebugEnabled()) {
-            System.out.println("[ERROR] " + errorMessage);
-        }
+        System.out.println("[ERROR] " + errorMessage);
     }
 
     public void logEvent(Event event) {
