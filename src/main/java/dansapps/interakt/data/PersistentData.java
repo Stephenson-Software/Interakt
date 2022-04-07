@@ -54,7 +54,6 @@ public class PersistentData {
     private void removeReferencesToActor(Actor actor) {
         removeActorReferencesFromEnvironments(actor);
         removeActorReferencesFromSquares(actor);
-        removeActorReferencesFromActors(actor);
     }
 
     private void removeActorReferencesFromEnvironments(Actor actor) {
@@ -69,14 +68,6 @@ public class PersistentData {
         for (Square square : squares) {
             if (square.isEntityPresent(actor)) {
                 square.removeActor(actor);
-            }
-        }
-    }
-
-    private void removeActorReferencesFromActors(Actor targetActor) {
-        for (Actor actor : actors) {
-            if (actor.isFriend(targetActor)) {
-                actor.removeFriend(targetActor);
             }
         }
     }
