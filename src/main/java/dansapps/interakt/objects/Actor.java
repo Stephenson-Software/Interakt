@@ -129,8 +129,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         }
     }
 
+    public boolean isFriend(UUID actorUUID) {
+        return getRelation(actorUUID) > 50;
+    }
+
     public boolean isFriend(Actor other) {
-        return getRelation(other) > 50;
+        return isFriend(other.getUUID());
     }
 
     public void attemptToBefriend() {
@@ -162,8 +166,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     public int getNumFriends() {
         int count = 0;
         for (UUID actorUUID : relations.keySet()) {
-            Actor actor = PersistentData.getInstance().getActor(actorUUID);
-            if (isFriend(actor)) {
+            if (isFriend(actorUUID)) {
                 count++;
             }
         }
@@ -216,12 +219,16 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         return getHealth() <= 0;
     }
 
-    public int getRelation(Actor actor) {
-        if (!relations.containsKey(actor.getUUID())) {
-            relations.put(actor.getUUID(), 0);
+    public int getRelation(UUID actorUUID) {
+        if (!relations.containsKey(actorUUID)) {
+            relations.put(actorUUID, 0);
             return 0;
         }
-        return relations.get(actor.getUUID());
+        return relations.get(actorUUID);
+    }
+
+    public int getRelation(Actor actor) {
+        return getRelation(actor.getUUID());
     }
 
     public void setRelation(Actor actor, int newRelation) {
