@@ -36,7 +36,6 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     private int chanceToReproduce;
     private double health;
     private HashSet<UUID> exploredSquares = new HashSet<>();
-    private HashSet<UUID> friends = new HashSet<>();
     private HashMap<UUID, Integer> relations = new HashMap<>();
 
     public Actor(String name) {
@@ -106,10 +105,6 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         return chanceToReproduce;
     }
 
-    public HashSet<UUID> getFriends() {
-        return friends;
-    }
-
     public int getNumActionRecords() {
         return actionRecords.size();
     }
@@ -134,16 +129,8 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         }
     }
 
-    public void addFriend(Actor actor) {
-        friends.add(actor.getUUID());
-    }
-
-    public void removeFriend(Actor actor) {
-        friends.remove(actor.getUUID());
-    }
-
     public boolean isFriend(Actor other) {
-        return friends.contains(other.getUUID());
+        return getRelation(other) > 50;
     }
 
     public void attemptToBefriend() {
@@ -173,7 +160,14 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     }
 
     public int getNumFriends() {
-        return friends.size();
+        int count = 0;
+        for (UUID actorUUID : relations.keySet()) {
+            Actor actor = PersistentData.getInstance().getActor(actorUUID);
+            if (isFriend(actor)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public void attemptToAttack() {
@@ -277,7 +271,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
                 "Chance to reproduce: " + getChanceToReproduce() + "\n" +
                 "Num times moved: " + getNumTimesMoved() + "\n" +
                 "Num squares explored: " + exploredSquares.size() + "\n" +
-                "Num friends: " + friends.size() + "\n";
+                "Num friends: " + getNumFriends() + "\n";
         if (CONFIG.SHOW_LINEAGE_INFO) {
             if (parentIDs.size() > 0) {
                 toReturn += "Parents: " + getParentNamesSeparatedByCommas() + "\n";
@@ -302,7 +296,6 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         saveMap.put("moveChanceThreshold", gson.toJson(chanceToMove));
         saveMap.put("exploredSquares", gson.toJson(exploredSquares));
         saveMap.put("health", gson.toJson(health));
-        saveMap.put("friends", gson.toJson(friends));
         saveMap.put("chanceToBefriend", gson.toJson(chanceToBefriend));
         saveMap.put("chanceToAttack", gson.toJson(chanceToAttack));
         saveMap.put("chanceToReproduce", gson.toJson(chanceToReproduce));
@@ -329,7 +322,6 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             chanceToMove = Integer.parseInt(gson.fromJson(data.get("moveChanceThreshold"), String.class));
             exploredSquares = gson.fromJson(data.get("exploredSquares"), hashsetTypeUUID);
             health = Double.parseDouble(gson.fromJson(data.get("health"), String.class));
-            friends = gson.fromJson(data.get("friends"), hashsetTypeUUID);
             chanceToBefriend = Integer.parseInt(gson.fromJson(data.get("chanceToBefriend"), String.class));
             chanceToAttack = Integer.parseInt(gson.fromJson(data.get("chanceToAttack"), String.class));
             chanceToReproduce = Integer.parseInt(gson.fromJson(data.get("chanceToReproduce"), String.class));

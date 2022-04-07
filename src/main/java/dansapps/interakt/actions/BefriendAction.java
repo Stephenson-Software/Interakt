@@ -11,6 +11,8 @@ import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.Event;
 import dansapps.interakt.utils.Logger;
 
+import java.util.Random;
+
 /**
  * @author Daniel McCoy Stephenson
  * @since January 22nd, 2022
@@ -18,18 +20,13 @@ import dansapps.interakt.utils.Logger;
 public class BefriendAction implements Action {
 
     public static void execute(Actor actor, Actor other) {
-        if (actor.isFriend(other)) {
-            return;
-        }
-        actor.addFriend(other);
-        other.addFriend(actor);
-        Event event = EventFactory.getInstance().createEvent(actor.getName() + " befriended " + other.getName());
+        Event event = EventFactory.getInstance().createEvent(actor.getName() + " was friendly to " + other.getName());
         Logger.getInstance().logEvent(event);
 
         ActionRecordFactory.getInstance().createActionRecord(actor, new BefriendAction());
 
-        actor.increaseRelation(other, 50);
-        other.increaseRelation(actor, 50);
+        actor.increaseRelation(other, new Random().nextInt(10));
+        other.increaseRelation(actor, new Random().nextInt(10));
     }
 
     @Override
