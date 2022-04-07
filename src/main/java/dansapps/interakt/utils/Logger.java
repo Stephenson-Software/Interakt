@@ -22,7 +22,7 @@ import static dansapps.interakt.services.LocalStorageService.FILE_PATH;
 public class Logger {
     private static Logger instance;
     private boolean localDebugFlag = false;
-    private boolean logEventsToConsoleFlag = false;
+    private boolean logEventsToConsoleFlag = true;
     private static String PATH = FILE_PATH + "log.txt";
     private File file = new File(PATH);
 
