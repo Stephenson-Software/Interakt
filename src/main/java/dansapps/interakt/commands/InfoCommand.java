@@ -25,7 +25,7 @@ public class InfoCommand extends InteraktCommand {
     public boolean execute(CommandSender abstractCommandSender) {
         abstractCommandSender.sendMessage("=== Interakt Info ===");
         abstractCommandSender.sendMessage("Developer: Daniel Stephenson");
-        abstractCommandSender.sendMessage("Source: https://github.com/McCoy-Software-Solutions/Interakt");
+        abstractCommandSender.sendMessage("Source: https://github.com/Stephenson-Software/Interakt");
         abstractCommandSender.sendMessage("Dependencies: Ponder, EnvironmentLib");
         return true;
     }
