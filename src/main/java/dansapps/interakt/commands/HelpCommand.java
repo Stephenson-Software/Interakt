@@ -25,10 +25,11 @@ public class HelpCommand extends InteraktCommand {
         sender.sendMessage("=== Example Ponder Application Commands ===");
         sender.sendMessage("help - View a list of useful commands.");
         sender.sendMessage("list - List entities and worlds.");
-        sender.sendMessage("view - View an actor or world.");
-        sender.sendMessage("create - Create an actor or world.");
-        sender.sendMessage("delete - Delete an actor or world.");
-        sender.sendMessage("place - Place an actor in an world.");
+        sender.sendMessage("view <actor|world>- View an actor or world.");
+        sender.sendMessage("relations <actor> - See the relations of an actor.");
+        sender.sendMessage("create <actor|world> <name> - Create an actor or world.");
+        sender.sendMessage("delete <actor|world> <name> - Delete an actor or world.");
+        sender.sendMessage("place <actor> <world> - Place an actor in an world.");
         sender.sendMessage("generatetestdata - Generate test data.");
         sender.sendMessage("save - Force the application to save its data.");
         sender.sendMessage("info - View information about the application.");
