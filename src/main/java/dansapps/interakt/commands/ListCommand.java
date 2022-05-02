@@ -20,7 +20,7 @@ import java.util.List;
 public class ListCommand extends InteraktCommand {
 
     public ListCommand() {
-        super(new ArrayList<>(List.of("list")), new ArrayList<>(List.of("interakt.list")));
+        super(new ArrayList<>(List.of("list", "ls")), new ArrayList<>(List.of("interakt.list")));
     }
 
     @Override
