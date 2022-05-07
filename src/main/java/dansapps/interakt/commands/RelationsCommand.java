@@ -11,7 +11,7 @@ import java.util.List;
 public class RelationsCommand extends InteraktCommand {
 
     public RelationsCommand() {
-        super(new ArrayList<>(List.of("relations")), new ArrayList<>(List.of("interakt.relations")));
+        super(new ArrayList<>(List.of("relations", "rel")), new ArrayList<>(List.of("interakt.relations")));
     }
 
     @Override

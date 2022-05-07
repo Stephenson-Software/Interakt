@@ -20,7 +20,7 @@ import java.util.List;
 public class PlaceCommand extends InteraktCommand {
 
     public PlaceCommand() {
-        super(new ArrayList<>(List.of("place")), new ArrayList<>(List.of("interakt.place")));
+        super(new ArrayList<>(List.of("place", "pl")), new ArrayList<>(List.of("interakt.place")));
     }
 
     @Override

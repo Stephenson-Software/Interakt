@@ -17,7 +17,7 @@ import java.util.List;
 public class HelpCommand extends InteraktCommand {
 
     public HelpCommand() {
-        super(new ArrayList<>(List.of("help")), new ArrayList<>(List.of("interakt.help")));
+        super(new ArrayList<>(List.of("help", "h")), new ArrayList<>(List.of("interakt.help")));
     }
 
     @Override

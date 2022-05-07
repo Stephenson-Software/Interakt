@@ -20,7 +20,7 @@ import java.util.List;
 public class DeleteCommand extends InteraktCommand {
 
     public DeleteCommand() {
-        super(new ArrayList<>(List.of("delete")), new ArrayList<>(List.of("interakt.delete")));
+        super(new ArrayList<>(List.of("delete", "rm")), new ArrayList<>(List.of("interakt.delete")));
     }
 
     @Override
