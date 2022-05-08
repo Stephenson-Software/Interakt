@@ -2,7 +2,7 @@
   Copyright (c) 2022 Daniel McCoy Stephenson
   Apache License 2.0
  */
-package dansapps.interakt.commands;
+package dansapps.interakt.commands.console;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;

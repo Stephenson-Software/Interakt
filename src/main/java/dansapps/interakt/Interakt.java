@@ -4,10 +4,12 @@
  */
 package dansapps.interakt;
 
-import dansapps.interakt.commands.*;
+import dansapps.interakt.commands.console.*;
+import dansapps.interakt.commands.multi.HelpCommand;
 import dansapps.interakt.misc.CONFIG;
-import dansapps.interakt.misc.CommandSenderImpl;
-import dansapps.interakt.misc.User;
+import dansapps.interakt.users.Console;
+import dansapps.interakt.users.Player;
+import dansapps.interakt.users.abs.CommandSenderImpl;
 import dansapps.interakt.services.LocalAutoSaveService;
 import dansapps.interakt.services.LocalCommandService;
 import dansapps.interakt.services.LocalStorageService;
@@ -78,7 +80,7 @@ public class Interakt extends PonderApplication {
                 args = new String[0];
             }
 
-            getLocalCommandService().addCommand(label);
+            getCommandService().addCommand(label);
 
             boolean success = onCommand(user, label, args);
             if (!success) {
@@ -105,7 +107,7 @@ public class Interakt extends PonderApplication {
     public void onStartup() {
         instance = this;
         Logger.getInstance().logInfo("Initiating startup.");
-        initializeLocalCommandService();
+        initializeCommandService();
         LocalStorageService.getInstance().load();
         LocalTimeService.getInstance().start();
         LocalAutoSaveService.getInstance().start();
@@ -130,7 +132,7 @@ public class Interakt extends PonderApplication {
     @Override
     public boolean onCommand(CommandSender sender, String label, String[] args) {
         Logger.getInstance().logInfo("Interpreting command " + label);
-        return getLocalCommandService().interpretCommand(sender, label, args);
+        return getCommandService().interpretCommand(sender, label, args);
     }
 
     /**
@@ -175,7 +177,7 @@ public class Interakt extends PonderApplication {
     /**
      * Initializes the command service with the application's commands.
      */
-    private void initializeLocalCommandService() {
+    private void initializeCommandService() {
         HashSet<ApplicationCommand> commands = new HashSet<>();
         commands.add(new HelpCommand());
         commands.add(new InfoCommand());
@@ -191,14 +193,14 @@ public class Interakt extends PonderApplication {
         commands.add(new SaveCommand());
         commands.add(new GenerateTestDataCommand());
         commands.add(new RelationsCommand());
-        setCommandService(new LocalCommandService((commands)));
+        setCommandService(new LocalCommandService(commands));
     }
 
     /**
      * This can be used to access Ponder's command service.
      * @return This application's managed instance of Ponder's command service.
      */
-    private LocalCommandService getLocalCommandService() {
+    private LocalCommandService getCommandService() {
         return commandService;
     }
 
@@ -231,8 +233,24 @@ public class Interakt extends PonderApplication {
      * @param args The arguments given to the program.
      */
     public static void main(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Missing required argument: <console|player>");
+            return;
+        }
+        String mode = args[0];
+
         Interakt application = new Interakt();
-        User user = new User();
-        application.run(user);
+
+        if (mode.equalsIgnoreCase("console")) {
+            Console console = new Console();
+            application.run(console);
+        }
+        else if (mode.equalsIgnoreCase("player")) {
+            Player player = new Player();
+            application.run(player);
+        }
+        else {
+            System.out.println("Unsupported mode entered. Supported modes: console, player");
+        }
     }
 }

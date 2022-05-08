@@ -1,8 +1,6 @@
 package dansapps.interakt.tests;
 
-import dansapps.interakt.commands.CreateCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.misc.User;
 import org.junit.Assert;
 import org.junit.Test;
 
