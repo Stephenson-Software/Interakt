@@ -1,7 +1,11 @@
-package dansapps.interakt.commands;
+/*
+  Copyright (c) 2022 Daniel McCoy Stephenson
+  Apache License 2.0
+ */
+package dansapps.interakt.commands.console;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
-import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.services.LocalTimeService;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
@@ -11,16 +15,16 @@ import java.util.List;
  * @author Daniel McCoy Stephenson
  * @since January 15th, 2022
  */
-public class WipeCommand extends InteraktCommand {
+public class ElapseCommand extends InteraktCommand {
 
-    public WipeCommand() {
-        super(new ArrayList<>(List.of("wipe")), new ArrayList<>(List.of("interakt.wipe")));
+    public ElapseCommand() {
+        super(new ArrayList<>(List.of("elapse")), new ArrayList<>(List.of("interakt.elapse")));
     }
 
     @Override
     public boolean execute(CommandSender sender) {
-        PersistentData.getInstance().clearData();
-        sender.sendMessage("Data has been wiped.");
+        sender.sendMessage("Forcing time elapse.");
+        LocalTimeService.getInstance().elapse();
         return true;
     }
 

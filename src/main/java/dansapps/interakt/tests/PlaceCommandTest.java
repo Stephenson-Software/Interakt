@@ -1,8 +1,8 @@
 package dansapps.interakt.tests;
 
-import dansapps.interakt.commands.PlaceCommand;
+import dansapps.interakt.commands.console.PlaceCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.misc.User;
+import dansapps.interakt.users.Console;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.World;
 import org.junit.Assert;
@@ -19,11 +19,11 @@ public class PlaceCommandTest {
         Utilities.getInstance().createActor(actorName);
 
         PlaceCommand placeCommand = new PlaceCommand();
-        User user = new User();
+        Console console = new Console();
         String[] args = new String[2];
         args[0] = Utilities.getInstance().wrapInQuotationMarks(actorName);
         args[1] = Utilities.getInstance().wrapInQuotationMarks(worldName);
-        placeCommand.execute(user, args);
+        placeCommand.execute(console, args);
 
         World world = null;
         try {

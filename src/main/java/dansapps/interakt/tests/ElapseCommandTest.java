@@ -1,9 +1,9 @@
 package dansapps.interakt.tests;
 
 import dansapps.interakt.Interakt;
-import dansapps.interakt.commands.ElapseCommand;
+import dansapps.interakt.commands.console.ElapseCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.misc.User;
+import dansapps.interakt.users.Console;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,8 +16,8 @@ public class ElapseCommandTest {
         int before = PersistentData.getInstance().getSecondsElapsed();
 
         ElapseCommand elapseCommand = new ElapseCommand();
-        User user = new User();
-        elapseCommand.execute(user);
+        Console console = new Console();
+        elapseCommand.execute(console);
 
         int after = PersistentData.getInstance().getSecondsElapsed();
 

@@ -1,7 +1,7 @@
 package dansapps.interakt.tests;
 
-import dansapps.interakt.commands.CreateCommand;
-import dansapps.interakt.misc.User;
+import dansapps.interakt.commands.console.CreateCommand;
+import dansapps.interakt.users.Console;
 
 public class Utilities {
     private static Utilities instance;
@@ -23,19 +23,19 @@ public class Utilities {
 
     public void createActor(String name) {
         CreateCommand createCommand = new CreateCommand();
-        User user = new User();
+        Console console = new Console();
         String[] args = new String[2];
         args[0] = wrapInQuotationMarks("actor");
         args[1] = wrapInQuotationMarks(name);
-        createCommand.execute(user, args);
+        createCommand.execute(console, args);
     }
 
     public void createWorld(String name) {
         CreateCommand createCommand = new CreateCommand();
-        User user = new User();
+        Console console = new Console();
         String[] args = new String[2];
         args[0] = wrapInQuotationMarks("world");
         args[1] = wrapInQuotationMarks(name);
-        createCommand.execute(user, args);
+        createCommand.execute(console, args);
     }
 }

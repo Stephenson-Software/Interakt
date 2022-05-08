@@ -1,4 +1,4 @@
-package dansapps.interakt.commands;
+package dansapps.interakt.commands.console;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
