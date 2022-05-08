@@ -1,5 +1,6 @@
 package dansapps.interakt.actions;
 
+import dansapps.interakt.Interakt;
 import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.ActionRecordFactory;
@@ -27,6 +28,14 @@ public class ReproduceAction implements Action {
 
         Event event = EventFactory.getInstance().createEvent(actor.getName() + " reproduced with " + other.getName() + ", resulting in " + offspring.getName() + " coming into existence.");
         Logger.getInstance().logEvent(event);
+
+        if (actor.getName().equalsIgnoreCase(Interakt.getInstance().getPlayerActorName())) {
+            Interakt.getInstance().getCommandSender().sendMessage("You reproduced with " + other.getName() + ", resulting in " + offspring.getName() + " coming into existence.");
+        }
+
+        if (other.getName().equalsIgnoreCase(Interakt.getInstance().getPlayerActorName())) {
+            Interakt.getInstance().getCommandSender().sendMessage(other.getName() + " reproduced with you, resulting in " + offspring.getName() + " coming into existence.");
+        }
 
         ActionRecordFactory.getInstance().createActionRecord(actor, new ReproduceAction());
 

@@ -1,4 +1,4 @@
-package dansapps.interakt.commands.console;
+package dansapps.interakt.commands.multi;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.services.LocalStorageService;

@@ -4,6 +4,7 @@
  */
 package dansapps.interakt.actions;
 
+import dansapps.interakt.Interakt;
 import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.factories.EventFactory;
@@ -45,6 +46,10 @@ public class MoveAction implements Action {
         try {
             Event event = EventFactory.getInstance().createEvent(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
             Logger.getInstance().logEvent(event);
+
+            if (actor.getName().equalsIgnoreCase(Interakt.getInstance().getPlayerActorName())) {
+                Interakt.getInstance().getCommandSender().sendMessage("You have moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
+            }
         } catch (Exception e) {
             Logger.getInstance().logError(actor.getName() + " moved, but their environment wasn't found.");
         }

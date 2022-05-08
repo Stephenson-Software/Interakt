@@ -6,7 +6,12 @@ package dansapps.interakt;
 
 import dansapps.interakt.commands.console.*;
 import dansapps.interakt.commands.multi.HelpCommand;
+import dansapps.interakt.commands.multi.QuitCommand;
+import dansapps.interakt.commands.multi.SaveCommand;
+import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.misc.CONFIG;
+import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.World;
 import dansapps.interakt.users.Console;
 import dansapps.interakt.users.Player;
 import dansapps.interakt.users.abs.CommandSenderImpl;
@@ -33,6 +38,8 @@ public class Interakt extends PonderApplication {
     private LocalCommandService commandService;
     private final Scanner scanner = new Scanner(System.in);
     private final EnvironmentLib environmentLib = new EnvironmentLib();
+    private CommandSenderImpl commandSender;
+    private String playerActorName = "";
 
     /**
      * This can be utilized to access the self-managed instance of the application.
@@ -56,14 +63,39 @@ public class Interakt extends PonderApplication {
      */
     public void run(CommandSenderImpl user) {
         Logger.getInstance().logInfo("Running application.");
-
         Logger.getInstance().logInfo("Using EnvironmentLib " + environmentLib.getVersion());
+
+        commandSender = user;
 
         String line;
         String label;
         String[] args;
 
-        user.sendMessage("Welcome to Interakt. Type help to see a list of useful commands.");
+        if (user instanceof Console) {
+            user.sendMessage("Welcome to the Interakt console. Type help to see a list of useful commands.");
+        }
+        else if (user instanceof Player) {
+            user.sendMessage("What is the name of your actor?");
+            playerActorName = getScanner().nextLine();
+            if (!PersistentData.getInstance().isActor(playerActorName)) {
+                // create actor and place into test world
+                Actor actor = new Actor(playerActorName);
+                PersistentData.getInstance().addActor(actor);
+                World world;
+                try {
+                    world = PersistentData.getInstance().getWorld("test");
+                    PersistentData.getInstance().placeIntoEnvironment(world, user, actor);
+                    user.sendMessage("You enter the world " + world.getName() + ".");
+                } catch (Exception e) {
+                    user.sendMessage("World 'test' needs to exist. Please generate test data via the console and try again.");
+                    return;
+                }
+            }
+            else {
+                user.sendMessage("You are " + playerActorName + ".");
+            }
+        }
+
         while (isRunning()) {
             line = getInput();
             if (line == null) {
@@ -87,6 +119,14 @@ public class Interakt extends PonderApplication {
                 Logger.getInstance().logInfo("Something went wrong processing the " + label + " command.");
             }
         }
+    }
+
+    public String getPlayerActorName() {
+        return playerActorName;
+    }
+
+    public CommandSenderImpl getCommandSender() {
+        return commandSender;
     }
 
     /**

@@ -1,5 +1,6 @@
 package dansapps.interakt.users;
 
+import dansapps.interakt.objects.Actor;
 import dansapps.interakt.users.abs.CommandSenderImpl;
 
 /**
@@ -10,5 +11,7 @@ public class Player extends CommandSenderImpl {
 
     public Player() {
         addPermission("interakt.help");
+        addPermission("interakt.save");
+        addPermission("interakt.quit");
     }
 }
