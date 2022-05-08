@@ -4,6 +4,7 @@
  */
 package dansapps.interakt.actions;
 
+import dansapps.interakt.Interakt;
 import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.factories.EventFactory;
@@ -31,6 +32,14 @@ public class AttackAction implements Action {
         Event event = EventFactory.getInstance().createEvent(attacker.getName() + " has attacked " + victim.getName() + " and dealt " + damage + " damage.");
         Logger.getInstance().logEvent(event);
 
+        if (attacker.getName().equalsIgnoreCase(Interakt.getInstance().getPlayerActorName())) {
+            Interakt.getInstance().getCommandSender().sendMessage("You have attacked " + victim.getName() + " and dealt " + damage + " damage.");
+        }
+
+        if (victim.getName().equalsIgnoreCase(Interakt.getInstance().getPlayerActorName())) {
+            Interakt.getInstance().getCommandSender().sendMessage(attacker.getName() + " attacked you and and dealt " + damage + " damage.");
+        }
+
         ActionRecordFactory.getInstance().createActionRecord(attacker, new AttackAction());
 
         checkForDeath(victim);
@@ -42,6 +51,10 @@ public class AttackAction implements Action {
         if (victim.isDead()) {
             Event event = new Event(victim.getName() + " has died.");
             Logger.getInstance().logEvent(event);
+
+            if (victim.getName().equalsIgnoreCase(Interakt.getInstance().getPlayerActorName())) {
+                Interakt.getInstance().getCommandSender().sendMessage("You have died. Type 'quit' to quit the application.");
+            }
         }
     }
 

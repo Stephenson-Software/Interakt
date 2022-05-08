@@ -4,6 +4,7 @@
  */
 package dansapps.interakt.actions;
 
+import dansapps.interakt.Interakt;
 import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.factories.EventFactory;
@@ -22,6 +23,14 @@ public class BefriendAction implements Action {
     public static void execute(Actor actor, Actor other) {
         Event event = EventFactory.getInstance().createEvent(actor.getName() + " was friendly to " + other.getName());
         Logger.getInstance().logEvent(event);
+
+        if (actor.getName().equalsIgnoreCase(Interakt.getInstance().getPlayerActorName())) {
+            Interakt.getInstance().getCommandSender().sendMessage("You were friendly to " + other.getName() + ".");
+        }
+
+        if (other.getName().equalsIgnoreCase(Interakt.getInstance().getPlayerActorName())) {
+            Interakt.getInstance().getCommandSender().sendMessage(actor.getName() + " was friendly to you.");
+        }
 
         ActionRecordFactory.getInstance().createActionRecord(actor, new BefriendAction());
 

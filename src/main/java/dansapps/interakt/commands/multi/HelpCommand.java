@@ -43,6 +43,8 @@ public class HelpCommand extends InteraktCommand {
         else if (sender instanceof Player) {
             sender.sendMessage("=== Player Commands ===");
             sender.sendMessage("help - View a list of useful commands.");
+            sender.sendMessage("save - Save application data.");
+            sender.sendMessage("quit - Quit the application.");
         }
 
         return true;
