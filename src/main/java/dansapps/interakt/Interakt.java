@@ -105,7 +105,7 @@ public class Interakt extends PonderApplication {
             int indexOfFirstSpace = line.indexOf(' ');
             if (indexOfFirstSpace != -1) {
                 label = line.substring(0, indexOfFirstSpace);
-                args = line.substring(indexOfFirstSpace).split(" ");
+                args = line.substring(indexOfFirstSpace + 1).split(" ");
             }
             else {
                 label = line;
