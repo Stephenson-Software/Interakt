@@ -12,6 +12,7 @@ import dansapps.interakt.objects.Actor;
 import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.services.TimeService;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -53,10 +54,13 @@ public class LocalTimeService extends TimeService {
             if (actor.isDead()) {
                 continue;
             }
-            actor.attemptToMove();
-            actor.attemptToBefriend();
-            actor.attemptToAttack();
-            actor.attemptToPerformReproduceAction();
+            int choice = new Random().nextInt(4); // get random number from 0 to 3
+            switch(choice) {
+                case 0 -> actor.attemptToMove();
+                case 1 -> actor.attemptToBefriend();
+                case 2 -> actor.attemptToAttack();
+                case 3 -> actor.attemptToPerformReproduceAction();
+            }
         }
         PersistentData.getInstance().removeDeadActors();
     }
