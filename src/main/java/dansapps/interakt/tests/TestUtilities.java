@@ -3,16 +3,16 @@ package dansapps.interakt.tests;
 import dansapps.interakt.commands.console.CreateCommand;
 import dansapps.interakt.users.Console;
 
-public class Utilities {
-    private static Utilities instance;
+public class TestUtilities {
+    private static TestUtilities instance;
 
-    private Utilities() {
+    private TestUtilities() {
 
     }
 
-    public static Utilities getInstance() {
+    public static TestUtilities getInstance() {
         if (instance == null) {
-            instance = new Utilities();
+            instance = new TestUtilities();
         }
         return instance;
     }

@@ -11,13 +11,13 @@ public class DeleteCommandTest {
     @Test
     public void testDeleteActor() {
         String name = "Gerald";
-        Utilities.getInstance().createActor(name);
+        TestUtilities.getInstance().createActor(name);
 
         DeleteCommand deleteCommand = new DeleteCommand();
         Console console = new Console();
         String[] args = new String[2];
-        args[0] = Utilities.getInstance().wrapInQuotationMarks("actor");
-        args[1] = Utilities.getInstance().wrapInQuotationMarks(name);
+        args[0] = TestUtilities.getInstance().wrapInQuotationMarks("actor");
+        args[1] = TestUtilities.getInstance().wrapInQuotationMarks(name);
         deleteCommand.execute(console, args);
 
         try {
@@ -31,13 +31,13 @@ public class DeleteCommandTest {
     @Test
     public void testDeleteWorld() {
         String name = "Test";
-        Utilities.getInstance().createWorld(name);
+        TestUtilities.getInstance().createWorld(name);
 
         DeleteCommand deleteCommand = new DeleteCommand();
         Console console = new Console();
         String[] args = new String[2];
-        args[0] = Utilities.getInstance().wrapInQuotationMarks("world");
-        args[1] = Utilities.getInstance().wrapInQuotationMarks(name);
+        args[0] = TestUtilities.getInstance().wrapInQuotationMarks("world");
+        args[1] = TestUtilities.getInstance().wrapInQuotationMarks(name);
         deleteCommand.execute(console, args);
 
         try {
