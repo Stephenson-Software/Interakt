@@ -15,14 +15,14 @@ public class PlaceCommandTest {
         String worldName = "TestWorld";
         String actorName = "TestActor";
 
-        Utilities.getInstance().createWorld(worldName);
-        Utilities.getInstance().createActor(actorName);
+        TestUtilities.getInstance().createWorld(worldName);
+        TestUtilities.getInstance().createActor(actorName);
 
         PlaceCommand placeCommand = new PlaceCommand();
         Console console = new Console();
         String[] args = new String[2];
-        args[0] = Utilities.getInstance().wrapInQuotationMarks(actorName);
-        args[1] = Utilities.getInstance().wrapInQuotationMarks(worldName);
+        args[0] = TestUtilities.getInstance().wrapInQuotationMarks(actorName);
+        args[1] = TestUtilities.getInstance().wrapInQuotationMarks(worldName);
         placeCommand.execute(console, args);
 
         World world = null;

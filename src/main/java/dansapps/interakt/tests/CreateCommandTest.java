@@ -9,7 +9,7 @@ public class CreateCommandTest {
     @Test
     public void testCreateActor() {
         String name = "Gerald";
-        Utilities.getInstance().createActor(name);
+        TestUtilities.getInstance().createActor(name);
         try {
             PersistentData.getInstance().getActor(name);
         } catch (Exception e) {
@@ -20,7 +20,7 @@ public class CreateCommandTest {
     @Test
     public void testCreateWorld() {
         String name = "Test";
-        Utilities.getInstance().createWorld(name);
+        TestUtilities.getInstance().createWorld(name);
         try {
             PersistentData.getInstance().getWorld(name);
         } catch (Exception e) {

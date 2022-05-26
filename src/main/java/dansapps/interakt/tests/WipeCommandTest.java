@@ -10,8 +10,8 @@ public class WipeCommandTest {
 
     @Test
     public void testWipeCommand() {
-        Utilities.getInstance().createWorld("TestWorld");
-        Utilities.getInstance().createActor("TestActor");
+        TestUtilities.getInstance().createWorld("TestWorld");
+        TestUtilities.getInstance().createActor("TestActor");
 
         WipeCommand wipeCommand = new WipeCommand();
         Console console = new Console();
