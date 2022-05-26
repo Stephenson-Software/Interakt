@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.exceptions.ActorNotFoundException;
 import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.objects.Grid;
 import preponderous.environmentlib.abs.objects.Location;
@@ -117,7 +118,7 @@ public class Square extends Location implements Savable {
         return getNumEntities();
     }
 
-    public Actor getRandomActor() {
+    public Actor getRandomActor() throws ActorNotFoundException {
         UUID randomUUID = getRandomEntityUUID();
         return PersistentData.getInstance().getActor(randomUUID);
     }

@@ -5,6 +5,7 @@
 package dansapps.interakt.commands.console;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
+import dansapps.interakt.exceptions.NameTakenException;
 import dansapps.interakt.factories.ActorFactory;
 import dansapps.interakt.factories.WorldFactory;
 import preponderous.ponder.system.abs.CommandSender;
@@ -48,7 +49,12 @@ public class CreateCommand extends InteraktCommand {
         String name = doubleQuoteArgs.get(1);
 
         if (type.equalsIgnoreCase("actor")) {
-            ActorFactory.getInstance().createActorWithRandomName(name);
+            try {
+                ActorFactory.getInstance().createActorWithName(name);
+            } catch (NameTakenException e) {
+                sender.sendMessage("That name was taken.");
+                return false;
+            }
             sender.sendMessage("Actor created.");
             return true;
         }

@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.exceptions.ActorNotFoundException;
 import dansapps.interakt.factories.SquareFactory;
 import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.utils.Logger;
@@ -107,7 +108,12 @@ public class Region extends Grid implements Savable {
                             break;
                         case CHARACTER_AT_INDEX_ZERO:
                             UUID entityUUID = square.getEntityUUIDs().iterator().next();
-                            Actor actor = PersistentData.getInstance().getActor(entityUUID);
+                            Actor actor = null;
+                            try {
+                                actor = PersistentData.getInstance().getActor(entityUUID);
+                            } catch (ActorNotFoundException actorNotFoundException) {
+                                // this shouldn't happen
+                            }
                             toReturn.append("[").append(actor.getName().charAt(0)).append("] ");
                             break;
                         case NUMBER_OF_ENTITIES:

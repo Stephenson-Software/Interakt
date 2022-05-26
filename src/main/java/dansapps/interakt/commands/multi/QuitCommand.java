@@ -18,7 +18,7 @@ import java.util.List;
 public class QuitCommand extends InteraktCommand {
 
     public QuitCommand() {
-        super(new ArrayList<>(List.of("quit")), new ArrayList<>(List.of("interakt.quit")));
+        super(new ArrayList<>(List.of("quit", "exit")), new ArrayList<>(List.of("interakt.quit")));
     }
 
     @Override

@@ -12,6 +12,9 @@ import dansapps.interakt.actions.BefriendAction;
 import dansapps.interakt.actions.MoveAction;
 import dansapps.interakt.actions.ReproduceAction;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.exceptions.ActorNotFoundException;
+import dansapps.interakt.exceptions.EntityRecordNotFoundException;
+import dansapps.interakt.factories.EntityRecordFactory;
 import dansapps.interakt.factories.EventFactory;
 import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.utils.Logger;
@@ -149,7 +152,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (!roll(getChanceToBefriend())) {
             return;
         }
-        Actor target = square.getRandomActor();
+        Actor target = null;
+        try {
+            target = square.getRandomActor();
+        } catch (ActorNotFoundException actorNotFoundException) {
+            return;
+        }
         if (target == null) {
             return;
         }
@@ -184,7 +192,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (!roll(getChanceToAttack())) {
             return;
         }
-        Actor target = square.getRandomActor();
+        Actor target = null;
+        try {
+            target = square.getRandomActor();
+        } catch (ActorNotFoundException actorNotFoundException) {
+            return;
+        }
         if (target == null) {
             return;
         }
@@ -205,7 +218,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (!roll(getChanceToReproduce())) {
             return;
         }
-        Actor target = square.getRandomActor();
+        Actor target = null;
+        try {
+            target = square.getRandomActor();
+        } catch (ActorNotFoundException actorNotFoundException) {
+            return;
+        }
         if (target == null) {
             return;
         }
@@ -259,7 +277,18 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     public String getRelationsString() {
         String toReturn = "";
         for (UUID actorUUID : relations.keySet()) {
-            Actor actor = PersistentData.getInstance().getActor(actorUUID);
+            Actor actor = null;
+            try {
+                actor = PersistentData.getInstance().getActor(actorUUID);
+            } catch (ActorNotFoundException actorNotFoundException) {
+                try {
+                    EntityRecord entityRecord = PersistentData.getInstance().getEntityRecord(actorUUID);
+                    toReturn += entityRecord.getName() + ": [deceased]" + "\n";
+                } catch (EntityRecordNotFoundException entityRecordNotFoundException) {
+                    // this shouldn't happen
+                }
+                continue;
+            }
             try {
                 toReturn += actor.getName() + ": " + getRelation(actor) + "\n";
             } catch(NullPointerException e) {
@@ -350,7 +379,22 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         String toReturn = "";
         int count = 0;
         for (UUID uuid : parentIDs) {
-            Actor actor = PersistentData.getInstance().getActor(uuid);
+            Actor actor = null;
+            try {
+                actor = PersistentData.getInstance().getActor(uuid);
+            } catch (ActorNotFoundException actorNotFoundException) {
+                try {
+                    EntityRecord entityRecord = PersistentData.getInstance().getEntityRecord(uuid);
+                    toReturn += toReturn += actor.getName() + "[deceased]";
+                    count++;
+                    if (count != parentIDs.size()) {
+                        toReturn = toReturn + ", ";
+                    }
+                    continue;
+                } catch (EntityRecordNotFoundException entityRecordNotFoundException) {
+                    // this shouldn't happen
+                }
+            }
             if (actor == null) {
                 continue;
             }
@@ -367,7 +411,22 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         String toReturn = "";
         int count = 0;
         for (UUID uuid : childIDs) {
-            Actor actor = PersistentData.getInstance().getActor(uuid);
+            Actor actor = null;
+            try {
+                actor = PersistentData.getInstance().getActor(uuid);
+            } catch (ActorNotFoundException actorNotFoundException) {
+                try {
+                    EntityRecord entityRecord = PersistentData.getInstance().getEntityRecord(uuid);
+                    toReturn = toReturn + entityRecord.getName() + " [deceased]";
+                    count++;
+                    if (count != childIDs.size()) {
+                        toReturn = toReturn + ", ";
+                    }
+                    continue;
+                } catch (EntityRecordNotFoundException entityRecordNotFoundException) {
+                    // this shouldn't happen
+                }
+            }
             if (actor == null) {
                 continue;
             }

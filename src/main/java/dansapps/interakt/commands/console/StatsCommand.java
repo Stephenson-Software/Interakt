@@ -2,6 +2,7 @@ package dansapps.interakt.commands.console;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.exceptions.ZeroFriendshipsExistentException;
 import dansapps.interakt.utils.Logger;
 import preponderous.ponder.system.abs.CommandSender;
 
@@ -23,10 +24,17 @@ public class StatsCommand extends InteraktCommand {
             sender.sendMessage("Number of squares: " + PersistentData.getInstance().getSquares().size());
             sender.sendMessage("Number of elapsed time partitions: " + PersistentData.getInstance().getTimePartitions().size());
             sender.sendMessage("Number of action records: " + PersistentData.getInstance().getActionRecords().size());
+            sender.sendMessage("Number of entity records: " + PersistentData.getInstance().getEntityRecords().size());
             sender.sendMessage("Most active actor: " + PersistentData.getInstance().getActorWithMostActionRecords().getName());
             sender.sendMessage("Least active actor: " + PersistentData.getInstance().getActorWithLeastActionRecords().getName());
             sender.sendMessage("Most well travelled: " + PersistentData.getInstance().getMostWellTravelledActor().getName());
-            sender.sendMessage("Most friendly actor: " + PersistentData.getInstance().getMostFriendlyActor().getName());
+
+            try {
+                sender.sendMessage("Most friendly actor: " + PersistentData.getInstance().getMostFriendlyActor().getName());
+            } catch(ZeroFriendshipsExistentException e) {
+                sender.sendMessage("Most friendly actor: N/A");
+            }
+
             sender.sendMessage("Minutes elapsed: " + PersistentData.getInstance().getSecondsElapsed()/60);
             return true;
         }

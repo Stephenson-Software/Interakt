@@ -4,6 +4,9 @@
  */
 package dansapps.interakt.data;
 
+import dansapps.interakt.exceptions.ActorNotFoundException;
+import dansapps.interakt.exceptions.EntityRecordNotFoundException;
+import dansapps.interakt.exceptions.ZeroFriendshipsExistentException;
 import dansapps.interakt.objects.*;
 import preponderous.ponder.system.abs.CommandSender;
 
@@ -22,6 +25,7 @@ public class PersistentData {
     private Set<Square> squares = new ConcurrentHashMap<Actor, Boolean>().newKeySet();
     private ArrayList<TimePartition> timePartitions = new ArrayList<>();
     private LinkedList<ActionRecord> actionRecords = new LinkedList<>();
+    private Set<EntityRecord> entityRecords = new HashSet<>();
 
     private PersistentData() {
 
@@ -72,22 +76,22 @@ public class PersistentData {
         }
     }
 
-    public Actor getActor(String name) throws Exception {
+    public Actor getActor(String name) throws ActorNotFoundException {
         for (Actor actor : actors) {
             if (actor.getName().equalsIgnoreCase(name)) {
                 return actor;
             }
         }
-        throw new Exception();
+        throw new ActorNotFoundException();
     }
 
-    public Actor getActor(UUID entityUUID) {
+    public Actor getActor(UUID entityUUID) throws ActorNotFoundException {
         for (Actor actor : actors) {
             if (actor.getUUID().equals(entityUUID)) {
                 return actor;
             }
         }
-        return null;
+        throw new ActorNotFoundException();
     }
 
     public Set<World> getWorlds() {
@@ -190,6 +194,36 @@ public class PersistentData {
         actionRecords.add(actionRecord);
     }
 
+    public Set<EntityRecord> getEntityRecords() {
+        return entityRecords;
+    }
+
+    public void setEntityRecords(Set<EntityRecord> entityRecords) {
+        this.entityRecords = entityRecords;
+    }
+
+    public void addEntityRecord(EntityRecord entityRecord) {
+        entityRecords.add(entityRecord);
+    }
+
+    public EntityRecord getEntityRecord(UUID entityUUID) throws EntityRecordNotFoundException {
+        for (EntityRecord entityRecord : entityRecords) {
+            if (entityRecord.getUUID().equals(entityUUID)) {
+                return entityRecord;
+            }
+        }
+        throw new EntityRecordNotFoundException();
+    }
+
+    public EntityRecord getEntityRecord(String name) throws EntityRecordNotFoundException {
+        for (EntityRecord entityRecord : entityRecords) {
+            if (entityRecord.getName().equals(name)) {
+                return entityRecord;
+            }
+        }
+        throw new EntityRecordNotFoundException();
+    }
+
     public void clearData() {
         actors.clear();
         worlds.clear();
@@ -197,6 +231,7 @@ public class PersistentData {
         squares.clear();
         timePartitions.clear();
         actionRecords.clear();
+        entityRecords.clear();
     }
 
     public boolean isWorld(String name) {
@@ -213,8 +248,14 @@ public class PersistentData {
             getActor(name);
             return true;
         }
-        catch (Exception e) {
-            return false;
+        catch (ActorNotFoundException actorNotFoundException) {
+            try {
+                getEntityRecord(name);
+                return true;
+            }
+            catch(EntityRecordNotFoundException entityRecordNotFoundException) {
+                return false;
+            }
         }
     }
 
@@ -294,7 +335,7 @@ public class PersistentData {
         return toReturn;
     }
 
-    public Actor getMostFriendlyActor() {
+    public Actor getMostFriendlyActor() throws ZeroFriendshipsExistentException {
         Actor toReturn = null;
         int max = 0;
         for (Actor actor : actors) {
@@ -305,7 +346,7 @@ public class PersistentData {
             }
         }
         if (toReturn == null) {
-            throw new NullPointerException();
+            throw new ZeroFriendshipsExistentException();
         }
         return toReturn;
     }
