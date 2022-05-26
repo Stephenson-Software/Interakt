@@ -28,6 +28,7 @@ public class LocalStorageService {
     private final static String SQUARES_FILE_NAME = "squares.json";
     private final static String TIME_PARTITIONS_FILE_NAME = "timePartitions.json";
     private final static String ACTION_RECORDS_FILE_NAME = "actionRecords.json";
+    private final static String ENTITY_RECORDS_FILE_NAME = "entityRecords.json";
 
     private final JsonWriterReader jsonWriterReader = new JsonWriterReader();
 
@@ -50,6 +51,7 @@ public class LocalStorageService {
             saveSquares();
             saveTimePartitions();
             saveActionRecords();
+            saveEntityRecords();
         }
         catch(Exception e) {
             Logger.getInstance().logError("Something went wrong when saving the data of the application.");
@@ -64,6 +66,7 @@ public class LocalStorageService {
             loadSquares();
             loadTimePartitions();
             loadActionRecords();
+            loadEntityRecords();
         }
         catch(Exception e) {
             Logger.getInstance().logError("Something went wrong when loading the data of the application.");
@@ -118,11 +121,19 @@ public class LocalStorageService {
         jsonWriterReader.writeOutFiles(actionRecords, ACTION_RECORDS_FILE_NAME);
     }
 
+    private void saveEntityRecords() {
+        List<Map<String, String>> entityRecords = new ArrayList<>();
+        for (EntityRecord entityRecord : PersistentData.getInstance().getEntityRecords()){
+            entityRecords.add(entityRecord.save());
+        }
+        jsonWriterReader.writeOutFiles(entityRecords, ENTITY_RECORDS_FILE_NAME);
+    }
+
     private void loadActors() {
         PersistentData.getInstance().getActors().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTORS_FILE_NAME);
         for (Map<String, String> actorData : data){
-            ActorFactory.getInstance().createActorWithRandomName(actorData);
+            ActorFactory.getInstance().createActorWithData(actorData);
         }
     }
 
@@ -163,6 +174,14 @@ public class LocalStorageService {
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTION_RECORDS_FILE_NAME);
         for (Map<String, String> actionRecordData : data){
             ActionRecordFactory.getInstance().createActionRecord(actionRecordData);
+        }
+    }
+
+    private void loadEntityRecords() {
+        PersistentData.getInstance().getEntityRecords().clear();
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ENTITY_RECORDS_FILE_NAME);
+        for (Map<String, String> entityRecordData : data){
+            EntityRecordFactory.getInstance().createEntityRecord(entityRecordData);
         }
     }
 }

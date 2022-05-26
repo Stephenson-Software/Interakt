@@ -2,6 +2,7 @@ package dansapps.interakt.factories;
 
 import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.exceptions.ActorNotFoundException;
 import dansapps.interakt.objects.ActionRecord;
 import dansapps.interakt.objects.Actor;
 
@@ -31,7 +32,13 @@ public class ActionRecordFactory {
         ActionRecord actionRecord = new ActionRecord(data);
         PersistentData.getInstance().addActionRecord(actionRecord);
 
-        Actor actor = PersistentData.getInstance().getActor(actionRecord.getEntityUUID());
+        Actor actor = null;
+        try {
+            actor = PersistentData.getInstance().getActor(actionRecord.getEntityUUID());
+        } catch (ActorNotFoundException actorNotFoundException) {
+            // fail silently, this actor is likely dead
+            return;
+        }
         actor.addActionRecord(actionRecord);
     }
 }

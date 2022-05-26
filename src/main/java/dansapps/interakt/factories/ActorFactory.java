@@ -5,6 +5,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.exceptions.NameTakenException;
 import dansapps.interakt.objects.Actor;
 
 import java.util.Map;
@@ -28,12 +29,13 @@ public class ActorFactory {
         return instance;
     }
 
-    public Actor createActorWithRandomName(String name) {
+    public Actor createActorWithName(String name) throws NameTakenException {
         if (isNameTaken(name)) {
-            return null;
+            throw new NameTakenException();
         }
         Actor actor = new Actor(name);
         PersistentData.getInstance().addActor(actor);
+        EntityRecordFactory.getInstance().createEntityRecord(actor);
         return actor;
     }
 
@@ -60,12 +62,18 @@ public class ActorFactory {
         do {
             name = generateRandomString(5);
         } while (isNameTaken(name));
-        return createActorWithRandomName(name);
+        try {
+            return createActorWithName(name);
+        } catch (NameTakenException e) {
+            return createActorWithRandomName();
+        }
     }
 
-    public void createActorWithRandomName(Map<String, String> data) {
+    public void createActorWithData(Map<String, String> data) {
         Actor actor = new Actor(data);
         PersistentData.getInstance().addActor(actor);
+        EntityRecordFactory.getInstance().createEntityRecord(actor);
+
     }
 
     private boolean isNameTaken(String name) {

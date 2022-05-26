@@ -2,6 +2,7 @@ package dansapps.interakt.commands.console;
 
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.exceptions.NameTakenException;
 import dansapps.interakt.factories.ActorFactory;
 import dansapps.interakt.factories.WorldFactory;
 import dansapps.interakt.objects.Actor;
@@ -38,7 +39,11 @@ public class GenerateTestDataCommand extends InteraktCommand {
             return false;
         }
         for (String name : names) {
-            ActorFactory.getInstance().createActorWithRandomName(name);
+            try {
+                ActorFactory.getInstance().createActorWithName(name);
+            } catch (NameTakenException e) {
+                continue;
+            }
             Actor actor;
             try {
                 actor = PersistentData.getInstance().getActor(name);
