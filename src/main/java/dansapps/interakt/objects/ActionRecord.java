@@ -2,7 +2,7 @@ package dansapps.interakt.objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dansapps.interakt.misc.enums.ACTION_TYPE;
+import dansapps.interakt.misc.enums.ACTIONTYPE;
 import preponderous.ponder.misc.abs.Savable;
 
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ public class ActionRecord implements Savable {
     private String actionName;
     private LocalDateTime timestamp;
 
-    public ActionRecord(UUID entityUUID, ACTION_TYPE actionType) {
+    public ActionRecord(UUID entityUUID, ACTIONTYPE actionType) {
         uuid = UUID.randomUUID();
         this.entityUUID = entityUUID;
         switch(actionType) {
