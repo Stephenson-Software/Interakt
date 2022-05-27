@@ -10,7 +10,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class PlaceCommandTest {
-    private TestUtilities testUtilities = new TestUtilities();
+    private final PersistentData persistentData = new PersistentData();
+    private final TestUtilities testUtilities = new TestUtilities(persistentData);
 
     @Test
     public void testPlaceCommand() {
@@ -20,7 +21,7 @@ public class PlaceCommandTest {
         testUtilities.createWorld(worldName);
         testUtilities.createActor(actorName);
 
-        PlaceCommand placeCommand = new PlaceCommand();
+        PlaceCommand placeCommand = new PlaceCommand(persistentData);
         Console console = new Console();
         String[] args = new String[2];
         args[0] = testUtilities.wrapInQuotationMarks(actorName);
@@ -29,14 +30,14 @@ public class PlaceCommandTest {
 
         World world = null;
         try {
-            world = PersistentData.getInstance().getWorld(worldName);
+            world = persistentData.getWorld(worldName);
         } catch (Exception e) {
             Assert.fail();
         }
 
         Actor actor = null;
         try {
-            actor = PersistentData.getInstance().getActor(actorName);
+            actor = persistentData.getActor(actorName);
         } catch (Exception e) {
             Assert.fail();
         }

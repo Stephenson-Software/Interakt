@@ -8,14 +8,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class DeleteCommandTest {
-    private final TestUtilities testUtilities = new TestUtilities();
+    private final PersistentData persistentData = new PersistentData();
+    private final TestUtilities testUtilities = new TestUtilities(persistentData);
 
     @Test
     public void testDeleteActor() {
         String name = "Gerald";
         testUtilities.createActor(name);
 
-        DeleteCommand deleteCommand = new DeleteCommand();
+        DeleteCommand deleteCommand = new DeleteCommand(persistentData);
         Console console = new Console();
         String[] args = new String[2];
         args[0] = testUtilities.wrapInQuotationMarks("actor");
@@ -23,7 +24,7 @@ public class DeleteCommandTest {
         deleteCommand.execute(console, args);
 
         try {
-            PersistentData.getInstance().getActor(name);
+            persistentData.getActor(name);
             Assert.fail();
         } catch(Exception ignored) {
 
@@ -35,7 +36,7 @@ public class DeleteCommandTest {
         String name = "Test";
         testUtilities.createWorld(name);
 
-        DeleteCommand deleteCommand = new DeleteCommand();
+        DeleteCommand deleteCommand = new DeleteCommand(persistentData);
         Console console = new Console();
         String[] args = new String[2];
         args[0] = testUtilities.wrapInQuotationMarks("world");
@@ -43,7 +44,7 @@ public class DeleteCommandTest {
         deleteCommand.execute(console, args);
 
         try {
-            PersistentData.getInstance().getWorld(name);
+            persistentData.getWorld(name);
             Assert.fail();
         } catch(Exception ignored) {
 

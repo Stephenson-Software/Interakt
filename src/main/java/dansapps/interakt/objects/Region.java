@@ -27,17 +27,20 @@ import java.util.UUID;
  */
 public class Region extends Grid implements Savable {
     private Logger logger;
+    private PersistentData persistentData;
 
-    public Region(int columns, int rows, UUID parentEnvironmentUUID, SquareFactory squareFactory, Logger logger) {
+    public Region(int columns, int rows, UUID parentEnvironmentUUID, SquareFactory squareFactory, Logger logger, PersistentData persistentData) {
         super(columns, rows, parentEnvironmentUUID);
         generateGrid(squareFactory);
         this.logger = logger;
+        this.persistentData = persistentData;
     }
 
-    public Region(Map<String, String> data, Logger logger) {
+    public Region(Map<String, String> data, Logger logger, PersistentData persistentData) {
         super(-1, -1, null);
         this.load(data);
         this.logger = logger;
+        this.persistentData = persistentData;
     }
 
     public void generateGrid(SquareFactory squareFactory) {
@@ -54,7 +57,7 @@ public class Region extends Grid implements Savable {
         for (UUID locationUUID : getLocationUUIDs()) {
             Square square;
             try {
-                square = PersistentData.getInstance().getSquare(locationUUID);
+                square = persistentData.getSquare(locationUUID);
             } catch (Exception e) {
                 logger.logError("Location of a region wasn't found.");
                 return null;
@@ -113,7 +116,7 @@ public class Region extends Grid implements Savable {
                             UUID entityUUID = square.getEntityUUIDs().iterator().next();
                             Actor actor = null;
                             try {
-                                actor = PersistentData.getInstance().getActor(entityUUID);
+                                actor = persistentData.getActor(entityUUID);
                             } catch (ActorNotFoundException actorNotFoundException) {
                                 // this shouldn't happen
                             }

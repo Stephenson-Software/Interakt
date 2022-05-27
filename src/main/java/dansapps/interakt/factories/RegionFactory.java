@@ -17,22 +17,24 @@ import java.util.UUID;
  * @since January 15th, 2022
  */
 public class RegionFactory {
-    private SquareFactory squareFactory;
-    private Logger logger;
+    private final SquareFactory squareFactory;
+    private final Logger logger;
+    private final PersistentData persistentData;
 
-    public RegionFactory(SquareFactory squareFactory, Logger logger) {
+    public RegionFactory(SquareFactory squareFactory, Logger logger, PersistentData persistentData) {
         this.squareFactory = squareFactory;
         this.logger = logger;
+        this.persistentData = persistentData;
     }
 
     public UUID createRegion(UUID environmentUUID) {
-        Region region = new Region(CONFIG.GRID_SIZE, CONFIG.GRID_SIZE, environmentUUID, squareFactory, logger);
-        PersistentData.getInstance().addRegion(region);
+        Region region = new Region(CONFIG.GRID_SIZE, CONFIG.GRID_SIZE, environmentUUID, squareFactory, logger, persistentData);
+        persistentData.addRegion(region);
         return region.getUUID();
     }
 
     public void createRegion(Map<String, String> data) {
-        Region region = new Region(data, logger);
-        PersistentData.getInstance().addRegion(region);
+        Region region = new Region(data, logger, persistentData);
+        persistentData.addRegion(region);
     }
 }

@@ -14,8 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GenerateTestDataCommand extends InteraktCommand {
-    private WorldFactory worldFactory;
-    private ActorFactory actorFactory;
+    private final WorldFactory worldFactory;
+    private final ActorFactory actorFactory;
+    private final PersistentData persistentData;
 
     private static final ArrayList<String> names = new ArrayList<>(Arrays.asList(
             "Adam", "Bob", "Carl", "Damien", "Eve",
@@ -26,10 +27,11 @@ public class GenerateTestDataCommand extends InteraktCommand {
             "Zeke"
     ));
 
-    public GenerateTestDataCommand(WorldFactory worldFactory, ActorFactory actorFactory) {
+    public GenerateTestDataCommand(WorldFactory worldFactory, ActorFactory actorFactory, PersistentData persistentData) {
         super(new ArrayList<>(List.of("generatetestdata", "gtd")), new ArrayList<>(List.of("interakt.generatetestdata")));
         this.worldFactory = worldFactory;
         this.actorFactory = actorFactory;
+        this.persistentData = persistentData;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class GenerateTestDataCommand extends InteraktCommand {
         worldFactory.createWorld("Test");
         World world;
         try {
-            world = PersistentData.getInstance().getWorld("Test");
+            world = persistentData.getWorld("Test");
         } catch (Exception e) {
             sender.sendMessage("There was a problem accessing the test world after it was generated.");
             return false;
@@ -50,7 +52,7 @@ public class GenerateTestDataCommand extends InteraktCommand {
             }
             Actor actor;
             try {
-                actor = PersistentData.getInstance().getActor(name);
+                actor = persistentData.getActor(name);
             }
             catch (Exception e) {
                 sender.sendMessage("There was a problem accessing an actor after it was generated.");
@@ -60,7 +62,7 @@ public class GenerateTestDataCommand extends InteraktCommand {
                 sender.sendMessage("Test data has already been generated.");
                 return false;
             }
-            PersistentData.getInstance().placeIntoEnvironment(world, sender, actor);
+            persistentData.placeIntoEnvironment(world, sender, actor);
         }
         sender.sendMessage("Test data has been generated.");
         return true;

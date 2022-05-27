@@ -40,13 +40,14 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     private HashMap<UUID, Integer> relations = new HashMap<>();
 
     // dependencies
-    private Logger logger;
-    private EventFactory eventFactory;
-    private Interakt interakt;
-    private ActionRecordFactory actionRecordFactory;
-    private ActorFactory actorFactory;
+    private final Logger logger;
+    private final EventFactory eventFactory;
+    private final Interakt interakt;
+    private final ActionRecordFactory actionRecordFactory;
+    private final ActorFactory actorFactory;
+    private final PersistentData persistentData;
 
-    public Actor(String name, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, ActorFactory actorFactory) {
+    public Actor(String name, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, ActorFactory actorFactory, PersistentData persistentData) {
         super(name);
         chanceToMove = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
         chanceToBefriend = new Random().nextInt(CONFIG.MAX_CHANCE_TO_BEFRIEND);
@@ -61,9 +62,10 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         this.interakt = interakt;
         this.actionRecordFactory = actionRecordFactory;
         this.actorFactory = actorFactory;
+        this.persistentData = persistentData;
     }
 
-    public Actor(Map<String, String> data, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, ActorFactory actorFactory) {
+    public Actor(Map<String, String> data, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, ActorFactory actorFactory, PersistentData persistentData) {
         super("temp");
         this.load(data);
 
@@ -73,6 +75,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         this.interakt = interakt;
         this.actionRecordFactory = actionRecordFactory;
         this.actorFactory = actorFactory;
+        this.persistentData = persistentData;
     }
 
     public void sendInfo(CommandSender sender) {
@@ -80,12 +83,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     }
 
     public World getWorld() {
-        return PersistentData.getInstance().getWorld(getEnvironmentUUID());
+        return persistentData.getWorld(getEnvironmentUUID());
     }
 
     public Location getLocation() {
         try {
-            return PersistentData.getInstance().getSquare(getLocationUUID());
+            return persistentData.getSquare(getLocationUUID());
         } catch (Exception e) {
             logger.logError("Location for " + getName() + " was not found.");
             return null;
@@ -354,7 +357,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         }
         Actor offspring = actorFactory.createActorFromParents(actor, other);
         World world = actor.getWorld();
-        boolean success = PersistentData.getInstance().placeIntoEnvironment(world, offspring); // TODO: place in same square as parents
+        boolean success = persistentData.placeIntoEnvironment(world, offspring); // TODO: place in same square as parents
 
         if (!success) {
             logger.logError("Something went wrong placing a new offspring into their environment.");
@@ -424,10 +427,10 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         for (UUID actorUUID : relations.keySet()) {
             Actor actor = null;
             try {
-                actor = PersistentData.getInstance().getActor(actorUUID);
+                actor = persistentData.getActor(actorUUID);
             } catch (ActorNotFoundException actorNotFoundException) {
                 try {
-                    EntityRecord entityRecord = PersistentData.getInstance().getEntityRecord(actorUUID);
+                    EntityRecord entityRecord = persistentData.getEntityRecord(actorUUID);
                     toReturn += entityRecord.getName() + ": [deceased]" + "\n";
                 } catch (EntityRecordNotFoundException entityRecordNotFoundException) {
                     // this shouldn't happen
@@ -526,10 +529,10 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         for (UUID uuid : parentIDs) {
             Actor actor = null;
             try {
-                actor = PersistentData.getInstance().getActor(uuid);
+                actor = persistentData.getActor(uuid);
             } catch (ActorNotFoundException actorNotFoundException) {
                 try {
-                    EntityRecord entityRecord = PersistentData.getInstance().getEntityRecord(uuid);
+                    EntityRecord entityRecord = persistentData.getEntityRecord(uuid);
                     toReturn += toReturn += actor.getName() + "[deceased]";
                     count++;
                     if (count != parentIDs.size()) {
@@ -558,10 +561,10 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         for (UUID uuid : childIDs) {
             Actor actor = null;
             try {
-                actor = PersistentData.getInstance().getActor(uuid);
+                actor = persistentData.getActor(uuid);
             } catch (ActorNotFoundException actorNotFoundException) {
                 try {
-                    EntityRecord entityRecord = PersistentData.getInstance().getEntityRecord(uuid);
+                    EntityRecord entityRecord = persistentData.getEntityRecord(uuid);
                     toReturn = toReturn + entityRecord.getName() + " [deceased]";
                     count++;
                     if (count != childIDs.size()) {

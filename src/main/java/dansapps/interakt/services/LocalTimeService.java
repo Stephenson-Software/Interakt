@@ -20,14 +20,16 @@ import java.util.concurrent.TimeUnit;
  * @since January 8th, 2022
  */
 public class LocalTimeService extends TimeService {
-    private Interakt interakt;
-    private TimePartitionFactory timePartitionFactory;
-    private Logger logger;
+    private final Interakt interakt;
+    private final TimePartitionFactory timePartitionFactory;
+    private final Logger logger;
+    private final PersistentData persistentData;
 
-    public LocalTimeService(Interakt interakt, TimePartitionFactory timePartitionFactory, Logger logger) {
+    public LocalTimeService(Interakt interakt, TimePartitionFactory timePartitionFactory, Logger logger, PersistentData persistentData) {
         this.interakt = interakt;
         this.timePartitionFactory = timePartitionFactory;
         this.logger = logger;
+        this.persistentData = persistentData;
     }
 
     @Override
@@ -47,11 +49,11 @@ public class LocalTimeService extends TimeService {
         int TIME_SLOT_LENGTH_IN_MILLISECONDS = CONFIG.TIME_SLOT_LENGTH_IN_SECONDS * 1000;
         timePartitionFactory.createTimePartition(TIME_SLOT_LENGTH_IN_MILLISECONDS);
         handleEntityActions();
-        logger.logInfo("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimePartitions().size());
+        logger.logInfo("Time elapsed. Number of elapsed slots: " + persistentData.getTimePartitions().size());
     }
 
     private void handleEntityActions() {
-        for (Actor actor : PersistentData.getInstance().getActors()) {
+        for (Actor actor : persistentData.getActors()) {
             if (actor.isDead()) {
                 continue;
             }
@@ -63,6 +65,6 @@ public class LocalTimeService extends TimeService {
                 case 3 -> actor.attemptToPerformReproduceAction();
             }
         }
-        PersistentData.getInstance().removeDeadActors();
+        persistentData.removeDeadActors();
     }
 }

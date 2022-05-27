@@ -18,20 +18,22 @@ import java.util.List;
  * @since January 7th, 2022
  */
 public class ListCommand extends InteraktCommand {
+    private final PersistentData persistentData;
 
-    public ListCommand() {
+    public ListCommand(PersistentData persistentData) {
         super(new ArrayList<>(List.of("list", "ls")), new ArrayList<>(List.of("interakt.list")));
+        this.persistentData = persistentData;
     }
 
     @Override
     public boolean execute(CommandSender sender) {
         sender.sendMessage("=== Actors ===");
-        for (Actor actor : PersistentData.getInstance().getActors()) {
+        for (Actor actor : persistentData.getActors()) {
             sender.sendMessage(actor.getName());
         }
         sender.sendMessage("");
         sender.sendMessage("=== Worlds ===");
-        for (World world : PersistentData.getInstance().getWorlds()) {
+        for (World world : persistentData.getWorlds()) {
             sender.sendMessage(world.getName());
         }
         return true;

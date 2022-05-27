@@ -23,18 +23,21 @@ import java.util.*;
  * @since January 7th, 2022
  */
 public class World extends Environment implements Savable {
-    private Logger logger;
+    private final Logger logger;
+    private final PersistentData persistentData;
 
-    public World(String name, RegionFactory regionFactory, Logger logger) {
+    public World(String name, RegionFactory regionFactory, Logger logger, PersistentData persistentData) {
         super(name, null);
         setGridUUID(regionFactory.createRegion(getUUID()));
         this.logger = logger;
+        this.persistentData = persistentData;
     }
 
-    public World(Map<String, String> data, Logger logger) {
+    public World(Map<String, String> data, Logger logger, PersistentData persistentData) {
         super("temp", null);
         this.load(data);
         this.logger = logger;
+        this.persistentData = persistentData;
     }
 
     public void sendInfo(CommandSender sender) {
@@ -52,7 +55,7 @@ public class World extends Environment implements Savable {
     public Square getFirstSquare() {
         Region region;
         try {
-            region = PersistentData.getInstance().getRegion(getGridUUID());
+            region = persistentData.getRegion(getGridUUID());
         } catch (Exception e) {
             logger.logError("A region wasn't found when attempting to find the first location in " + getName() + ".");
             return null;
@@ -60,7 +63,7 @@ public class World extends Environment implements Savable {
 
         Square square;
         try {
-            square = PersistentData.getInstance().getSquare(region.getFirstLocationUUID());
+            square = persistentData.getSquare(region.getFirstLocationUUID());
         } catch (Exception e) {
             logger.logError("A square wasn't found when attempting to find the first location of a region.");
             return null;
@@ -71,7 +74,7 @@ public class World extends Environment implements Savable {
 
     public Region getGrid() {
         try {
-            return PersistentData.getInstance().getRegion(getGridUUID());
+            return persistentData.getRegion(getGridUUID());
         } catch (Exception e) {
             logger.logError("There was a problem fetching a grid from a world's reference.");
             return null;

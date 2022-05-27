@@ -8,18 +8,19 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class WipeCommandTest {
-    private final TestUtilities testUtilities = new TestUtilities();
+    private final PersistentData persistentData = new PersistentData();
+    private final TestUtilities testUtilities = new TestUtilities(persistentData);
 
     @Test
     public void testWipeCommand() {
         testUtilities.createWorld("TestWorld");
         testUtilities.createActor("TestActor");
 
-        WipeCommand wipeCommand = new WipeCommand();
+        WipeCommand wipeCommand = new WipeCommand(persistentData);
         Console console = new Console();
         wipeCommand.execute(console);
 
-        Assert.assertEquals(0, PersistentData.getInstance().getNumActors());
-        Assert.assertEquals(0, PersistentData.getInstance().getNumWorlds());
+        Assert.assertEquals(0, persistentData.getNumActors());
+        Assert.assertEquals(0, persistentData.getNumWorlds());
     }
 }

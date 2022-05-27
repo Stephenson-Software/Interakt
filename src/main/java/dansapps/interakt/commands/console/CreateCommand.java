@@ -18,8 +18,8 @@ import java.util.List;
  * @since January 7th, 2022
  */
 public class CreateCommand extends InteraktCommand {
-    private ActorFactory actorFactory;
-    private WorldFactory worldFactory;
+    private final ActorFactory actorFactory;
+    private final WorldFactory worldFactory;
 
     public CreateCommand(ActorFactory actorFactory, WorldFactory worldFactory) {
         super(new ArrayList<>(List.of("create")), new ArrayList<>(List.of("interakt.create")));

@@ -24,21 +24,23 @@ public class ActorFactory {
     private final EventFactory eventFactory;
     private final Interakt interakt;
     private final ActionRecordFactory actionRecordFactory;
+    private final PersistentData persistentData;
 
-    public ActorFactory(EntityRecordFactory entityRecordFactory, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory) {
+    public ActorFactory(EntityRecordFactory entityRecordFactory, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, PersistentData persistentData) {
         this.entityRecordFactory = entityRecordFactory;
         this.logger = logger;
         this.eventFactory = eventFactory;
         this.interakt = interakt;
         this.actionRecordFactory = actionRecordFactory;
+        this.persistentData = persistentData;
     }
 
     public Actor createActorWithName(String name) throws NameTakenException {
         if (isNameTaken(name)) {
             throw new NameTakenException();
         }
-        Actor actor = new Actor(name, logger, eventFactory, interakt, actionRecordFactory, this);
-        PersistentData.getInstance().addActor(actor);
+        Actor actor = new Actor(name, logger, eventFactory, interakt, actionRecordFactory, this, persistentData);
+        persistentData.addActor(actor);
         entityRecordFactory.createEntityRecord(actor);
         return actor;
     }
@@ -74,14 +76,14 @@ public class ActorFactory {
     }
 
     public void createActorWithData(Map<String, String> data) {
-        Actor actor = new Actor(data, logger, eventFactory, interakt, actionRecordFactory, this);
-        PersistentData.getInstance().addActor(actor);
+        Actor actor = new Actor(data, logger, eventFactory, interakt, actionRecordFactory, this, persistentData);
+        persistentData.addActor(actor);
         entityRecordFactory.createEntityRecord(actor);
 
     }
 
     private boolean isNameTaken(String name) {
-        return PersistentData.getInstance().isActor(name);
+        return persistentData.isActor(name);
     }
 
     private String generateRandomString(int length) {

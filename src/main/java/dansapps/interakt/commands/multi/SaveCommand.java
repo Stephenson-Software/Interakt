@@ -12,7 +12,7 @@ import java.util.List;
  * @since January 15th, 2022
  */
 public class SaveCommand extends InteraktCommand {
-    private LocalStorageService storageService;
+    private final LocalStorageService storageService;
 
     public SaveCommand(LocalStorageService storageService) {
         super(new ArrayList<>(List.of("save")), new ArrayList<>(List.of("interakt.save")));

@@ -17,19 +17,21 @@ import java.util.UUID;
  */
 public class SquareFactory {
     private Logger logger;
+    private PersistentData persistentData;
 
-    public SquareFactory(Logger logger) {
+    public SquareFactory(Logger logger, PersistentData persistentData) {
         this.logger = logger;
+        this.persistentData = persistentData;
     }
 
     public UUID createSquare(int x, int y, UUID gridUUID) {
-        Square square = new Square(x, y, gridUUID, logger);
-        PersistentData.getInstance().addSquare(square);
+        Square square = new Square(x, y, gridUUID, logger, persistentData);
+        persistentData.addSquare(square);
         return square.getUUID();
     }
 
     public void createSquare(Map<String, String> data) {
-        Square square = new Square(data, logger);
-        PersistentData.getInstance().addSquare(square);
+        Square square = new Square(data, logger, persistentData);
+        persistentData.addSquare(square);
     }
 }
