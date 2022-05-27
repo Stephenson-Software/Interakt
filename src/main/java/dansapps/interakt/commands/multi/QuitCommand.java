@@ -16,15 +16,17 @@ import java.util.List;
  * @since January 7th, 2022
  */
 public class QuitCommand extends InteraktCommand {
+    private Interakt interakt;
 
-    public QuitCommand() {
+    public QuitCommand(Interakt interakt) {
         super(new ArrayList<>(List.of("quit", "exit")), new ArrayList<>(List.of("interakt.quit")));
+        this.interakt = interakt;
     }
 
     @Override
     public boolean execute(CommandSender sender) {
         sender.sendMessage("Goodbye!");
-        Interakt.getInstance().shutdownApplication();
+        interakt.shutdownApplication();
         return true;
     }
 

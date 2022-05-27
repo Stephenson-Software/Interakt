@@ -4,9 +4,12 @@
  */
 package dansapps.interakt.factories;
 
+
+import dansapps.interakt.Interakt;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.exceptions.NameTakenException;
 import dansapps.interakt.objects.Actor;
+import dansapps.interakt.utils.Logger;
 
 import java.util.Map;
 import java.util.Random;
@@ -16,26 +19,27 @@ import java.util.Random;
  * @since January 15th, 2022
  */
 public class ActorFactory {
-    private static ActorFactory instance;
+    private final EntityRecordFactory entityRecordFactory;
+    private final Logger logger;
+    private final EventFactory eventFactory;
+    private final Interakt interakt;
+    private final ActionRecordFactory actionRecordFactory;
 
-    private ActorFactory() {
-
-    }
-
-    public static ActorFactory getInstance() {
-        if (instance == null) {
-            instance = new ActorFactory();
-        }
-        return instance;
+    public ActorFactory(EntityRecordFactory entityRecordFactory, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory) {
+        this.entityRecordFactory = entityRecordFactory;
+        this.logger = logger;
+        this.eventFactory = eventFactory;
+        this.interakt = interakt;
+        this.actionRecordFactory = actionRecordFactory;
     }
 
     public Actor createActorWithName(String name) throws NameTakenException {
         if (isNameTaken(name)) {
             throw new NameTakenException();
         }
-        Actor actor = new Actor(name);
+        Actor actor = new Actor(name, logger, eventFactory, interakt, actionRecordFactory, this);
         PersistentData.getInstance().addActor(actor);
-        EntityRecordFactory.getInstance().createEntityRecord(actor);
+        entityRecordFactory.createEntityRecord(actor);
         return actor;
     }
 
@@ -70,9 +74,9 @@ public class ActorFactory {
     }
 
     public void createActorWithData(Map<String, String> data) {
-        Actor actor = new Actor(data);
+        Actor actor = new Actor(data, logger, eventFactory, interakt, actionRecordFactory, this);
         PersistentData.getInstance().addActor(actor);
-        EntityRecordFactory.getInstance().createEntityRecord(actor);
+        entityRecordFactory.createEntityRecord(actor);
 
     }
 

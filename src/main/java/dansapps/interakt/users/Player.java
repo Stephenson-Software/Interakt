@@ -1,6 +1,5 @@
 package dansapps.interakt.users;
 
-import dansapps.interakt.objects.Actor;
 import dansapps.interakt.users.abs.CommandSenderImpl;
 
 /**

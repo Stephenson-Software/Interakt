@@ -26,21 +26,24 @@ import java.util.UUID;
  * @since January 7th, 2022
  */
 public class Region extends Grid implements Savable {
+    private Logger logger;
 
-    public Region(int columns, int rows, UUID parentEnvironmentUUID) {
+    public Region(int columns, int rows, UUID parentEnvironmentUUID, SquareFactory squareFactory, Logger logger) {
         super(columns, rows, parentEnvironmentUUID);
-        generateGrid();
+        generateGrid(squareFactory);
+        this.logger = logger;
     }
 
-    public Region(Map<String, String> data) {
+    public Region(Map<String, String> data, Logger logger) {
         super(-1, -1, null);
         this.load(data);
+        this.logger = logger;
     }
 
-    public void generateGrid() {
+    public void generateGrid(SquareFactory squareFactory) {
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                UUID locationUUID = SquareFactory.getInstance().createSquare(i, j, getUUID());
+                UUID locationUUID = squareFactory.createSquare(i, j, getUUID());
                 addLocationUUID(locationUUID);
             }
         }
@@ -53,7 +56,7 @@ public class Region extends Grid implements Savable {
             try {
                 square = PersistentData.getInstance().getSquare(locationUUID);
             } catch (Exception e) {
-                Logger.getInstance().logError("Location of a region wasn't found.");
+                logger.logError("Location of a region wasn't found.");
                 return null;
             }
             if (square.getX() == x && square.getY() == y) {

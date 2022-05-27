@@ -10,12 +10,14 @@ import java.util.Map;
 import java.util.UUID;
 
 public class EntityRecord implements Savable {
+    private Logger logger;
     private UUID entityUUID;
     private String name;
 
-    public EntityRecord(UUID uuid, String name) {
+    public EntityRecord(UUID uuid, String name, Logger logger) {
         setUUID(uuid);
         setName(name);
+        this.logger = logger;
     }
 
     public EntityRecord(Map<String, String> data) {
@@ -50,7 +52,7 @@ public class EntityRecord implements Savable {
             setName(gson.fromJson(data.get("name"), String.class));
         }
         catch(Exception e) {
-            Logger.getInstance().logError("Something went wrong loading an actor record.");
+            logger.logError("Something went wrong loading an actor record.");
         }
     }
 

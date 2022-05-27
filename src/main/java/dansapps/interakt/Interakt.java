@@ -4,21 +4,23 @@
  */
 package dansapps.interakt;
 
+
 import dansapps.interakt.commands.console.*;
 import dansapps.interakt.commands.multi.HelpCommand;
 import dansapps.interakt.commands.multi.QuitCommand;
 import dansapps.interakt.commands.multi.SaveCommand;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.factories.*;
 import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.World;
-import dansapps.interakt.users.Console;
-import dansapps.interakt.users.Player;
-import dansapps.interakt.users.abs.CommandSenderImpl;
 import dansapps.interakt.services.LocalAutoSaveService;
 import dansapps.interakt.services.LocalCommandService;
 import dansapps.interakt.services.LocalStorageService;
 import dansapps.interakt.services.LocalTimeService;
+import dansapps.interakt.users.Console;
+import dansapps.interakt.users.Player;
+import dansapps.interakt.users.abs.CommandSenderImpl;
 import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.EnvironmentLib;
 import preponderous.ponder.system.abs.ApplicationCommand;
@@ -33,21 +35,30 @@ import java.util.Scanner;
  * @since January 7th, 2022
  */
 public class Interakt extends PonderApplication {
-    private static Interakt instance;
     private boolean running = true;
-    private LocalCommandService commandService;
     private final Scanner scanner = new Scanner(System.in);
     private final EnvironmentLib environmentLib = new EnvironmentLib();
     private CommandSenderImpl commandSender;
     private String playerActorName = "";
 
-    /**
-     * This can be utilized to access the self-managed instance of the application.
-     * @return The self-managed instance of the application.
-     */
-    public static Interakt getInstance() {
-        return instance;
-    }
+    // logger
+    private Logger logger = new Logger(this);
+
+    // factories
+    private ActionRecordFactory actionRecordFactory = new ActionRecordFactory();
+    private EntityRecordFactory entityRecordFactory = new EntityRecordFactory(logger);
+    private EventFactory eventFactory = new EventFactory();
+    private ActorFactory actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, this, actionRecordFactory);
+    private SquareFactory squareFactory = new SquareFactory(logger);
+    private RegionFactory regionFactory = new RegionFactory(squareFactory, logger);
+    private TimePartitionFactory timePartitionFactory = new TimePartitionFactory();
+    private WorldFactory worldFactory = new WorldFactory(regionFactory, logger);
+
+    // services
+    private LocalStorageService storageService = new LocalStorageService(actorFactory, worldFactory, regionFactory, squareFactory, timePartitionFactory, actionRecordFactory, entityRecordFactory, logger);
+    private LocalAutoSaveService autoSaveService = new LocalAutoSaveService(this, storageService, logger);
+    private LocalCommandService commandService = new LocalCommandService(getCommands());
+    private LocalTimeService timeService = new LocalTimeService(this, timePartitionFactory, logger);
 
     /**
      * Initializes values and calls the onStartup method.
@@ -62,8 +73,8 @@ public class Interakt extends PonderApplication {
      * @param user The user of the application.
      */
     public void run(CommandSenderImpl user) {
-        Logger.getInstance().logInfo("Running application.");
-        Logger.getInstance().logInfo("Using EnvironmentLib " + environmentLib.getVersion());
+        logger.logInfo("Running application.");
+        logger.logInfo("Using EnvironmentLib " + environmentLib.getVersion());
 
         commandSender = user;
 
@@ -79,7 +90,7 @@ public class Interakt extends PonderApplication {
             playerActorName = getScanner().nextLine();
             if (!PersistentData.getInstance().isActor(playerActorName)) {
                 // create actor and place into test world
-                Actor actor = new Actor(playerActorName);
+                Actor actor = new Actor(playerActorName, logger, eventFactory, this, actionRecordFactory, actorFactory);
                 PersistentData.getInstance().addActor(actor);
                 World world;
                 try {
@@ -116,7 +127,7 @@ public class Interakt extends PonderApplication {
 
             boolean success = onCommand(user, label, args);
             if (!success) {
-                Logger.getInstance().logInfo("Something went wrong processing the " + label + " command.");
+                logger.logInfo("Something went wrong processing the " + label + " command.");
             }
         }
     }
@@ -145,12 +156,10 @@ public class Interakt extends PonderApplication {
      */
     @Override
     public void onStartup() {
-        instance = this;
-        Logger.getInstance().logInfo("Initiating startup.");
-        initializeCommandService();
-        LocalStorageService.getInstance().load();
-        LocalTimeService.getInstance().start();
-        LocalAutoSaveService.getInstance().start();
+        logger.logInfo("Initiating startup.");
+        storageService.load();
+        timeService.start();
+        autoSaveService.start();
     }
 
     /**
@@ -158,8 +167,8 @@ public class Interakt extends PonderApplication {
      */
     @Override
     public void onShutdown() {
-        Logger.getInstance().logInfo("Initiating shutdown.");
-        LocalStorageService.getInstance().save();
+        logger.logInfo("Initiating shutdown.");
+        storageService.save();
     }
 
     /**
@@ -171,7 +180,7 @@ public class Interakt extends PonderApplication {
      */
     @Override
     public boolean onCommand(CommandSender sender, String label, String[] args) {
-        Logger.getInstance().logInfo("Interpreting command " + label);
+        logger.logInfo("Interpreting command " + label);
         return getCommandService().interpretCommand(sender, label, args);
     }
 
@@ -217,23 +226,23 @@ public class Interakt extends PonderApplication {
     /**
      * Initializes the command service with the application's commands.
      */
-    private void initializeCommandService() {
+    private HashSet<ApplicationCommand> getCommands() {
         HashSet<ApplicationCommand> commands = new HashSet<>();
         commands.add(new HelpCommand());
         commands.add(new InfoCommand());
-        commands.add(new QuitCommand());
-        commands.add(new CreateCommand());
+        commands.add(new QuitCommand(this));
+        commands.add(new CreateCommand(actorFactory, worldFactory));
         commands.add(new DeleteCommand());
         commands.add(new ViewCommand());
         commands.add(new ListCommand());
         commands.add(new PlaceCommand());
-        commands.add(new StatsCommand());
+        commands.add(new StatsCommand(logger));
         commands.add(new WipeCommand());
-        commands.add(new ElapseCommand());
-        commands.add(new SaveCommand());
-        commands.add(new GenerateTestDataCommand());
+        commands.add(new ElapseCommand(timeService));
+        commands.add(new SaveCommand(storageService));
+        commands.add(new GenerateTestDataCommand(worldFactory, actorFactory));
         commands.add(new RelationsCommand());
-        setCommandService(new LocalCommandService(commands));
+        return commands;
     }
 
     /**
@@ -264,7 +273,7 @@ public class Interakt extends PonderApplication {
      * Shuts down the application.
      */
     public void shutdownApplication() {
-        Interakt.getInstance().onShutdown();
+        onShutdown();
         System.exit(0);
     }
 
