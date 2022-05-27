@@ -14,14 +14,19 @@ import java.util.Map;
  * @since January 15th, 2022
  */
 public class TimePartitionFactory {
+    private final PersistentData persistentData;
+
+    public TimePartitionFactory(PersistentData persistentData) {
+        this.persistentData = persistentData;
+    }
 
     public void createTimePartition(int length) {
         TimePartition timePartition = new TimePartition(length);
-        PersistentData.getInstance().addTimePartition(timePartition);
+        persistentData.addTimePartition(timePartition);
     }
 
     public void createTimePartition(Map<String, String> data) {
         TimePartition timePartition = new TimePartition(data);
-        PersistentData.getInstance().addTimePartition(timePartition);
+        persistentData.addTimePartition(timePartition);
     }
 }

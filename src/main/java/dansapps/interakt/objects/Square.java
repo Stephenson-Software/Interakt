@@ -22,17 +22,20 @@ import java.util.*;
  * @since January 7th, 2022
  */
 public class Square extends Location implements Savable {
-    private Logger logger;
+    private final Logger logger;
+    private final PersistentData persistentData;
 
-    public Square(int x, int y, UUID gridUUID, Logger logger) {
+    public Square(int x, int y, UUID gridUUID, Logger logger, PersistentData persistentData) {
         super(x, y, gridUUID);
         this.logger = logger;
+        this.persistentData = persistentData;
     }
 
-    public Square(Map<String, String> data, Logger logger) {
+    public Square(Map<String, String> data, Logger logger, PersistentData persistentData) {
         super(-1, -1, null);
         this.load(data);
         this.logger = logger;
+        this.persistentData = persistentData;
     }
 
     public void addActor(Actor actor) {
@@ -94,7 +97,7 @@ public class Square extends Location implements Savable {
 
     public Region getParentGrid() {
         try {
-            return PersistentData.getInstance().getRegion(getParentGridUUID());
+            return persistentData.getRegion(getParentGridUUID());
         } catch (Exception e) {
             logger.logError("The parent grid of a square was not found.");
             return null;
@@ -123,6 +126,6 @@ public class Square extends Location implements Savable {
 
     public Actor getRandomActor() throws ActorNotFoundException {
         UUID randomUUID = getRandomEntityUUID();
-        return PersistentData.getInstance().getActor(randomUUID);
+        return persistentData.getActor(randomUUID);
     }
 }

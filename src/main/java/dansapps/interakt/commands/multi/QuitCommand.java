@@ -16,7 +16,7 @@ import java.util.List;
  * @since January 7th, 2022
  */
 public class QuitCommand extends InteraktCommand {
-    private Interakt interakt;
+    private final Interakt interakt;
 
     public QuitCommand(Interakt interakt) {
         super(new ArrayList<>(List.of("quit", "exit")), new ArrayList<>(List.of("interakt.quit")));

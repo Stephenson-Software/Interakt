@@ -6,14 +6,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class CreateCommandTest {
-    private final TestUtilities testUtilities = new TestUtilities();
+    private final PersistentData persistentData = new PersistentData();
+    private final TestUtilities testUtilities = new TestUtilities(persistentData);
 
     @Test
     public void testCreateActor() {
         String name = "Gerald";
         testUtilities.createActor(name);
         try {
-            PersistentData.getInstance().getActor(name);
+            persistentData.getActor(name);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -24,7 +25,7 @@ public class CreateCommandTest {
         String name = "Test";
         testUtilities.createWorld(name);
         try {
-            PersistentData.getInstance().getWorld(name);
+            persistentData.getWorld(name);
         } catch (Exception e) {
             Assert.fail();
         }

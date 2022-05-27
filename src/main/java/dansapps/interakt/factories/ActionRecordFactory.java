@@ -9,20 +9,25 @@ import dansapps.interakt.objects.Actor;
 import java.util.Map;
 
 public class ActionRecordFactory {
+    private final PersistentData persistentData;
+
+    public ActionRecordFactory(PersistentData persistentData) {
+        this.persistentData = persistentData;
+    }
 
     public void createActionRecord(Actor actor, ACTION_TYPE actionType) {
         ActionRecord actionRecord = new ActionRecord(actor.getUUID(), actionType);
-        PersistentData.getInstance().addActionRecord(actionRecord);
+        persistentData.addActionRecord(actionRecord);
         actor.addActionRecord(actionRecord);
     }
 
     public void createActionRecord(Map<String, String> data) {
         ActionRecord actionRecord = new ActionRecord(data);
-        PersistentData.getInstance().addActionRecord(actionRecord);
+        persistentData.addActionRecord(actionRecord);
 
         Actor actor = null;
         try {
-            actor = PersistentData.getInstance().getActor(actionRecord.getEntityUUID());
+            actor = persistentData.getActor(actionRecord.getEntityUUID());
         } catch (ActorNotFoundException actorNotFoundException) {
             // fail silently, this actor is likely dead
             return;

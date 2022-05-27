@@ -20,14 +20,15 @@ import java.util.Map;
  * @since January 8th, 2022
  */
 public class LocalStorageService {
-    private ActorFactory actorFactory;
-    private WorldFactory worldFactory;
-    private RegionFactory regionFactory;
-    private SquareFactory squareFactory;
-    private TimePartitionFactory timePartitionFactory;
-    private ActionRecordFactory actionRecordFactory;
-    private EntityRecordFactory entityRecordFactory;
-    private Logger logger;
+    private final ActorFactory actorFactory;
+    private final WorldFactory worldFactory;
+    private final RegionFactory regionFactory;
+    private final SquareFactory squareFactory;
+    private final TimePartitionFactory timePartitionFactory;
+    private final ActionRecordFactory actionRecordFactory;
+    private final EntityRecordFactory entityRecordFactory;
+    private final Logger logger;
+    private final PersistentData persistentData;
 
     public final static String FILE_PATH = "/Interakt/";
     private final static String ACTORS_FILE_NAME = "actors.json";
@@ -40,7 +41,7 @@ public class LocalStorageService {
 
     private final JsonWriterReader jsonWriterReader = new JsonWriterReader();
 
-    public LocalStorageService(ActorFactory actorFactory, WorldFactory worldFactory, RegionFactory regionFactory, SquareFactory squareFactory, TimePartitionFactory timePartitionFactory, ActionRecordFactory actionRecordFactory, EntityRecordFactory entityRecordFactory, Logger logger) {
+    public LocalStorageService(ActorFactory actorFactory, WorldFactory worldFactory, RegionFactory regionFactory, SquareFactory squareFactory, TimePartitionFactory timePartitionFactory, ActionRecordFactory actionRecordFactory, EntityRecordFactory entityRecordFactory, Logger logger, PersistentData persistentData) {
         jsonWriterReader.initialize(FILE_PATH);
         this.actorFactory = actorFactory;
         this.worldFactory = worldFactory;
@@ -50,6 +51,7 @@ public class LocalStorageService {
         this.actionRecordFactory = actionRecordFactory;
         this.entityRecordFactory = entityRecordFactory;
         this.logger = logger;
+        this.persistentData = persistentData;
     }
 
     public void save() {
@@ -84,7 +86,7 @@ public class LocalStorageService {
 
     private void saveActors() {
         List<Map<String, String>> actors = new ArrayList<>();
-        for (Actor actor : PersistentData.getInstance().getActors()){
+        for (Actor actor : persistentData.getActors()){
             actors.add(actor.save());
         }
         jsonWriterReader.writeOutFiles(actors, ACTORS_FILE_NAME);
@@ -92,7 +94,7 @@ public class LocalStorageService {
 
     private void saveWorlds() {
         List<Map<String, String>> worlds = new ArrayList<>();
-        for (World world : PersistentData.getInstance().getWorlds()){
+        for (World world : persistentData.getWorlds()){
             worlds.add(world.save());
         }
         jsonWriterReader.writeOutFiles(worlds, WORLDS_FILE_NAME);
@@ -100,7 +102,7 @@ public class LocalStorageService {
 
     private void saveRegions() {
         List<Map<String, String>> regions = new ArrayList<>();
-        for (Region region : PersistentData.getInstance().getRegions()){
+        for (Region region : persistentData.getRegions()){
             regions.add(region.save());
         }
         jsonWriterReader.writeOutFiles(regions, REGIONS_FILE_NAME);
@@ -108,7 +110,7 @@ public class LocalStorageService {
 
     private void saveSquares() {
         List<Map<String, String>> squares = new ArrayList<>();
-        for (Square square : PersistentData.getInstance().getSquares()){
+        for (Square square : persistentData.getSquares()){
             squares.add(square.save());
         }
         jsonWriterReader.writeOutFiles(squares, SQUARES_FILE_NAME);
@@ -116,7 +118,7 @@ public class LocalStorageService {
 
     private void saveTimePartitions() {
         List<Map<String, String>> timeSlots = new ArrayList<>();
-        for (TimePartition timePartition : PersistentData.getInstance().getTimePartitions()){
+        for (TimePartition timePartition : persistentData.getTimePartitions()){
             timeSlots.add(timePartition.save());
         }
         jsonWriterReader.writeOutFiles(timeSlots, TIME_PARTITIONS_FILE_NAME);
@@ -124,7 +126,7 @@ public class LocalStorageService {
 
     private void saveActionRecords() {
         List<Map<String, String>> actionRecords = new ArrayList<>();
-        for (ActionRecord actionRecord : PersistentData.getInstance().getActionRecords()){
+        for (ActionRecord actionRecord : persistentData.getActionRecords()){
             actionRecords.add(actionRecord.save());
         }
         jsonWriterReader.writeOutFiles(actionRecords, ACTION_RECORDS_FILE_NAME);
@@ -132,14 +134,14 @@ public class LocalStorageService {
 
     private void saveEntityRecords() {
         List<Map<String, String>> entityRecords = new ArrayList<>();
-        for (EntityRecord entityRecord : PersistentData.getInstance().getEntityRecords()){
+        for (EntityRecord entityRecord : persistentData.getEntityRecords()){
             entityRecords.add(entityRecord.save());
         }
         jsonWriterReader.writeOutFiles(entityRecords, ENTITY_RECORDS_FILE_NAME);
     }
 
     private void loadActors() {
-        PersistentData.getInstance().getActors().clear();
+        persistentData.getActors().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTORS_FILE_NAME);
         for (Map<String, String> actorData : data){
             actorFactory.createActorWithData(actorData);
@@ -147,7 +149,7 @@ public class LocalStorageService {
     }
 
     private void loadWorlds() {
-        PersistentData.getInstance().getWorlds().clear();
+        persistentData.getWorlds().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + WORLDS_FILE_NAME);
         for (Map<String, String> worldData : data){
             worldFactory.createWorld(worldData);
@@ -155,7 +157,7 @@ public class LocalStorageService {
     }
 
     private void loadRegions() {
-        PersistentData.getInstance().getRegions().clear();
+        persistentData.getRegions().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + REGIONS_FILE_NAME);
         for (Map<String, String> regionData : data){
             regionFactory.createRegion(regionData);
@@ -163,7 +165,7 @@ public class LocalStorageService {
     }
 
     private void loadSquares() {
-        PersistentData.getInstance().getSquares().clear();
+        persistentData.getSquares().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + SQUARES_FILE_NAME);
         for (Map<String, String> squareData : data){
             squareFactory.createSquare(squareData);
@@ -171,7 +173,7 @@ public class LocalStorageService {
     }
 
     private void loadTimePartitions() {
-        PersistentData.getInstance().getTimePartitions().clear();
+        persistentData.getTimePartitions().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + TIME_PARTITIONS_FILE_NAME);
         for (Map<String, String> timePartitionData : data){
             timePartitionFactory.createTimePartition(timePartitionData);
@@ -179,7 +181,7 @@ public class LocalStorageService {
     }
 
     private void loadActionRecords() {
-        PersistentData.getInstance().getActionRecords().clear();
+        persistentData.getActionRecords().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTION_RECORDS_FILE_NAME);
         for (Map<String, String> actionRecordData : data){
             actionRecordFactory.createActionRecord(actionRecordData);
@@ -187,7 +189,7 @@ public class LocalStorageService {
     }
 
     private void loadEntityRecords() {
-        PersistentData.getInstance().getEntityRecords().clear();
+        persistentData.getEntityRecords().clear();
         ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ENTITY_RECORDS_FILE_NAME);
         for (Map<String, String> entityRecordData : data){
             entityRecordFactory.createEntityRecord(entityRecordData);

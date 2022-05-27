@@ -18,9 +18,11 @@ import java.util.List;
  * @since January 7th, 2022
  */
 public class DeleteCommand extends InteraktCommand {
+    private final PersistentData persistentData;
 
-    public DeleteCommand() {
+    public DeleteCommand(PersistentData persistentData) {
         super(new ArrayList<>(List.of("delete", "rm")), new ArrayList<>(List.of("interakt.delete")));
+        this.persistentData = persistentData;
     }
 
     @Override
@@ -65,24 +67,24 @@ public class DeleteCommand extends InteraktCommand {
     private void deleteActor(String name, CommandSender sender) {
         Actor actor;
         try {
-            actor = PersistentData.getInstance().getActor(name);
+            actor = persistentData.getActor(name);
         } catch (Exception e) {
             sender.sendMessage("That actor wasn't found.");
             return;
         }
-        PersistentData.getInstance().removeActor(actor);
+        persistentData.removeActor(actor);
         sender.sendMessage("Actor removed.");
     }
 
     private void deleteWorld(String name, CommandSender sender) {
         World world;
         try {
-            world = PersistentData.getInstance().getWorld(name);
+            world = persistentData.getWorld(name);
         } catch (Exception e) {
             sender.sendMessage("That world wasn't found.");
             return;
         }
-        PersistentData.getInstance().removeWorld(world);
+        persistentData.removeWorld(world);
         sender.sendMessage("World removed.");
     }
 }

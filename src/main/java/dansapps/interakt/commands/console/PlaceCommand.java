@@ -18,9 +18,11 @@ import java.util.List;
  * @since January 7th, 2022
  */
 public class PlaceCommand extends InteraktCommand {
+    private final PersistentData persistentData;
 
-    public PlaceCommand() {
+    public PlaceCommand(PersistentData persistentData) {
         super(new ArrayList<>(List.of("place", "pl")), new ArrayList<>(List.of("interakt.place")));
+        this.persistentData = persistentData;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class PlaceCommand extends InteraktCommand {
         String actorName = doubleQuoteArgs.get(0);
         Actor actor;
         try {
-            actor = PersistentData.getInstance().getActor(actorName);
+            actor = persistentData.getActor(actorName);
         }
         catch (Exception e) {
             sender.sendMessage("That entity wasn't found.");
@@ -69,13 +71,13 @@ public class PlaceCommand extends InteraktCommand {
             return false;
         }
 
-        return PersistentData.getInstance().placeIntoEnvironment(world, sender, actor);
+        return persistentData.placeIntoEnvironment(world, sender, actor);
     }
 
     private World getWorld(ArrayList<String> doubleQuoteArgs, CommandSender sender) throws Exception {
         String environmentName = doubleQuoteArgs.get(1);
         try {
-            return PersistentData.getInstance().getWorld(environmentName);
+            return persistentData.getWorld(environmentName);
         } catch (Exception e) {
             sender.sendMessage("That world wasn't found.");
             throw new Exception();

@@ -12,14 +12,16 @@ import java.util.List;
  * @since January 15th, 2022
  */
 public class WipeCommand extends InteraktCommand {
+    private final PersistentData persistentData;
 
-    public WipeCommand() {
+    public WipeCommand(PersistentData persistentData) {
         super(new ArrayList<>(List.of("wipe")), new ArrayList<>(List.of("interakt.wipe")));
+        this.persistentData = persistentData;
     }
 
     @Override
     public boolean execute(CommandSender sender) {
-        PersistentData.getInstance().clearData();
+        persistentData.clearData();
         sender.sendMessage("Data has been wiped.");
         return true;
     }

@@ -18,9 +18,11 @@ import java.util.List;
  * @since January 7th, 2022
  */
 public class ViewCommand extends InteraktCommand {
+    private final PersistentData persistentData;
 
-    public ViewCommand() {
+    public ViewCommand(PersistentData persistentData) {
         super(new ArrayList<>(List.of("view")), new ArrayList<>(List.of("interakt.view")));
+        this.persistentData = persistentData;
     }
 
     @Override
@@ -51,7 +53,7 @@ public class ViewCommand extends InteraktCommand {
         if (type.equalsIgnoreCase("actor")) {
             Actor actor;
             try {
-                actor = PersistentData.getInstance().getActor(name);
+                actor = persistentData.getActor(name);
             } catch (Exception e) {
                 sender.sendMessage("That actor wasn't found.");
                 return false;
@@ -62,7 +64,7 @@ public class ViewCommand extends InteraktCommand {
         else if (type.equalsIgnoreCase("world")) {
             World world;
             try {
-                world = PersistentData.getInstance().getWorld(name);
+                world = persistentData.getWorld(name);
             } catch (Exception e) {
                 sender.sendMessage("That world wasn't found.");
                 return false;

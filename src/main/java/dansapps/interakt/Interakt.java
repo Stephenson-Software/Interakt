@@ -41,24 +41,27 @@ public class Interakt extends PonderApplication {
     private CommandSenderImpl commandSender;
     private String playerActorName = "";
 
+    // data
+    private final PersistentData persistentData = new PersistentData();
+
     // logger
-    private Logger logger = new Logger(this);
+    private final Logger logger = new Logger(this);
 
     // factories
-    private ActionRecordFactory actionRecordFactory = new ActionRecordFactory();
-    private EntityRecordFactory entityRecordFactory = new EntityRecordFactory(logger);
-    private EventFactory eventFactory = new EventFactory();
-    private ActorFactory actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, this, actionRecordFactory);
-    private SquareFactory squareFactory = new SquareFactory(logger);
-    private RegionFactory regionFactory = new RegionFactory(squareFactory, logger);
-    private TimePartitionFactory timePartitionFactory = new TimePartitionFactory();
-    private WorldFactory worldFactory = new WorldFactory(regionFactory, logger);
+    private final ActionRecordFactory actionRecordFactory = new ActionRecordFactory(persistentData);
+    private final EntityRecordFactory entityRecordFactory = new EntityRecordFactory(logger, persistentData);
+    private final EventFactory eventFactory = new EventFactory();
+    private final ActorFactory actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, this, actionRecordFactory, persistentData);
+    private final SquareFactory squareFactory = new SquareFactory(logger, persistentData);
+    private final RegionFactory regionFactory = new RegionFactory(squareFactory, logger, persistentData);
+    private final TimePartitionFactory timePartitionFactory = new TimePartitionFactory(persistentData);
+    private final WorldFactory worldFactory = new WorldFactory(regionFactory, logger, persistentData);
 
     // services
-    private LocalStorageService storageService = new LocalStorageService(actorFactory, worldFactory, regionFactory, squareFactory, timePartitionFactory, actionRecordFactory, entityRecordFactory, logger);
-    private LocalAutoSaveService autoSaveService = new LocalAutoSaveService(this, storageService, logger);
-    private LocalCommandService commandService = new LocalCommandService(getCommands());
-    private LocalTimeService timeService = new LocalTimeService(this, timePartitionFactory, logger);
+    private final LocalStorageService storageService = new LocalStorageService(actorFactory, worldFactory, regionFactory, squareFactory, timePartitionFactory, actionRecordFactory, entityRecordFactory, logger, persistentData);
+    private final LocalAutoSaveService autoSaveService = new LocalAutoSaveService(this, storageService, logger);
+    private final LocalCommandService commandService = new LocalCommandService(getCommands());
+    private final LocalTimeService timeService = new LocalTimeService(this, timePartitionFactory, logger, persistentData);
 
     /**
      * Initializes values and calls the onStartup method.
@@ -88,14 +91,14 @@ public class Interakt extends PonderApplication {
         else if (user instanceof Player) {
             user.sendMessage("What is the name of your actor?");
             playerActorName = getScanner().nextLine();
-            if (!PersistentData.getInstance().isActor(playerActorName)) {
+            if (!persistentData.isActor(playerActorName)) {
                 // create actor and place into test world
-                Actor actor = new Actor(playerActorName, logger, eventFactory, this, actionRecordFactory, actorFactory);
-                PersistentData.getInstance().addActor(actor);
+                Actor actor = new Actor(playerActorName, logger, eventFactory, this, actionRecordFactory, actorFactory, persistentData);
+                persistentData.addActor(actor);
                 World world;
                 try {
-                    world = PersistentData.getInstance().getWorld("test");
-                    PersistentData.getInstance().placeIntoEnvironment(world, user, actor);
+                    world = persistentData.getWorld("test");
+                    persistentData.placeIntoEnvironment(world, user, actor);
                     user.sendMessage("You enter the world " + world.getName() + ".");
                 } catch (Exception e) {
                     user.sendMessage("World 'test' needs to exist. Please generate test data via the console and try again.");
@@ -232,16 +235,16 @@ public class Interakt extends PonderApplication {
         commands.add(new InfoCommand());
         commands.add(new QuitCommand(this));
         commands.add(new CreateCommand(actorFactory, worldFactory));
-        commands.add(new DeleteCommand());
-        commands.add(new ViewCommand());
-        commands.add(new ListCommand());
-        commands.add(new PlaceCommand());
-        commands.add(new StatsCommand(logger));
-        commands.add(new WipeCommand());
+        commands.add(new DeleteCommand(persistentData));
+        commands.add(new ViewCommand(persistentData));
+        commands.add(new ListCommand(persistentData));
+        commands.add(new PlaceCommand(persistentData));
+        commands.add(new StatsCommand(logger, persistentData));
+        commands.add(new WipeCommand(persistentData));
         commands.add(new ElapseCommand(timeService));
         commands.add(new SaveCommand(storageService));
-        commands.add(new GenerateTestDataCommand(worldFactory, actorFactory));
-        commands.add(new RelationsCommand());
+        commands.add(new GenerateTestDataCommand(worldFactory, actorFactory, persistentData));
+        commands.add(new RelationsCommand(persistentData));
         return commands;
     }
 
@@ -251,14 +254,6 @@ public class Interakt extends PonderApplication {
      */
     private LocalCommandService getCommandService() {
         return commandService;
-    }
-
-    /**
-     * This can be used to set this application's managed instance of Ponder's command service.
-     * @param commandService The instance of Ponder's command service to use.
-     */
-    private void setCommandService(LocalCommandService commandService) {
-        this.commandService = commandService;
     }
 
     /**

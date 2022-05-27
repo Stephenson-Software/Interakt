@@ -16,7 +16,7 @@ import java.util.List;
  * @since January 15th, 2022
  */
 public class ElapseCommand extends InteraktCommand {
-    private LocalTimeService timeService;
+    private final LocalTimeService timeService;
 
     public ElapseCommand(LocalTimeService timeService) {
         super(new ArrayList<>(List.of("elapse")), new ArrayList<>(List.of("interakt.elapse")));

@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since January 7th, 2022
  */
 public class PersistentData {
-    private static PersistentData instance;
     private Set<Actor> actors = new ConcurrentHashMap<Actor, Boolean>().newKeySet();
     private Set<World> worlds = new ConcurrentHashMap<Actor, Boolean>().newKeySet();
     private Set<Region> regions = new ConcurrentHashMap<Actor, Boolean>().newKeySet();
@@ -26,17 +25,6 @@ public class PersistentData {
     private ArrayList<TimePartition> timePartitions = new ArrayList<>();
     private LinkedList<ActionRecord> actionRecords = new LinkedList<>();
     private Set<EntityRecord> entityRecords = new HashSet<>();
-
-    private PersistentData() {
-
-    }
-
-    public static PersistentData getInstance() {
-        if (instance == null) {
-            instance = new PersistentData();
-        }
-        return instance;
-    }
 
     public Set<Actor> getActors() {
         return actors;

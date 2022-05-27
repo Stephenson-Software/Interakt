@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RelationsCommand extends InteraktCommand {
+    private final PersistentData persistentData;
 
-    public RelationsCommand() {
+    public RelationsCommand(PersistentData persistentData) {
         super(new ArrayList<>(List.of("relations", "rel")), new ArrayList<>(List.of("interakt.relations")));
+        this.persistentData = persistentData;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class RelationsCommand extends InteraktCommand {
         String actorName = doubleQuoteArgs.get(0);
         Actor actor;
         try {
-            actor = PersistentData.getInstance().getActor(actorName);
+            actor = persistentData.getActor(actorName);
         } catch (Exception e) {
             commandSender.sendMessage("That actor wasn't found.");
             return false;
