@@ -4,9 +4,14 @@
  */
 package dansapps.interakt.factories;
 
+import dansapps.interakt.actions.AttackAction;
+import dansapps.interakt.actions.BefriendAction;
+import dansapps.interakt.actions.MoveAction;
+import dansapps.interakt.actions.ReproduceAction;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.exceptions.NameTakenException;
 import dansapps.interakt.objects.Actor;
+import dansapps.interakt.utils.Logger;
 
 import java.util.Map;
 import java.util.Random;
@@ -16,26 +21,29 @@ import java.util.Random;
  * @since January 15th, 2022
  */
 public class ActorFactory {
-    private static ActorFactory instance;
+    private EntityRecordFactory entityRecordFactory;
+    private AttackAction attackAction;
+    private BefriendAction befriendAction;
+    private MoveAction moveAction;
+    private ReproduceAction reproduceAction;
+    private Logger logger;
 
-    private ActorFactory() {
-
-    }
-
-    public static ActorFactory getInstance() {
-        if (instance == null) {
-            instance = new ActorFactory();
-        }
-        return instance;
+    public ActorFactory(EntityRecordFactory entityRecordFactory, AttackAction attackAction, BefriendAction befriendAction, MoveAction moveAction, ReproduceAction reproduceAction, Logger logger) {
+        this.entityRecordFactory = entityRecordFactory;
+        this.attackAction = attackAction;
+        this.befriendAction = befriendAction;
+        this.moveAction = moveAction;
+        this.reproduceAction = reproduceAction;
+        this.logger = logger;
     }
 
     public Actor createActorWithName(String name) throws NameTakenException {
         if (isNameTaken(name)) {
             throw new NameTakenException();
         }
-        Actor actor = new Actor(name);
+        Actor actor = new Actor(name, attackAction, befriendAction, moveAction, reproduceAction, logger);
         PersistentData.getInstance().addActor(actor);
-        EntityRecordFactory.getInstance().createEntityRecord(actor);
+        entityRecordFactory.createEntityRecord(actor);
         return actor;
     }
 
@@ -70,9 +78,9 @@ public class ActorFactory {
     }
 
     public void createActorWithData(Map<String, String> data) {
-        Actor actor = new Actor(data);
+        Actor actor = new Actor(data, attackAction, befriendAction, moveAction, reproduceAction, logger);
         PersistentData.getInstance().addActor(actor);
-        EntityRecordFactory.getInstance().createEntityRecord(actor);
+        entityRecordFactory.createEntityRecord(actor);
 
     }
 

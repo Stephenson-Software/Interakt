@@ -23,15 +23,19 @@ import java.util.*;
  * @since January 7th, 2022
  */
 public class World extends Environment implements Savable {
+    private RegionFactory regionFactory;
+    private Logger logger;
 
-    public World(String name) {
+    public World(String name, RegionFactory regionFactory, Logger logger) {
         super(name, null);
-        setGridUUID(RegionFactory.getInstance().createRegion(getUUID()));
+        setGridUUID(regionFactory.createRegion(getUUID()));
+        this.logger = logger;
     }
 
-    public World(Map<String, String> data) {
+    public World(Map<String, String> data, RegionFactory regionFactory) {
         super("temp", null);
         this.load(data);
+        this.regionFactory = regionFactory;
     }
 
     public void sendInfo(CommandSender sender) {
@@ -51,7 +55,7 @@ public class World extends Environment implements Savable {
         try {
             region = PersistentData.getInstance().getRegion(getGridUUID());
         } catch (Exception e) {
-            Logger.getInstance().logError("A region wasn't found when attempting to find the first location in " + getName() + ".");
+            logger.logError("A region wasn't found when attempting to find the first location in " + getName() + ".");
             return null;
         }
 
@@ -59,7 +63,7 @@ public class World extends Environment implements Savable {
         try {
             square = PersistentData.getInstance().getSquare(region.getFirstLocationUUID());
         } catch (Exception e) {
-            Logger.getInstance().logError("A square wasn't found when attempting to find the first location of a region.");
+            logger.logError("A square wasn't found when attempting to find the first location of a region.");
             return null;
         }
 
@@ -70,7 +74,7 @@ public class World extends Environment implements Savable {
         try {
             return PersistentData.getInstance().getRegion(getGridUUID());
         } catch (Exception e) {
-            Logger.getInstance().logError("There was a problem fetching a grid from a world's reference.");
+            logger.logError("There was a problem fetching a grid from a world's reference.");
             return null;
         }
     }

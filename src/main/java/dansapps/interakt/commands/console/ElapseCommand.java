@@ -16,15 +16,17 @@ import java.util.List;
  * @since January 15th, 2022
  */
 public class ElapseCommand extends InteraktCommand {
+    private LocalTimeService timeService;
 
-    public ElapseCommand() {
+    public ElapseCommand(LocalTimeService timeService) {
         super(new ArrayList<>(List.of("elapse")), new ArrayList<>(List.of("interakt.elapse")));
+        this.timeService = timeService;
     }
 
     @Override
     public boolean execute(CommandSender sender) {
         sender.sendMessage("Forcing time elapse.");
-        LocalTimeService.getInstance().elapse();
+        timeService.elapse();
         return true;
     }
 

@@ -14,18 +14,6 @@ import java.util.Map;
  * @since January 15th, 2022
  */
 public class WorldFactory {
-    private static WorldFactory instance;
-
-    private WorldFactory() {
-
-    }
-
-    public static WorldFactory getInstance() {
-        if (instance == null) {
-            instance = new WorldFactory();
-        }
-        return instance;
-    }
 
     public void createWorld(String name) {
         if (isNameTaken(name)) {

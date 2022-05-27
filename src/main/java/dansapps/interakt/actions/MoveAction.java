@@ -8,6 +8,7 @@ import dansapps.interakt.Interakt;
 import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.factories.EventFactory;
+import dansapps.interakt.misc.enums.ACTION_TYPE;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.Event;
 import dansapps.interakt.objects.Square;
@@ -18,13 +19,24 @@ import dansapps.interakt.utils.Logger;
  * @since January 15th, 2022
  */
 public class MoveAction implements Action {
+    private Logger logger;
+    private EventFactory eventFactory;
+    private Interakt interakt;
+    private ActionRecordFactory actionRecordFactory;
 
-    public static void execute(Actor actor) {
+    public MoveAction(Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory) {
+        this.logger = logger;
+        this.eventFactory = eventFactory;
+        this.interakt = interakt;
+        this.actionRecordFactory = actionRecordFactory;
+    }
+
+    public void execute(Actor actor) {
         Square currentSquare;
         try {
             currentSquare = actor.getSquare();
         } catch (Exception e) {
-            Logger.getInstance().logError(actor.getName() + " wanted to move, but their location wasn't found.");
+            logger.logError(actor.getName() + " wanted to move, but their location wasn't found.");
             return;
         }
 
@@ -44,19 +56,19 @@ public class MoveAction implements Action {
         newSquare.addActor(actor);
 
         try {
-            Event event = EventFactory.getInstance().createEvent(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
-            Logger.getInstance().logEvent(event);
+            Event event = eventFactory.createEvent(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
+            logger.logEvent(event);
 
-            if (actor.getName().equalsIgnoreCase(Interakt.getInstance().getPlayerActorName())) {
-                Interakt.getInstance().getCommandSender().sendMessage("You have moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
+            if (actor.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
+                interakt.getCommandSender().sendMessage("You have moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
             }
         } catch (Exception e) {
-            Logger.getInstance().logError(actor.getName() + " moved, but their environment wasn't found.");
+            logger.logError(actor.getName() + " moved, but their environment wasn't found.");
         }
 
-        actor.addSquareIfNotExplored(newSquare);
+        actor.addSquareIfNotExplored(newSquare, eventFactory);
 
-        ActionRecordFactory.getInstance().createActionRecord(actor, new MoveAction());
+        actionRecordFactory.createActionRecord(actor, ACTION_TYPE.MOVE);
     }
 
     @Override

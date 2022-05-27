@@ -1,4 +1,4 @@
-package dansapps.interakt.misc;
+package dansapps.interakt.misc.enums;
 
 /**
  * @author Daniel McCoy Stephenson

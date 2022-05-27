@@ -14,18 +14,6 @@ import java.util.Map;
  * @since January 15th, 2022
  */
 public class TimePartitionFactory {
-    private static TimePartitionFactory instance;
-
-    private TimePartitionFactory() {
-
-    }
-
-    public static TimePartitionFactory getInstance() {
-        if (instance == null) {
-            instance = new TimePartitionFactory();
-        }
-        return instance;
-    }
 
     public void createTimePartition(int length) {
         TimePartition timePartition = new TimePartition(length);

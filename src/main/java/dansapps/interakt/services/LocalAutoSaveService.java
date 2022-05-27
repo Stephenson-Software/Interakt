@@ -7,29 +7,26 @@ import dansapps.interakt.utils.Logger;
 import java.util.concurrent.TimeUnit;
 
 public class LocalAutoSaveService extends Thread {
-    private static LocalAutoSaveService instance;
+    private Interakt interakt;
+    private LocalStorageService storageService;
+    private Logger logger;
 
-    private LocalAutoSaveService() {
-
-    }
-
-    public static LocalAutoSaveService getInstance() {
-        if (instance == null) {
-            instance = new LocalAutoSaveService();
-        }
-        return instance;
+    public LocalAutoSaveService(Interakt interakt, LocalStorageService storageService, Logger logger) {
+        this.interakt = interakt;
+        this.storageService = storageService;
+        this.logger = logger;
     }
 
     @Override
     public void run() {
-        while (Interakt.getInstance().isRunning()) {
-            LocalStorageService.getInstance().save();
-            Logger.getInstance().logInfo("Data has been saved. This will happen every " + CONFIG.SECONDS_BETWEEN_AUTO_SAVES + " seconds.");
+        while (interakt.isRunning()) {
+            storageService.save();
+            logger.logInfo("Data has been saved. This will happen every " + CONFIG.SECONDS_BETWEEN_AUTO_SAVES + " seconds.");
 
             try {
                 TimeUnit.SECONDS.sleep(CONFIG.SECONDS_BETWEEN_AUTO_SAVES);
             } catch (Exception e) {
-                Logger.getInstance().logError("Local Auto Save Service was interrupted.");
+                logger.logError("Local Auto Save Service was interrupted.");
             }
         }
     }

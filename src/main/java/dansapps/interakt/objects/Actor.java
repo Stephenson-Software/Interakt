@@ -41,18 +41,40 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     private HashSet<UUID> exploredSquares = new HashSet<>();
     private HashMap<UUID, Integer> relations = new HashMap<>();
 
-    public Actor(String name) {
+    private AttackAction attackAction;
+    private BefriendAction befriendAction;
+    private MoveAction moveAction;
+    private ReproduceAction reproduceAction;
+
+    private Logger logger;
+
+    public Actor(String name, AttackAction attackAction, BefriendAction befriendAction, MoveAction moveAction, ReproduceAction reproduceAction, Logger logger) {
         super(name);
         chanceToMove = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
         chanceToBefriend = new Random().nextInt(CONFIG.MAX_CHANCE_TO_BEFRIEND);
         chanceToAttack = new Random().nextInt(CONFIG.MAX_CHANCE_TO_ATTACK);
         chanceToReproduce = new Random().nextInt(CONFIG.MAX_CHANCE_TO_REPRODUCE);
+
+        this.logger = logger;
+
         health = CONFIG.MAX_HEALTH;
+
+        this.attackAction = attackAction;
+        this.befriendAction = befriendAction;
+        this.moveAction = moveAction;
+        this.reproduceAction = reproduceAction;
     }
 
-    public Actor(Map<String, String> data) {
+    public Actor(Map<String, String> data, AttackAction attackAction, BefriendAction befriendAction, MoveAction moveAction, ReproduceAction reproduceAction, Logger logger) {
         super("temp");
         this.load(data);
+
+        this.attackAction = attackAction;
+        this.befriendAction = befriendAction;
+        this.moveAction = moveAction;
+        this.reproduceAction = reproduceAction;
+
+        this.logger = logger;
     }
 
     public void sendInfo(CommandSender sender) {
@@ -67,7 +89,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         try {
             return PersistentData.getInstance().getSquare(getLocationUUID());
         } catch (Exception e) {
-            Logger.getInstance().logError("Location for " + getName() + " was not found.");
+            logger.logError("Location for " + getName() + " was not found.");
             return null;
         }
     }
@@ -78,7 +100,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
     public void attemptToMove() {
         if (roll(getChanceToMove())) {
-            MoveAction.execute(this);
+            moveAction.execute(this);
         }
     }
 
@@ -124,11 +146,11 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         return CONFIG.MAX_HEALTH;
     }
 
-    public void addSquareIfNotExplored(Square square) {
+    public void addSquareIfNotExplored(Square square, EventFactory eventFactory) {
         boolean success = exploredSquares.add(square.getUUID());
         if (success) {
-            Event event = EventFactory.getInstance().createEvent(getName() + " has explored a new square.");
-            Logger.getInstance().logEvent(event);
+            Event event = eventFactory.createEvent(getName() + " has explored a new square.");
+            logger.logEvent(event);
         }
     }
 
@@ -143,7 +165,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     public void attemptToBefriend() {
         Square square = getSquare();
         if (square == null) {
-            Logger.getInstance().logError("A square was unexpectedly null.");
+            logger.logError("A square was unexpectedly null.");
             return;
         }
         if (square.getNumActors() < 2) {
@@ -164,7 +186,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (target.getUUID().equals(getUUID())) {
             return;
         }
-        BefriendAction.execute(this, target);
+        befriendAction.execute(this, target);
      }
 
     public int getNumExploredChunks() {
@@ -204,7 +226,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (target.getUUID().equals(getUUID())) {
             return;
         }
-        AttackAction.execute(this, target);
+        attackAction.execute(this, target);
     }
 
     public void attemptToPerformReproduceAction() {
@@ -230,7 +252,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (target.getUUID().equals(getUUID())) {
             return;
         }
-        ReproduceAction.execute(this, target);
+        reproduceAction.execute(this, target);
     }
 
     public boolean isDead() {
@@ -371,7 +393,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             relations = gson.fromJson(data.get("relations"), hashMapTypeUUIDToInteger);
         }
         catch(Exception e) {
-            Logger.getInstance().logError("Something went wrong loading an actor.");
+            logger.logError("Something went wrong loading an actor.");
         }
     }
 
@@ -472,7 +494,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             setEnvironmentUUID(UUID.fromString(gson.fromJson(data.get("environmentUUID"), String.class)));
         }
         catch(Exception ignored) {
-            Logger.getInstance().logError("An environment wasn't found for " + getName());
+            logger.logError("An environment wasn't found for " + getName());
         }
     }
 
@@ -481,7 +503,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             setLocationUUID(UUID.fromString(gson.fromJson(data.get("locationUUID"), String.class)));
         }
         catch(Exception ignored) {
-            Logger.getInstance().logError("A location wasn't found for " + getName());
+            logger.logError("A location wasn't found for " + getName());
         }
     }
 }

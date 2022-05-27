@@ -3,25 +3,19 @@ package dansapps.interakt.factories;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.EntityRecord;
 import dansapps.interakt.objects.Actor;
+import dansapps.interakt.utils.Logger;
 
 import java.util.Map;
 
 public class EntityRecordFactory {
-    private static EntityRecordFactory instance;
+    private Logger logger;
 
-    private EntityRecordFactory() {
-
-    }
-
-    public static EntityRecordFactory getInstance() {
-        if (instance == null) {
-            instance = new EntityRecordFactory();
-        }
-        return instance;
+    public EntityRecordFactory(Logger logger) {
+        this.logger = logger;
     }
 
     public void createEntityRecord(Actor actor) {
-        EntityRecord entityRecord = new EntityRecord(actor.getUUID(), actor.getName());
+        EntityRecord entityRecord = new EntityRecord(actor.getUUID(), actor.getName(), logger);
         PersistentData.getInstance().addEntityRecord(entityRecord);
     }
 
