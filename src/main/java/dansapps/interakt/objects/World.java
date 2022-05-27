@@ -23,7 +23,6 @@ import java.util.*;
  * @since January 7th, 2022
  */
 public class World extends Environment implements Savable {
-    private RegionFactory regionFactory;
     private Logger logger;
 
     public World(String name, RegionFactory regionFactory, Logger logger) {
@@ -32,10 +31,10 @@ public class World extends Environment implements Savable {
         this.logger = logger;
     }
 
-    public World(Map<String, String> data, RegionFactory regionFactory) {
+    public World(Map<String, String> data, Logger logger) {
         super("temp", null);
         this.load(data);
-        this.regionFactory = regionFactory;
+        this.logger = logger;
     }
 
     public void sendInfo(CommandSender sender) {

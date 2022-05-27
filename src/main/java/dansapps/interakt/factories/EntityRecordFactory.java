@@ -1,8 +1,8 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.objects.EntityRecord;
 import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.EntityRecord;
 import dansapps.interakt.utils.Logger;
 
 import java.util.Map;

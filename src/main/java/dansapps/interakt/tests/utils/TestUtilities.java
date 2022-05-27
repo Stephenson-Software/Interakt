@@ -1,29 +1,21 @@
-package dansapps.interakt.tests;
+package dansapps.interakt.tests.utils;
 
+import dansapps.interakt.Interakt;
 import dansapps.interakt.commands.console.CreateCommand;
-import dansapps.interakt.factories.ActorFactory;
-import dansapps.interakt.factories.EntityRecordFactory;
-import dansapps.interakt.factories.WorldFactory;
+import dansapps.interakt.factories.*;
 import dansapps.interakt.users.Console;
+import dansapps.interakt.utils.Logger;
 
 public class TestUtilities {
-    private static TestUtilities instance;
-    private EntityRecordFactory entityRecordFactory;
-    private ActorFactory actorFactory;
-    private WorldFactory worldFactory;
-
-    private TestUtilities() {
-        this.entityRecordFactory = new EntityRecordFactory();
-        this.actorFactory = new ActorFactory(entityRecordFactory);
-        this.worldFactory = new WorldFactory();
-    }
-
-    public static TestUtilities getInstance() {
-        if (instance == null) {
-            instance = new TestUtilities();
-        }
-        return instance;
-    }
+    private final Interakt interakt = new Interakt();
+    private final Logger logger = new Logger(interakt);
+    private final EntityRecordFactory entityRecordFactory = new EntityRecordFactory(logger);
+    private final EventFactory eventFactory = new EventFactory();
+    private final ActionRecordFactory actionRecordFactory = new ActionRecordFactory();
+    private final ActorFactory actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, interakt, actionRecordFactory);
+    private final SquareFactory squareFactory = new SquareFactory(logger);
+    private final RegionFactory regionFactory = new RegionFactory(squareFactory, logger);
+    private final WorldFactory worldFactory = new WorldFactory(regionFactory, logger);
 
     public String wrapInQuotationMarks(String toWrap) {
         return "\"" + toWrap + "\"";

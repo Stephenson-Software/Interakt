@@ -4,10 +4,7 @@
  */
 package dansapps.interakt;
 
-import dansapps.interakt.actions.AttackAction;
-import dansapps.interakt.actions.BefriendAction;
-import dansapps.interakt.actions.MoveAction;
-import dansapps.interakt.actions.ReproduceAction;
+
 import dansapps.interakt.commands.console.*;
 import dansapps.interakt.commands.multi.HelpCommand;
 import dansapps.interakt.commands.multi.QuitCommand;
@@ -17,13 +14,13 @@ import dansapps.interakt.factories.*;
 import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.World;
-import dansapps.interakt.users.Console;
-import dansapps.interakt.users.Player;
-import dansapps.interakt.users.abs.CommandSenderImpl;
 import dansapps.interakt.services.LocalAutoSaveService;
 import dansapps.interakt.services.LocalCommandService;
 import dansapps.interakt.services.LocalStorageService;
 import dansapps.interakt.services.LocalTimeService;
+import dansapps.interakt.users.Console;
+import dansapps.interakt.users.Player;
+import dansapps.interakt.users.abs.CommandSenderImpl;
 import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.EnvironmentLib;
 import preponderous.ponder.system.abs.ApplicationCommand;
@@ -49,25 +46,19 @@ public class Interakt extends PonderApplication {
 
     // factories
     private ActionRecordFactory actionRecordFactory = new ActionRecordFactory();
-    private EntityRecordFactory entityRecordFactory = new EntityRecordFactory();
-    private ActorFactory actorFactory = new ActorFactory(entityRecordFactory);
+    private EntityRecordFactory entityRecordFactory = new EntityRecordFactory(logger);
     private EventFactory eventFactory = new EventFactory();
-    private SquareFactory squareFactory = new SquareFactory();
-    private RegionFactory regionFactory = new RegionFactory(squareFactory);
+    private ActorFactory actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, this, actionRecordFactory);
+    private SquareFactory squareFactory = new SquareFactory(logger);
+    private RegionFactory regionFactory = new RegionFactory(squareFactory, logger);
     private TimePartitionFactory timePartitionFactory = new TimePartitionFactory();
-    private WorldFactory worldFactory = new WorldFactory();
+    private WorldFactory worldFactory = new WorldFactory(regionFactory, logger);
 
     // services
-    private LocalStorageService storageService = new LocalStorageService(actorFactory, worldFactory, regionFactory, squareFactory, timePartitionFactory, actionRecordFactory, entityRecordFactory);
-    private LocalAutoSaveService autoSaveService = new LocalAutoSaveService(this, storageService);
+    private LocalStorageService storageService = new LocalStorageService(actorFactory, worldFactory, regionFactory, squareFactory, timePartitionFactory, actionRecordFactory, entityRecordFactory, logger);
+    private LocalAutoSaveService autoSaveService = new LocalAutoSaveService(this, storageService, logger);
     private LocalCommandService commandService = new LocalCommandService(getCommands());
-    private LocalTimeService timeService = new LocalTimeService(this, timePartitionFactory);
-
-    // actions
-    private AttackAction attackAction = new AttackAction(eventFactory, logger, this, actionRecordFactory);
-    private BefriendAction befriendAction = new BefriendAction(eventFactory, logger, this, actionRecordFactory);
-    private MoveAction moveAction = new MoveAction(logger, eventFactory, this, actionRecordFactory);
-    private ReproduceAction reproduceAction = new ReproduceAction(actorFactory, logger, eventFactory, this, actionRecordFactory);
+    private LocalTimeService timeService = new LocalTimeService(this, timePartitionFactory, logger);
 
     /**
      * Initializes values and calls the onStartup method.
@@ -99,7 +90,7 @@ public class Interakt extends PonderApplication {
             playerActorName = getScanner().nextLine();
             if (!PersistentData.getInstance().isActor(playerActorName)) {
                 // create actor and place into test world
-                Actor actor = new Actor(playerActorName, attackAction, befriendAction, moveAction, reproduceAction, logger);
+                Actor actor = new Actor(playerActorName, logger, eventFactory, this, actionRecordFactory, actorFactory);
                 PersistentData.getInstance().addActor(actor);
                 World world;
                 try {

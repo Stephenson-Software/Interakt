@@ -1,10 +1,6 @@
 package dansapps.interakt.tests;
 
 import dansapps.interakt.Interakt;
-import dansapps.interakt.actions.AttackAction;
-import dansapps.interakt.actions.BefriendAction;
-import dansapps.interakt.actions.MoveAction;
-import dansapps.interakt.actions.ReproduceAction;
 import dansapps.interakt.commands.console.GenerateTestDataCommand;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.factories.*;
@@ -14,17 +10,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class GenerateTestDataCommandTest {
-    private WorldFactory worldFactory = new WorldFactory();
-    private EventFactory eventFactory = new EventFactory();
-    private Interakt interakt = new Interakt();
-    private Logger logger = new Logger(interakt);
-    private EntityRecordFactory entityRecordFactory = new EntityRecordFactory(logger);
-    private ActionRecordFactory actionRecordFactory = new ActionRecordFactory();
-    private AttackAction attackAction = new AttackAction(eventFactory, logger, interakt, actionRecordFactory);
-    private BefriendAction befriendAction = new BefriendAction(eventFactory, logger, interakt, actionRecordFactory);
-    private MoveAction moveAction = new MoveAction(logger, eventFactory, interakt, actionRecordFactory);
-    private ActorFactory actorFactory = new ActorFactory(entityRecordFactory, attackAction, befriendAction, moveAction, reproduceAction);
-    private ReproduceAction reproduceAction = new ReproduceAction(actorFactory, logger, eventFactory, interakt, actionRecordFactory);
+    private final Interakt interakt = new Interakt();
+    private final Logger logger = new Logger(interakt);
+    private final SquareFactory squareFactory = new SquareFactory(logger);
+    private final RegionFactory regionFactory = new RegionFactory(squareFactory, logger);
+    private final WorldFactory worldFactory = new WorldFactory(regionFactory, logger);
+    private final EventFactory eventFactory = new EventFactory();
+    private final EntityRecordFactory entityRecordFactory = new EntityRecordFactory(logger);
+    private final ActionRecordFactory actionRecordFactory = new ActionRecordFactory();
+    private final ActorFactory actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, interakt, actionRecordFactory);
 
     @Test
     public void testGenerateTestDataCommand() {
