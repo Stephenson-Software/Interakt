@@ -6,6 +6,7 @@ package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.objects.Square;
+import dansapps.interakt.utils.Logger;
 
 import java.util.Map;
 import java.util.UUID;
@@ -15,27 +16,20 @@ import java.util.UUID;
  * @since January 15th, 2022
  */
 public class SquareFactory {
-    private static SquareFactory instance;
+    private Logger logger;
 
-    private SquareFactory() {
-
-    }
-
-    public static SquareFactory getInstance() {
-        if (instance == null) {
-            instance = new SquareFactory();
-        }
-        return instance;
+    public SquareFactory(Logger logger) {
+        this.logger = logger;
     }
 
     public UUID createSquare(int x, int y, UUID gridUUID) {
-        Square square = new Square(x, y, gridUUID);
+        Square square = new Square(x, y, gridUUID, logger);
         PersistentData.getInstance().addSquare(square);
         return square.getUUID();
     }
 
     public void createSquare(Map<String, String> data) {
-        Square square = new Square(data);
+        Square square = new Square(data, logger);
         PersistentData.getInstance().addSquare(square);
     }
 }

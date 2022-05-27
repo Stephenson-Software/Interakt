@@ -1,5 +1,7 @@
 package dansapps.interakt.misc;
 
+import dansapps.interakt.misc.enums.GRID_DISPLAY_TYPE;
+
 /**
  * @author Daniel McCoy Stephenson
  * @since January 15th, 2022

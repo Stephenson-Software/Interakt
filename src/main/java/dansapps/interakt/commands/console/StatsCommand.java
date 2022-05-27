@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatsCommand extends InteraktCommand {
+    private Logger logger;
 
-    public StatsCommand() {
+    public StatsCommand(Logger logger) {
         super(new ArrayList<>(List.of("stats")), new ArrayList<>(List.of("interakt.stats")));
+        this.logger = logger;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class StatsCommand extends InteraktCommand {
             return true;
         }
         catch (Exception e) {
-            Logger.getInstance().logError("Something went wrong when printing stats.");
+            logger.logError("Something went wrong when printing stats.");
             return false;
         }
     }

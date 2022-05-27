@@ -18,9 +18,13 @@ import java.util.List;
  * @since January 7th, 2022
  */
 public class CreateCommand extends InteraktCommand {
+    private ActorFactory actorFactory;
+    private WorldFactory worldFactory;
 
-    public CreateCommand() {
+    public CreateCommand(ActorFactory actorFactory, WorldFactory worldFactory) {
         super(new ArrayList<>(List.of("create")), new ArrayList<>(List.of("interakt.create")));
+        this.actorFactory = actorFactory;
+        this.worldFactory = worldFactory;
     }
 
     @Override
@@ -50,7 +54,7 @@ public class CreateCommand extends InteraktCommand {
 
         if (type.equalsIgnoreCase("actor")) {
             try {
-                ActorFactory.getInstance().createActorWithName(name);
+                actorFactory.createActorWithName(name);
             } catch (NameTakenException e) {
                 sender.sendMessage("That name was taken.");
                 return false;
@@ -59,7 +63,7 @@ public class CreateCommand extends InteraktCommand {
             return true;
         }
         else if (type.equalsIgnoreCase("world")) {
-            WorldFactory.getInstance().createWorld(name);
+            worldFactory.createWorld(name);
             sender.sendMessage("World created.");
             return true;
         }

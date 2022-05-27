@@ -2,27 +2,29 @@ package dansapps.interakt.tests;
 
 import dansapps.interakt.commands.console.PlaceCommand;
 import dansapps.interakt.data.PersistentData;
-import dansapps.interakt.users.Console;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.World;
+import dansapps.interakt.tests.utils.TestUtilities;
+import dansapps.interakt.users.Console;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class PlaceCommandTest {
+    private TestUtilities testUtilities = new TestUtilities();
 
     @Test
     public void testPlaceCommand() {
         String worldName = "TestWorld";
         String actorName = "TestActor";
 
-        TestUtilities.getInstance().createWorld(worldName);
-        TestUtilities.getInstance().createActor(actorName);
+        testUtilities.createWorld(worldName);
+        testUtilities.createActor(actorName);
 
         PlaceCommand placeCommand = new PlaceCommand();
         Console console = new Console();
         String[] args = new String[2];
-        args[0] = TestUtilities.getInstance().wrapInQuotationMarks(actorName);
-        args[1] = TestUtilities.getInstance().wrapInQuotationMarks(worldName);
+        args[0] = testUtilities.wrapInQuotationMarks(actorName);
+        args[1] = testUtilities.wrapInQuotationMarks(worldName);
         placeCommand.execute(console, args);
 
         World world = null;

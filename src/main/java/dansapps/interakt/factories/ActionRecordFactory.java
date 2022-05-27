@@ -1,29 +1,17 @@
 package dansapps.interakt.factories;
 
-import dansapps.interakt.actions.abs.Action;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.exceptions.ActorNotFoundException;
+import dansapps.interakt.misc.enums.ACTION_TYPE;
 import dansapps.interakt.objects.ActionRecord;
 import dansapps.interakt.objects.Actor;
 
 import java.util.Map;
 
 public class ActionRecordFactory {
-    private static ActionRecordFactory instance;
 
-    private ActionRecordFactory() {
-
-    }
-
-    public static ActionRecordFactory getInstance() {
-        if (instance == null) {
-            instance = new ActionRecordFactory();
-        }
-        return instance;
-    }
-
-    public void createActionRecord(Actor actor, Action action) {
-        ActionRecord actionRecord = new ActionRecord(actor.getUUID(), action);
+    public void createActionRecord(Actor actor, ACTION_TYPE actionType) {
+        ActionRecord actionRecord = new ActionRecord(actor.getUUID(), actionType);
         PersistentData.getInstance().addActionRecord(actionRecord);
         actor.addActionRecord(actionRecord);
     }

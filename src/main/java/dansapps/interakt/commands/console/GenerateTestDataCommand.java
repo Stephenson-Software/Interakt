@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GenerateTestDataCommand extends InteraktCommand {
+    private WorldFactory worldFactory;
+    private ActorFactory actorFactory;
 
     private static final ArrayList<String> names = new ArrayList<>(Arrays.asList(
             "Adam", "Bob", "Carl", "Damien", "Eve",
@@ -24,13 +26,15 @@ public class GenerateTestDataCommand extends InteraktCommand {
             "Zeke"
     ));
 
-    public GenerateTestDataCommand() {
+    public GenerateTestDataCommand(WorldFactory worldFactory, ActorFactory actorFactory) {
         super(new ArrayList<>(List.of("generatetestdata", "gtd")), new ArrayList<>(List.of("interakt.generatetestdata")));
+        this.worldFactory = worldFactory;
+        this.actorFactory = actorFactory;
     }
 
     @Override
     public boolean execute(CommandSender sender) {
-        WorldFactory.getInstance().createWorld("Test");
+        worldFactory.createWorld("Test");
         World world;
         try {
             world = PersistentData.getInstance().getWorld("Test");
@@ -40,7 +44,7 @@ public class GenerateTestDataCommand extends InteraktCommand {
         }
         for (String name : names) {
             try {
-                ActorFactory.getInstance().createActorWithName(name);
+                actorFactory.createActorWithName(name);
             } catch (NameTakenException e) {
                 continue;
             }

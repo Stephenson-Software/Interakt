@@ -2,16 +2,18 @@ package dansapps.interakt.tests;
 
 import dansapps.interakt.commands.console.WipeCommand;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.tests.utils.TestUtilities;
 import dansapps.interakt.users.Console;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class WipeCommandTest {
+    private final TestUtilities testUtilities = new TestUtilities();
 
     @Test
     public void testWipeCommand() {
-        TestUtilities.getInstance().createWorld("TestWorld");
-        TestUtilities.getInstance().createActor("TestActor");
+        testUtilities.createWorld("TestWorld");
+        testUtilities.createActor("TestActor");
 
         WipeCommand wipeCommand = new WipeCommand();
         Console console = new Console();

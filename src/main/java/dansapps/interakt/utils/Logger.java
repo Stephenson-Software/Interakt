@@ -21,12 +21,14 @@ import static dansapps.interakt.services.LocalStorageService.FILE_PATH;
  * @since January 7th, 2022
  */
 public class Logger {
-    private static Logger instance;
+    private Interakt interakt;
     private boolean localDebugFlag = false;
     private static String PATH = FILE_PATH + "log.txt";
     private File file = new File(PATH);
 
-    private Logger() {
+    public Logger(Interakt interakt) {
+        this.interakt = interakt;
+
         try {
             file.createNewFile();
         } catch (IOException e) {
@@ -34,19 +36,12 @@ public class Logger {
         }
     }
 
-    public static Logger getInstance() {
-        if (instance == null) {
-            instance = new Logger();
-        }
-        return instance;
-    }
-
     /**
      * This can be used to send a debug message to the console.
      * @param message The message to log to the console.
      */
     public void logInfo(String message) {
-        if (isLocalDebugFlagEnabled() || Interakt.getInstance().isDebugEnabled()) {
+        if (isLocalDebugFlagEnabled() || interakt.isDebugEnabled()) {
             System.out.println("[INFO] " + message);
         }
     }
@@ -63,10 +58,6 @@ public class Logger {
         if (CONFIG.LOG_EVENTS_TO_CONSOLE) {
             System.out.println(datemessage);
         }
-    }
-
-    public static void setInstance(Logger instance) {
-        Logger.instance = instance;
     }
 
     public boolean isLocalDebugFlagEnabled() {

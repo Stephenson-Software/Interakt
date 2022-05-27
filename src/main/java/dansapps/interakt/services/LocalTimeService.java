@@ -20,33 +20,34 @@ import java.util.concurrent.TimeUnit;
  * @since January 8th, 2022
  */
 public class LocalTimeService extends TimeService {
-    private static LocalTimeService instance;
+    private Interakt interakt;
+    private TimePartitionFactory timePartitionFactory;
+    private Logger logger;
 
-    public static LocalTimeService getInstance() {
-        if (instance == null) {
-            instance = new LocalTimeService();
-        }
-        return instance;
+    public LocalTimeService(Interakt interakt, TimePartitionFactory timePartitionFactory, Logger logger) {
+        this.interakt = interakt;
+        this.timePartitionFactory = timePartitionFactory;
+        this.logger = logger;
     }
 
     @Override
     public void run() {
-        while (Interakt.getInstance().isRunning()) {
+        while (interakt.isRunning()) {
             elapse();
             try {
                 TimeUnit.SECONDS.sleep(CONFIG.TIME_SLOT_LENGTH_IN_SECONDS);
             } catch (Exception e) {
-                Logger.getInstance().logError("Time stream was interrupted.");
+                logger.logError("Time stream was interrupted.");
             }
         }
     }
 
     public void elapse() {
-        Logger.getInstance().logInfo("----------------------");
+        logger.logInfo("----------------------");
         int TIME_SLOT_LENGTH_IN_MILLISECONDS = CONFIG.TIME_SLOT_LENGTH_IN_SECONDS * 1000;
-        TimePartitionFactory.getInstance().createTimePartition(TIME_SLOT_LENGTH_IN_MILLISECONDS);
+        timePartitionFactory.createTimePartition(TIME_SLOT_LENGTH_IN_MILLISECONDS);
         handleEntityActions();
-        Logger.getInstance().logInfo("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimePartitions().size());
+        logger.logInfo("Time elapsed. Number of elapsed slots: " + PersistentData.getInstance().getTimePartitions().size());
     }
 
     private void handleEntityActions() {
