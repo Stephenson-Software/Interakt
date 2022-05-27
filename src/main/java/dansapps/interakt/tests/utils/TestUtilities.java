@@ -18,13 +18,15 @@ public class TestUtilities {
     private final SquareFactory squareFactory;
     private final RegionFactory regionFactory;
     private final WorldFactory worldFactory;
+    private final FoodItemFactory foodItemFactory;
 
     public TestUtilities(PersistentData persistentData) {
         this.persistentData = persistentData;
         entityRecordFactory = new EntityRecordFactory(logger, persistentData);
         eventFactory = new EventFactory();
         actionRecordFactory = new ActionRecordFactory(persistentData);
-        actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, interakt, actionRecordFactory, persistentData);
+        foodItemFactory = new FoodItemFactory(logger);
+        actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, interakt, actionRecordFactory, persistentData, foodItemFactory);
         squareFactory = new SquareFactory(logger, persistentData);
         regionFactory = new RegionFactory(squareFactory, logger, persistentData);
         worldFactory = new WorldFactory(regionFactory, logger, persistentData);

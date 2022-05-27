@@ -14,8 +14,9 @@ import dansapps.interakt.exceptions.EntityRecordNotFoundException;
 import dansapps.interakt.factories.ActionRecordFactory;
 import dansapps.interakt.factories.ActorFactory;
 import dansapps.interakt.factories.EventFactory;
+import dansapps.interakt.factories.FoodItemFactory;
 import dansapps.interakt.misc.CONFIG;
-import dansapps.interakt.misc.enums.ACTION_TYPE;
+import dansapps.interakt.misc.enums.ACTIONTYPE;
 import dansapps.interakt.utils.Logger;
 import preponderous.environmentlib.abs.objects.Location;
 import preponderous.ponder.misc.abs.Savable;
@@ -46,8 +47,9 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     private final ActionRecordFactory actionRecordFactory;
     private final ActorFactory actorFactory;
     private final PersistentData persistentData;
+    private final FoodItemFactory foodItemFactory;
 
-    public Actor(String name, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, ActorFactory actorFactory, PersistentData persistentData) {
+    public Actor(String name, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, ActorFactory actorFactory, PersistentData persistentData, FoodItemFactory foodItemFactory) {
         super(name);
         chanceToMove = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
         chanceToBefriend = new Random().nextInt(CONFIG.MAX_CHANCE_TO_BEFRIEND);
@@ -63,9 +65,10 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         this.actionRecordFactory = actionRecordFactory;
         this.actorFactory = actorFactory;
         this.persistentData = persistentData;
+        this.foodItemFactory = foodItemFactory;
     }
 
-    public Actor(Map<String, String> data, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, ActorFactory actorFactory, PersistentData persistentData) {
+    public Actor(Map<String, String> data, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, ActorFactory actorFactory, PersistentData persistentData, FoodItemFactory foodItemFactory) {
         super("temp");
         this.load(data);
 
@@ -76,6 +79,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         this.actionRecordFactory = actionRecordFactory;
         this.actorFactory = actorFactory;
         this.persistentData = persistentData;
+        this.foodItemFactory = foodItemFactory;
     }
 
     public void sendInfo(CommandSender sender) {
@@ -142,7 +146,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
         actor.addSquareIfNotExplored(newSquare, eventFactory);
 
-        actionRecordFactory.createActionRecord(actor, ACTION_TYPE.MOVE);
+        actionRecordFactory.createActionRecord(actor, ACTIONTYPE.MOVE);
     }
 
     private boolean roll(int threshold) {
@@ -242,7 +246,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             interakt.getCommandSender().sendMessage(getName() + " was friendly to you.");
         }
 
-        actionRecordFactory.createActionRecord(this, ACTION_TYPE.BEFRIEND);
+        actionRecordFactory.createActionRecord(this, ACTIONTYPE.BEFRIEND);
 
         increaseRelation(other, new Random().nextInt(10));
         other.increaseRelation(this, new Random().nextInt(10));
@@ -307,7 +311,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             interakt.getCommandSender().sendMessage(getName() + " attacked you and and dealt " + damage + " damage.");
         }
 
-        actionRecordFactory.createActionRecord(this, ACTION_TYPE.ATTACK);
+        actionRecordFactory.createActionRecord(this, ACTIONTYPE.ATTACK);
 
         checkForDeath(victim);
 
@@ -316,12 +320,15 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
     private void checkForDeath(Actor victim) {
         if (victim.isDead()) {
-            Event event = new Event(victim.getName() + " has died.");
-            logger.logEvent(event);
+            Event deathEvent = new Event(victim.getName() + " has died.");
+            logger.logEvent(deathEvent);
 
             if (victim.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
                 interakt.getCommandSender().sendMessage("You have died. Type 'quit' to quit the application.");
             }
+
+            Square square = victim.getSquare();
+            foodItemFactory.createFoodItemAt(victim.getName(), square);
         }
     }
 
@@ -375,7 +382,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             interakt.getCommandSender().sendMessage(other.getName() + " reproduced with you, resulting in " + offspring.getName() + " coming into existence.");
         }
 
-        actionRecordFactory.createActionRecord(actor, ACTION_TYPE.REPRODUCE);
+        actionRecordFactory.createActionRecord(actor, ACTIONTYPE.REPRODUCE);
 
         actor.increaseRelation(other, 100);
         other.increaseRelation(actor, 100);
@@ -533,12 +540,15 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             } catch (ActorNotFoundException actorNotFoundException) {
                 try {
                     EntityRecord entityRecord = persistentData.getEntityRecord(uuid);
-                    toReturn += toReturn += actor.getName() + "[deceased]";
+                    toReturn += entityRecord.getName() + "[deceased]";
                     count++;
                     if (count != parentIDs.size()) {
                         toReturn = toReturn + ", ";
+                        continue;
                     }
-                    continue;
+                    else {
+                        return toReturn;
+                    }
                 } catch (EntityRecordNotFoundException entityRecordNotFoundException) {
                     // this shouldn't happen
                 }

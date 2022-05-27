@@ -51,7 +51,8 @@ public class Interakt extends PonderApplication {
     private final ActionRecordFactory actionRecordFactory = new ActionRecordFactory(persistentData);
     private final EntityRecordFactory entityRecordFactory = new EntityRecordFactory(logger, persistentData);
     private final EventFactory eventFactory = new EventFactory();
-    private final ActorFactory actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, this, actionRecordFactory, persistentData);
+    private final FoodItemFactory foodItemFactory = new FoodItemFactory(logger);
+    private final ActorFactory actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, this, actionRecordFactory, persistentData, foodItemFactory);
     private final SquareFactory squareFactory = new SquareFactory(logger, persistentData);
     private final RegionFactory regionFactory = new RegionFactory(squareFactory, logger, persistentData);
     private final TimePartitionFactory timePartitionFactory = new TimePartitionFactory(persistentData);
@@ -93,7 +94,7 @@ public class Interakt extends PonderApplication {
             playerActorName = getScanner().nextLine();
             if (!persistentData.isActor(playerActorName)) {
                 // create actor and place into test world
-                Actor actor = new Actor(playerActorName, logger, eventFactory, this, actionRecordFactory, actorFactory, persistentData);
+                Actor actor = new Actor(playerActorName, logger, eventFactory, this, actionRecordFactory, actorFactory, persistentData, foodItemFactory);
                 persistentData.addActor(actor);
                 World world;
                 try {

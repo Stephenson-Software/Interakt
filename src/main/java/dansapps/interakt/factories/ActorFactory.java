@@ -25,21 +25,23 @@ public class ActorFactory {
     private final Interakt interakt;
     private final ActionRecordFactory actionRecordFactory;
     private final PersistentData persistentData;
+    private final FoodItemFactory foodItemFactory;
 
-    public ActorFactory(EntityRecordFactory entityRecordFactory, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, PersistentData persistentData) {
+    public ActorFactory(EntityRecordFactory entityRecordFactory, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, PersistentData persistentData, FoodItemFactory foodItemFactory) {
         this.entityRecordFactory = entityRecordFactory;
         this.logger = logger;
         this.eventFactory = eventFactory;
         this.interakt = interakt;
         this.actionRecordFactory = actionRecordFactory;
         this.persistentData = persistentData;
+        this.foodItemFactory = foodItemFactory;
     }
 
     public Actor createActorWithName(String name) throws NameTakenException {
         if (isNameTaken(name)) {
             throw new NameTakenException();
         }
-        Actor actor = new Actor(name, logger, eventFactory, interakt, actionRecordFactory, this, persistentData);
+        Actor actor = new Actor(name, logger, eventFactory, interakt, actionRecordFactory, this, persistentData, foodItemFactory);
         persistentData.addActor(actor);
         entityRecordFactory.createEntityRecord(actor);
         return actor;
@@ -76,7 +78,7 @@ public class ActorFactory {
     }
 
     public void createActorWithData(Map<String, String> data) {
-        Actor actor = new Actor(data, logger, eventFactory, interakt, actionRecordFactory, this, persistentData);
+        Actor actor = new Actor(data, logger, eventFactory, interakt, actionRecordFactory, this, persistentData, foodItemFactory);
         persistentData.addActor(actor);
         entityRecordFactory.createEntityRecord(actor);
 

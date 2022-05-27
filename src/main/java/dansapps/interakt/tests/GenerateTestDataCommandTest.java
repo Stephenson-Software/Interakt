@@ -19,7 +19,8 @@ public class GenerateTestDataCommandTest {
     private final EventFactory eventFactory = new EventFactory();
     private final EntityRecordFactory entityRecordFactory = new EntityRecordFactory(logger, persistentData);
     private final ActionRecordFactory actionRecordFactory = new ActionRecordFactory(persistentData);
-    private final ActorFactory actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, interakt, actionRecordFactory, persistentData);
+    private final FoodItemFactory foodItemFactory = new FoodItemFactory(logger);
+    private final ActorFactory actorFactory = new ActorFactory(entityRecordFactory, logger, eventFactory, interakt, actionRecordFactory, persistentData, foodItemFactory);
 
     @Test
     public void testGenerateTestDataCommand() {
