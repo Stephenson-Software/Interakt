@@ -32,10 +32,6 @@ import java.util.*;
  */
 public class Actor extends AbstractFamilialEntity implements Savable {
     private final LinkedList<ActionRecord> actionRecords = new LinkedList<>();
-    private int chanceToMove;
-    private int chanceToBefriend;
-    private int chanceToAttack;
-    private int chanceToReproduce;
     private double health;
     private HashSet<UUID> exploredSquares = new HashSet<>();
     private HashMap<UUID, Integer> relations = new HashMap<>();
@@ -51,10 +47,6 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
     public Actor(String name, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, ActorFactory actorFactory, PersistentData persistentData, FoodItemFactory foodItemFactory) {
         super(name);
-        chanceToMove = new Random().nextInt(CONFIG.MAX_CHANCE_TO_MOVE);
-        chanceToBefriend = new Random().nextInt(CONFIG.MAX_CHANCE_TO_BEFRIEND);
-        chanceToAttack = new Random().nextInt(CONFIG.MAX_CHANCE_TO_ATTACK);
-        chanceToReproduce = new Random().nextInt(CONFIG.MAX_CHANCE_TO_REPRODUCE);
 
         health = CONFIG.MAX_HEALTH;
 
@@ -103,18 +95,16 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         return (Square) getLocation();
     }
 
-    public void attemptToMove() {
-        if (roll(getChanceToMove())) {
-            executeMoveAction(this);
-        }
+    public void rest() {
+        setHealth(getHealth() * 1.10);
     }
 
-    public void executeMoveAction(Actor actor) {
+    public void move() {
         Square currentSquare;
         try {
-            currentSquare = actor.getSquare();
+            currentSquare = getSquare();
         } catch (Exception e) {
-            logger.logError(actor.getName() + " wanted to move, but their location wasn't found.");
+            logger.logError(getName() + " wanted to move, but their location wasn't found.");
             return;
         }
 
@@ -129,50 +119,28 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             return;
         }
 
-        currentSquare.removeActor(actor);
-        actor.setLocationUUID(newSquare.getUUID());
-        newSquare.addActor(actor);
+        currentSquare.removeActor(this);
+        setLocationUUID(newSquare.getUUID());
+        newSquare.addActor(this);
 
         try {
-            Event event = eventFactory.createEvent(actor.getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
+            Event event = eventFactory.createEvent(getName() + " moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + getWorld().getName());
             logger.logEvent(event);
 
-            if (actor.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
-                interakt.getCommandSender().sendMessage("You have moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + actor.getWorld().getName());
+            if (getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
+                interakt.getCommandSender().sendMessage("You have moved to " + newSquare.getX() + ", " + newSquare.getY() + " in " + getWorld().getName());
             }
         } catch (Exception e) {
-            logger.logError(actor.getName() + " moved, but their environment wasn't found.");
+            logger.logError(getName() + " moved, but their environment wasn't found.");
         }
 
-        actor.addSquareIfNotExplored(newSquare, eventFactory);
+        addSquareIfNotExplored(newSquare, eventFactory);
 
-        actionRecordFactory.createActionRecord(actor, ACTIONTYPE.MOVE);
-    }
-
-    private boolean roll(int threshold) {
-        Random random = new Random();
-        int result = random.nextInt(100);
-        return result < threshold;
+        actionRecordFactory.createActionRecord(this, ACTIONTYPE.MOVE);
     }
 
     public void addActionRecord(ActionRecord actionRecord) {
         actionRecords.add(actionRecord);
-    }
-
-    public int getChanceToMove() {
-        return chanceToMove;
-    }
-
-    public int getChanceToBefriend() {
-        return chanceToBefriend;
-    }
-
-    public int getChanceToAttack() {
-        return chanceToAttack;
-    }
-
-    private int getChanceToReproduce() {
-        return chanceToReproduce;
     }
 
     public int getNumActionRecords() {
@@ -185,6 +153,9 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
     public void setHealth(double health) {
         this.health = health;
+        if (this.health > getMaxHealth()) {
+            this.health = getMaxHealth();
+        }
     }
 
     public double getMaxHealth() {
@@ -207,16 +178,13 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         return isFriend(other.getUUID());
     }
 
-    public void attemptToBefriend() {
+    public void befriend() {
         Square square = getSquare();
         if (square == null) {
             logger.logError("A square was unexpectedly null.");
             return;
         }
         if (square.getNumActors() < 2) {
-            return;
-        }
-        if (!roll(getChanceToBefriend())) {
             return;
         }
         Actor target = null;
@@ -231,25 +199,21 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (target.getUUID().equals(getUUID())) {
             return;
         }
-        executeBefriendAction(target);
-     }
-
-    public void executeBefriendAction(Actor other) {
-        Event event = eventFactory.createEvent(getName() + " was friendly to " + other.getName());
+        Event event = eventFactory.createEvent(getName() + " was friendly to " + target.getName());
         logger.logEvent(event);
 
         if (getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
-            interakt.getCommandSender().sendMessage("You were friendly to " + other.getName() + ".");
+            interakt.getCommandSender().sendMessage("You were friendly to " + target.getName() + ".");
         }
 
-        if (other.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
+        if (target.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
             interakt.getCommandSender().sendMessage(getName() + " was friendly to you.");
         }
 
         actionRecordFactory.createActionRecord(this, ACTIONTYPE.BEFRIEND);
 
-        increaseRelation(other, new Random().nextInt(10));
-        other.increaseRelation(this, new Random().nextInt(10));
+        increaseRelation(target, new Random().nextInt(10));
+        target.increaseRelation(this, new Random().nextInt(10));
     }
 
     public int getNumExploredChunks() {
@@ -266,15 +230,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         return count;
     }
 
-    public void attemptToAttack() {
+    public void attack() {
         Square square = getSquare();
         if (square == null) {
             return;
         }
         if (square.getNumActors() < 2) {
-            return;
-        }
-        if (!roll(getChanceToAttack())) {
             return;
         }
         Actor target = null;
@@ -289,33 +250,29 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (target.getUUID().equals(getUUID())) {
             return;
         }
-        executeAttackAction(target);
-    }
-
-    private void executeAttackAction(Actor victim) {
-        if (isFriend(victim)) {
+        if (isFriend(target)) {
             return;
         }
 
         int damage = new Random().nextInt((int) CONFIG.MAX_DAMAGE);
-        victim.setHealth(victim.getHealth() - damage);
+        target.setHealth(target.getHealth() - damage);
 
-        Event event = eventFactory.createEvent(getName() + " has attacked " + victim.getName() + " and dealt " + damage + " damage.");
+        Event event = eventFactory.createEvent(getName() + " has attacked " + target.getName() + " and dealt " + damage + " damage.");
         logger.logEvent(event);
 
         if (getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
-            interakt.getCommandSender().sendMessage("You have attacked " + victim.getName() + " and dealt " + damage + " damage.");
+            interakt.getCommandSender().sendMessage("You have attacked " + target.getName() + " and dealt " + damage + " damage.");
         }
 
-        if (victim.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
+        if (target.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
             interakt.getCommandSender().sendMessage(getName() + " attacked you and and dealt " + damage + " damage.");
         }
 
         actionRecordFactory.createActionRecord(this, ACTIONTYPE.ATTACK);
 
-        checkForDeath(victim);
+        checkForDeath(target);
 
-        victim.decreaseRelation(this, (int) (damage * 0.10));
+        target.decreaseRelation(this, (int) (damage * 0.10));
     }
 
     private void checkForDeath(Actor victim) {
@@ -332,15 +289,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         }
     }
 
-    public void attemptToPerformReproduceAction() {
+    public void reproduce() {
         Square square = getSquare();
         if (square == null) {
             return;
         }
         if (square.getNumActors() < 2) {
-            return;
-        }
-        if (!roll(getChanceToReproduce())) {
             return;
         }
         Actor target = null;
@@ -355,15 +309,11 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (target.getUUID().equals(getUUID())) {
             return;
         }
-        executeReproduceAction(this, target);
-    }
-
-    public void executeReproduceAction(Actor actor, Actor other) {
-        if (!actor.isFriend(other)) {
+        if (!isFriend(target)) {
             return;
         }
-        Actor offspring = actorFactory.createActorFromParents(actor, other);
-        World world = actor.getWorld();
+        Actor offspring = actorFactory.createActorFromParents(this, target);
+        World world = getWorld();
         boolean success = persistentData.placeIntoEnvironment(world, offspring); // TODO: place in same square as parents
 
         if (!success) {
@@ -371,21 +321,21 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             return;
         }
 
-        Event event = eventFactory.createEvent(actor.getName() + " reproduced with " + other.getName() + ", resulting in " + offspring.getName() + " coming into existence.");
+        Event event = eventFactory.createEvent(getName() + " reproduced with " + target.getName() + ", resulting in " + offspring.getName() + " coming into existence.");
         logger.logEvent(event);
 
-        if (actor.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
-            interakt.getCommandSender().sendMessage("You reproduced with " + other.getName() + ", resulting in " + offspring.getName() + " coming into existence.");
+        if (getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
+            interakt.getCommandSender().sendMessage("You reproduced with " + target.getName() + ", resulting in " + offspring.getName() + " coming into existence.");
         }
 
-        if (other.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
-            interakt.getCommandSender().sendMessage(other.getName() + " reproduced with you, resulting in " + offspring.getName() + " coming into existence.");
+        if (target.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
+            interakt.getCommandSender().sendMessage(target.getName() + " reproduced with you, resulting in " + offspring.getName() + " coming into existence.");
         }
 
-        actionRecordFactory.createActionRecord(actor, ACTIONTYPE.REPRODUCE);
+        actionRecordFactory.createActionRecord(this, ACTIONTYPE.REPRODUCE);
 
-        actor.increaseRelation(other, 100);
-        other.increaseRelation(actor, 100);
+        increaseRelation(target, 100);
+        target.increaseRelation(this, 100);
     }
 
     public boolean isDead() {
@@ -461,10 +411,6 @@ public class Actor extends AbstractFamilialEntity implements Savable {
                 getWorldInfo() + "\n" +
                 getSquareInfo() + "\n" +
                 "Created: " + getCreationDate().toString() + "\n" +
-                "Chance to move: " + getChanceToMove() + "\n" +
-                "Chance to befriend: " + getChanceToBefriend() + "\n" +
-                "Chance to attack: " + getChanceToAttack() + "\n" +
-                "Chance to reproduce: " + getChanceToReproduce() + "\n" +
                 "Num times moved: " + getNumTimesMoved() + "\n" +
                 "Num squares explored: " + exploredSquares.size() + "\n" +
                 "Num friends: " + getNumFriends() + "\n";
@@ -489,12 +435,8 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         saveMap.put("creationDate", gson.toJson(getCreationDate().toString()));
         saveMap.put("environmentUUID", gson.toJson(getEnvironmentUUID()));
         saveMap.put("locationUUID", gson.toJson(getLocationUUID()));
-        saveMap.put("moveChanceThreshold", gson.toJson(chanceToMove));
         saveMap.put("exploredSquares", gson.toJson(exploredSquares));
         saveMap.put("health", gson.toJson(health));
-        saveMap.put("chanceToBefriend", gson.toJson(chanceToBefriend));
-        saveMap.put("chanceToAttack", gson.toJson(chanceToAttack));
-        saveMap.put("chanceToReproduce", gson.toJson(chanceToReproduce));
         saveMap.put("parentIDs", gson.toJson(parentIDs));
         saveMap.put("childIDs", gson.toJson(childIDs));
         saveMap.put("relations", gson.toJson(relations));
@@ -515,12 +457,8 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             setCreationDate(LocalDateTime.parse(gson.fromJson(data.get("creationDate"), String.class)));
             attemptToLoadWorld(gson, data);
             attemptToLoadSquare(gson, data);
-            chanceToMove = Integer.parseInt(gson.fromJson(data.get("moveChanceThreshold"), String.class));
             exploredSquares = gson.fromJson(data.get("exploredSquares"), hashsetTypeUUID);
             health = Double.parseDouble(gson.fromJson(data.get("health"), String.class));
-            chanceToBefriend = Integer.parseInt(gson.fromJson(data.get("chanceToBefriend"), String.class));
-            chanceToAttack = Integer.parseInt(gson.fromJson(data.get("chanceToAttack"), String.class));
-            chanceToReproduce = Integer.parseInt(gson.fromJson(data.get("chanceToReproduce"), String.class));
             parentIDs = gson.fromJson(data.get("parentIDs"), hashsetTypeUUID);
             childIDs = gson.fromJson(data.get("childIDs"), hashsetTypeUUID);
             relations = gson.fromJson(data.get("relations"), hashMapTypeUUIDToInteger);

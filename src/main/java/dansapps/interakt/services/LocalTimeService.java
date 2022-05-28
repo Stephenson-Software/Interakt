@@ -57,12 +57,14 @@ public class LocalTimeService extends TimeService {
             if (actor.isDead()) {
                 continue;
             }
-            int choice = new Random().nextInt(4); // get random number from 0 to 3
+            int numChoices = 5;
+            int choice = new Random().nextInt(numChoices); // get random number from 0 to (numChoices - 1)
             switch(choice) {
-                case 0 -> actor.attemptToMove();
-                case 1 -> actor.attemptToBefriend();
-                case 2 -> actor.attemptToAttack();
-                case 3 -> actor.attemptToPerformReproduceAction();
+                case 0 -> actor.rest();
+                case 1 -> actor.move();
+                case 2 -> actor.befriend();
+                case 3 -> actor.attack();
+                case 4 -> actor.reproduce();
             }
         }
         persistentData.removeDeadActors();

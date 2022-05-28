@@ -10,10 +10,6 @@ public class CONFIG {
     public static boolean DEBUG_FLAG = false;
     public static final int TIME_SLOT_LENGTH_IN_SECONDS = 1;
     public static final int GRID_SIZE = 4;
-    public static final int MAX_CHANCE_TO_MOVE = 100;
-    public static final int MAX_CHANCE_TO_BEFRIEND = 100;
-    public static final int MAX_CHANCE_TO_ATTACK = 100;
-    public static final int MAX_CHANCE_TO_REPRODUCE = 100;
     public static final int SECONDS_BETWEEN_AUTO_SAVES = 300;
     public static final double MAX_HEALTH = 100;
     public static final double MAX_DAMAGE = 10;
