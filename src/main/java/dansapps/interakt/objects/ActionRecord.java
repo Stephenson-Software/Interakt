@@ -20,6 +20,7 @@ public class ActionRecord implements Savable {
         uuid = UUID.randomUUID();
         this.entityUUID = entityUUID;
         switch(actionType) {
+            case REST -> actionName = "rest";
             case ATTACK -> actionName = "attack";
             case BEFRIEND -> actionName = "befriend";
             case MOVE -> actionName = "move";

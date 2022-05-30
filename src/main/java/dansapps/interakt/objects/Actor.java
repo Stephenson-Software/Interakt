@@ -96,7 +96,28 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     }
 
     public void rest() {
+        double oldHealth = getHealth();
         setHealth(getHealth() * 1.10);
+        double regained = getHealth() - oldHealth;
+
+        if (regained > 0) {
+            Event event = eventFactory.createEvent(getName() + " rested and regenerated " + regained + " health.");
+            logger.logEvent(event);
+
+            if (getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
+                interakt.getCommandSender().sendMessage("You rest and regenerate " + regained + " health."); // TODO: fix this never getting hit
+            }
+        }
+        else {
+            Event event = eventFactory.createEvent(getName() + " rested.");
+            logger.logEvent(event);
+
+            if (getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
+                interakt.getCommandSender().sendMessage("You rest for a time."); // TODO: fix this never getting hit
+            }
+        }
+
+        actionRecordFactory.createActionRecord(this, ACTIONTYPE.REST);
     }
 
     public void move() {

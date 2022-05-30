@@ -5,6 +5,7 @@ package dansapps.interakt.misc.enums;
  * @since January 27th, 2022
  */
 public enum ACTIONTYPE {
+    REST,
     ATTACK,
     BEFRIEND,
     MOVE,
