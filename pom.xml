@@ -6,7 +6,7 @@
 
     <groupId>dansapps</groupId>
     <artifactId>Interakt</artifactId>
-    <version>v0.6-alpha-1</version>
+    <version>0.9.0</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
