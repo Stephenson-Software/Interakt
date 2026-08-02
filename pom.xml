@@ -13,4 +13,53 @@
         <maven.compiler.target>16</maven.compiler.target>
     </properties>
 
+    <!-- These jars have no public Maven coordinates, so they are wired in as system-scoped
+         dependencies pointing at the copies checked into dependencies/. See the project wiki
+         for how to add them to an IDE module manually if system scope is ever dropped. -->
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/dependencies/junit-4.10.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/dependencies/gson-2.8.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>software.preponderous</groupId>
+            <artifactId>ponder</artifactId>
+            <version>0.14-alpha-1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/dependencies/Ponder-v0.14-alpha-1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>software.preponderous</groupId>
+            <artifactId>environmentlib</artifactId>
+            <version>0.3-alpha-3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/dependencies/EnvironmentLib-v0.3-alpha-3.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Test classes live under src/main/java/dansapps/interakt/tests/ rather than the
+                 standard src/test/java split, so they compile into the main output directory.
+                 Point surefire there so `mvn test` discovers them. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
