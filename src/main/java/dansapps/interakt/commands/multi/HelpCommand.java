@@ -38,6 +38,7 @@ public class HelpCommand extends InteraktCommand {
             sender.sendMessage("info - View information about the application.");
             sender.sendMessage("stats - View statistics about the application.");
             sender.sendMessage("wipe - Wipe the data of the application.");
+            sender.sendMessage("elapse - Force time to elapse within the application.");
             sender.sendMessage("quit - Quit the application.");
         }
         else if (sender instanceof Player) {
