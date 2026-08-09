@@ -14,6 +14,7 @@ public class Console extends CommandSenderImpl {
         addPermission("interakt.elapse");
         addPermission("interakt.generatetestdata");
         addPermission("interakt.help");
+        addPermission("interakt.info");
         addPermission("interakt.list");
         addPermission("interakt.place");
         addPermission("interakt.quit");
