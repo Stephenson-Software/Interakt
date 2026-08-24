@@ -65,11 +65,12 @@ public class Interakt extends PonderApplication {
     private final LocalTimeService timeService = new LocalTimeService(this, timePartitionFactory, logger, persistentData);
 
     /**
-     * Initializes values and calls the onStartup method.
+     * Initializes values. The onStartup method is deliberately not called here so that the object
+     * graph can be constructed without loading saved data or starting background services. Callers
+     * that want a running application are expected to call onStartup themselves - see main.
      */
     public Interakt() {
         super("Interakt", "This application is intended to allow the user to create and manage environments and entities that can exist within those environments.");
-        onStartup();
     }
 
     /**
@@ -285,6 +286,7 @@ public class Interakt extends PonderApplication {
         String mode = args[0];
 
         Interakt application = new Interakt();
+        application.onStartup();
 
         if (mode.equalsIgnoreCase("console")) {
             Console console = new Console();
