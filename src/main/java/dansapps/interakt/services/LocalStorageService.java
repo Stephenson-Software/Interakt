@@ -55,32 +55,38 @@ public class LocalStorageService {
     }
 
     public void save() {
-        try {
-            saveActors();
-            saveWorlds();
-            saveRegions();
-            saveSquares();
-            saveTimePartitions();
-            saveActionRecords();
-            saveEntityRecords();
-        }
-        catch(Exception e) {
-            logger.logError("Something went wrong when saving the data of the application.");
-        }
+        performStorageOperation("saving actors", this::saveActors);
+        performStorageOperation("saving worlds", this::saveWorlds);
+        performStorageOperation("saving regions", this::saveRegions);
+        performStorageOperation("saving squares", this::saveSquares);
+        performStorageOperation("saving time partitions", this::saveTimePartitions);
+        performStorageOperation("saving action records", this::saveActionRecords);
+        performStorageOperation("saving entity records", this::saveEntityRecords);
     }
 
     public void load() {
+        performStorageOperation("loading actors", this::loadActors);
+        performStorageOperation("loading worlds", this::loadWorlds);
+        performStorageOperation("loading regions", this::loadRegions);
+        performStorageOperation("loading squares", this::loadSquares);
+        performStorageOperation("loading time partitions", this::loadTimePartitions);
+        performStorageOperation("loading action records", this::loadActionRecords);
+        performStorageOperation("loading entity records", this::loadEntityRecords);
+    }
+
+    /**
+     * Runs a single storage operation in isolation, so that a failure names the operation it came
+     * from, carries the exception's own detail, and does not prevent the remaining operations from
+     * running.
+     * @param description What the operation was doing, for use in the error message.
+     * @param operation The operation to run.
+     */
+    private void performStorageOperation(String description, Runnable operation) {
         try {
-            loadActors();
-            loadWorlds();
-            loadRegions();
-            loadSquares();
-            loadTimePartitions();
-            loadActionRecords();
-            loadEntityRecords();
+            operation.run();
         }
         catch(Exception e) {
-            logger.logError("Something went wrong when loading the data of the application.");
+            logger.logError("Something went wrong when " + description + ": " + e);
         }
     }
 
