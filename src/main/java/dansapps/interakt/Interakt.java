@@ -18,6 +18,7 @@ import dansapps.interakt.services.LocalAutoSaveService;
 import dansapps.interakt.services.LocalCommandService;
 import dansapps.interakt.services.LocalStorageService;
 import dansapps.interakt.services.LocalTimeService;
+import dansapps.interakt.services.LocalUsageReportingService;
 import dansapps.interakt.users.Console;
 import dansapps.interakt.users.Player;
 import dansapps.interakt.users.abs.CommandSenderImpl;
@@ -27,6 +28,7 @@ import preponderous.ponder.system.abs.ApplicationCommand;
 import preponderous.ponder.system.abs.CommandSender;
 import preponderous.ponder.system.abs.PonderApplication;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -63,6 +65,7 @@ public class Interakt extends PonderApplication {
     private final LocalAutoSaveService autoSaveService = new LocalAutoSaveService(this, storageService, logger);
     private final LocalCommandService commandService = new LocalCommandService(getCommands());
     private final LocalTimeService timeService = new LocalTimeService(this, timePartitionFactory, logger, persistentData);
+    private final LocalUsageReportingService usageReportingService = new LocalUsageReportingService(new File(LocalStorageService.FILE_PATH), logger, System.out);
 
     /**
      * Initializes values. The onStartup method is deliberately not called here so that the object
@@ -165,6 +168,7 @@ public class Interakt extends PonderApplication {
         storageService.load();
         timeService.start();
         autoSaveService.start();
+        usageReportingService.start();
     }
 
     /**
@@ -174,6 +178,7 @@ public class Interakt extends PonderApplication {
     public void onShutdown() {
         logger.logInfo("Initiating shutdown.");
         storageService.save();
+        usageReportingService.close();
     }
 
     /**

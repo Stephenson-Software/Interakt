@@ -48,6 +48,14 @@
     </dependencies>
 
     <build>
+        <!-- Filtered so that interakt.properties carries the version above; it is what the
+             startup usage report tags itself with. -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <!-- Test classes live under src/main/java/dansapps/interakt/tests/ rather than the
                  standard src/test/java split, so they compile into the main output directory.
