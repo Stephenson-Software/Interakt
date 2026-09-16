@@ -29,7 +29,9 @@ import java.util.Properties;
  * and drops the report rather than waiting if the service cannot be reached. Reporting is on by
  * default and is switched off in {@value #SETTINGS_FILE_NAME}, which lives alongside the
  * application's data files and is written with its defaults the first time the application
- * starts.
+ * starts, or with the environment variables every trace client honours,
+ * {@code TRACE_USAGE_REPORTING=off} and {@code DO_NOT_TRACK=1}, which the client checks before
+ * the settings file. Details: {@value #DETAILS_URL}
  *
  * @author Daniel McCoy Stephenson
  * @since September 11th, 2026
@@ -43,6 +45,8 @@ public class LocalUsageReportingService {
     /** The write key issued to Interakt by the trace service. It can only add usage events. */
     public static final String DEFAULT_KEY = "lguRpjWpYkg9ESt5Q0YBcf4X-xih9inROo46l-vPsrA";
     public static final String APPLICATION_NAME = "Interakt";
+    /** The public page describing what trace collects and every way to turn it off. */
+    public static final String DETAILS_URL = "https://github.com/Stephenson-Software/trace#usage-reporting";
     private static final String VERSION_RESOURCE = "/interakt.properties";
 
     private final File settingsFile;
@@ -55,8 +59,9 @@ public class LocalUsageReportingService {
      * @param settingsDirectory The directory the settings file is read from and, on the first run,
      *                          written to.
      * @param logger The application logger, used for debug output only.
-     * @param out Where the one-time first-run notice is printed. This is the console the user is
-     *            looking at, so System.out in the running application.
+     * @param out Where the one-time first-run notice is printed (only when reporting is actually
+     *            on). This is the console the user is looking at, so System.out in the running
+     *            application.
      */
     public LocalUsageReportingService(File settingsDirectory, Logger logger, PrintStream out) {
         this(settingsDirectory, logger, out, DEFAULT_ENDPOINT);
@@ -74,26 +79,52 @@ public class LocalUsageReportingService {
     }
 
     /**
-     * Reads the settings (writing them with their defaults, and printing the first-run notice, if
-     * they do not exist yet), builds the client accordingly and reports the startup event. Nothing
+     * Reads the settings (writing them with their defaults if they do not exist yet), builds the
+     * client accordingly, prints the first-run notice if this is a first run and reporting is
+     * actually on, and reports the startup event. Nothing
      * in here can stop the application from starting: a settings file that cannot be read or
      * written leaves reporting at its defaults, and the report itself is sent off the calling
      * thread by the client.
      */
     public void start() {
+        boolean firstRun = !settingsFile.exists();
         Properties settings = readSettings();
         String endpoint = settings.getProperty(ENDPOINT_KEY, defaultEndpoint);
         traceClient = TraceClient.builder(endpoint, APPLICATION_NAME)
                 .key(settings.getProperty(KEY_KEY, DEFAULT_KEY))
                 .enabled(Boolean.parseBoolean(settings.getProperty(ENABLED_KEY, "true")))
                 .build();
+        if (firstRun && traceClient.isEnabled()) {
+            // Printed after the client is built so that an environment that has already turned
+            // reporting off (TRACE_USAGE_REPORTING / DO_NOT_TRACK) is never told it is on.
+            out.println(getFirstRunNotice());
+        }
         if (traceClient.isEnabled()) {
             logger.logInfo("Reporting startup to " + endpoint);
             traceClient.report("startup", null, Collections.singletonMap("version", getVersion()));
         }
         else {
-            logger.logInfo("Usage reporting is off.");
+            logger.logInfo("Usage reporting is off (" + getDisabledReason() + "). Details: " + DETAILS_URL);
         }
+    }
+
+    /**
+     * @return Why nothing is sent, in Interakt's own terms, or null while reporting is on. The
+     *         client's reasons are worded for a Spigot plugin, so its "config.yml" becomes the
+     *         settings file a user of Interakt actually edits.
+     */
+    public String getDisabledReason() {
+        String reason = traceClient.disabledReason();
+        if (reason == null) {
+            return null;
+        }
+        if (TraceClient.REASON_ENVIRONMENT.equals(reason)) {
+            return "environment: " + TraceClient.ENV_USAGE_REPORTING + " or " + TraceClient.ENV_DO_NOT_TRACK;
+        }
+        if (TraceClient.REASON_CONFIG.equals(reason)) {
+            return ENABLED_KEY + "=false in " + settingsFile.getPath();
+        }
+        return reason;
     }
 
     /**
@@ -130,8 +161,10 @@ public class LocalUsageReportingService {
      * added, telling them what is sent and how to turn it off.
      */
     public String getFirstRunNotice() {
-        return "Usage reporting is on: " + APPLICATION_NAME + " sends a startup event (program name and version only) to "
-                + "trace.danielstephenson.dev. Turn it off with " + ENABLED_KEY + "=false in " + settingsFile.getPath() + ".";
+        return "Usage reporting is on: " + APPLICATION_NAME + " sends its name and version (one startup event) to "
+                + "https://trace.danielstephenson.dev - nothing about you, your actors, your worlds or this machine. "
+                + "Turn it off with " + ENABLED_KEY + "=false in " + settingsFile.getPath()
+                + ", or with TRACE_USAGE_REPORTING=off in the environment. Details: " + DETAILS_URL;
     }
 
     /**
@@ -158,7 +191,6 @@ public class LocalUsageReportingService {
     private Properties readSettings() {
         Properties settings = new Properties();
         if (!settingsFile.exists()) {
-            out.println(getFirstRunNotice());
             writeDefaultSettings();
             return settings;
         }
@@ -180,7 +212,9 @@ public class LocalUsageReportingService {
             writer.write("# Usage reporting for " + APPLICATION_NAME + ".\n");
             writer.write("# When enabled, one 'startup' event carrying only the program name and version is sent\n");
             writer.write("# to the endpoint each time the application starts. Nothing else is ever sent.\n");
-            writer.write("# Set " + ENABLED_KEY + " to false to turn it off.\n");
+            writer.write("# Set " + ENABLED_KEY + " to false to turn it off. TRACE_USAGE_REPORTING=off or\n");
+            writer.write("# DO_NOT_TRACK=1 in the environment turns it off too, whatever this file says.\n");
+            writer.write("# Details: " + DETAILS_URL + "\n");
             writer.write(ENABLED_KEY + "=true\n");
             writer.write(ENDPOINT_KEY + "=" + defaultEndpoint + "\n");
             writer.write(KEY_KEY + "=" + DEFAULT_KEY + "\n");
