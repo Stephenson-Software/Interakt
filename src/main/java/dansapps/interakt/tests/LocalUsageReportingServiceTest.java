@@ -3,6 +3,7 @@ package dansapps.interakt.tests;
 import com.sun.net.httpserver.HttpServer;
 import dansapps.interakt.Interakt;
 import dansapps.interakt.services.LocalUsageReportingService;
+import dansapps.interakt.trace.TraceClient;
 import dansapps.interakt.utils.Logger;
 import org.junit.After;
 import org.junit.Assert;
@@ -17,12 +18,16 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 /**
  * Covers the usage reporting service: the first-run notice is printed exactly once, the settings
@@ -131,7 +136,11 @@ public class LocalUsageReportingServiceTest {
 
             String printed = console.toString("UTF-8");
             Assert.assertEquals(service.getFirstRunNotice() + System.lineSeparator(), printed);
-            Assert.assertTrue(printed, printed.startsWith("Usage reporting is on: Interakt sends a startup event (program name and version only) to trace.danielstephenson.dev. Turn it off with usage_reporting.enabled=false in "));
+            Assert.assertTrue(printed, printed.startsWith("Usage reporting is on: Interakt sends its name and version (one startup event) to https://trace.danielstephenson.dev - nothing about you, your actors, your worlds or this machine. Turn it off with usage_reporting.enabled=false in "));
+            Assert.assertTrue(printed, printed.contains("TRACE_USAGE_REPORTING=off"));
+            Assert.assertTrue(printed, printed.contains("Details: https://github.com/Stephenson-Software/trace#usage-reporting"));
+            Assert.assertTrue(settings, settings.contains("TRACE_USAGE_REPORTING=off"));
+            Assert.assertTrue(settings, settings.contains("https://github.com/Stephenson-Software/trace#usage-reporting"));
 
             // second run: the settings exist, so the notice is not printed again
             console.reset();
@@ -158,6 +167,8 @@ public class LocalUsageReportingServiceTest {
         service.close();
 
         Assert.assertFalse(service.isEnabled());
+        Assert.assertEquals(LocalUsageReportingService.ENABLED_KEY + "=false in " + service.getSettingsFile().getPath(),
+                service.getDisabledReason());
         Assert.assertEquals("", console.toString("UTF-8"));
     }
 
@@ -170,6 +181,51 @@ public class LocalUsageReportingServiceTest {
         service.close();
 
         Assert.assertFalse(service.isEnabled());
+        Assert.assertEquals("no key", service.getDisabledReason());
+    }
+
+    /**
+     * The settings file says on, but the environment says off: the environment wins, nothing is
+     * sent, and a first run does not claim that reporting is on. The client reads its environment
+     * through a package-private seam, reached here by reflection so the vendored file stays as
+     * published.
+     */
+    @Test
+    public void testDoNotTrackInTheEnvironmentWinsOverTheSettingsFile() throws Exception {
+        writeSettings(LocalUsageReportingService.ENABLED_KEY + "=true\n");
+        Field seam = TraceClient.class.getDeclaredField("environment");
+        seam.setAccessible(true);
+        Object realEnvironment = seam.get(null);
+        Map<String, String> environment = new HashMap<>();
+        environment.put("DO_NOT_TRACK", "1");
+        seam.set(null, (Function<String, String>) environment::get);
+        try {
+            LocalUsageReportingService service = newService();
+            service.start();
+            service.close();
+            Assert.assertFalse("DO_NOT_TRACK=1 must switch reporting off", service.isEnabled());
+            Assert.assertEquals("environment: TRACE_USAGE_REPORTING or DO_NOT_TRACK", service.getDisabledReason());
+
+            environment.clear();
+            environment.put("TRACE_USAGE_REPORTING", "off");
+            LocalUsageReportingService viaTraceVariable = newService();
+            viaTraceVariable.start();
+            viaTraceVariable.close();
+            Assert.assertFalse("TRACE_USAGE_REPORTING=off must switch reporting off", viaTraceVariable.isEnabled());
+
+            // A first run under DO_NOT_TRACK writes the defaults but prints no "is on" notice.
+            environment.clear();
+            environment.put("DO_NOT_TRACK", "1");
+            Assert.assertTrue(new File(settingsDirectory, LocalUsageReportingService.SETTINGS_FILE_NAME).delete());
+            LocalUsageReportingService firstRun = newService();
+            firstRun.start();
+            firstRun.close();
+            Assert.assertFalse(firstRun.isEnabled());
+            Assert.assertTrue(firstRun.getSettingsFile().exists());
+            Assert.assertEquals("", console.toString("UTF-8"));
+        } finally {
+            seam.set(null, realEnvironment);
+        }
     }
 
     @Test
