@@ -65,7 +65,7 @@ public class Interakt extends PonderApplication {
     private final LocalAutoSaveService autoSaveService = new LocalAutoSaveService(this, storageService, logger);
     private final LocalCommandService commandService = new LocalCommandService(getCommands());
     private final LocalTimeService timeService = new LocalTimeService(this, timePartitionFactory, logger, persistentData);
-    private final LocalUsageReportingService usageReportingService = new LocalUsageReportingService(new File(LocalStorageService.FILE_PATH), logger, System.out);
+    private final LocalUsageReportingService usageReportingService = new LocalUsageReportingService(new File(LocalStorageService.getDataDirectory()), logger, System.out);
 
     /**
      * Initializes values. The onStartup method is deliberately not called here so that the object

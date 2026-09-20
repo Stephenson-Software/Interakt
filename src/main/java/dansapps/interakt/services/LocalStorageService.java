@@ -10,12 +10,19 @@ import dansapps.interakt.objects.*;
 import dansapps.interakt.utils.Logger;
 import preponderous.ponder.misc.JsonWriterReader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * Saves and loads the application's data as JSON files in the data directory. The data directory
+ * is {@value #DEFAULT_DATA_DIRECTORY} unless it is overridden with the {@value #DATA_DIRECTORY_PROPERTY}
+ * system property or, failing that, the {@value #DATA_DIRECTORY_ENVIRONMENT_VARIABLE} environment
+ * variable - see {@link #getDataDirectory()}. The log file and the usage reporting settings live in
+ * the same directory.
+ *
  * @author Daniel McCoy Stephenson
  * @since January 8th, 2022
  */
@@ -30,7 +37,12 @@ public class LocalStorageService {
     private final Logger logger;
     private final PersistentData persistentData;
 
-    public final static String FILE_PATH = "/Interakt/";
+    /** Where the data directory is unless it is overridden. Rooted, so on Windows this is the root of the current drive. */
+    public final static String DEFAULT_DATA_DIRECTORY = "/Interakt/";
+    /** System property that overrides the data directory, e.g. {@code -Dinterakt.data.dir=/home/me/interakt}. */
+    public final static String DATA_DIRECTORY_PROPERTY = "interakt.data.dir";
+    /** Environment variable that overrides the data directory when the system property is not set. */
+    public final static String DATA_DIRECTORY_ENVIRONMENT_VARIABLE = "INTERAKT_DATA_DIR";
     private final static String ACTORS_FILE_NAME = "actors.json";
     private final static String WORLDS_FILE_NAME = "worlds.json";
     private final static String REGIONS_FILE_NAME = "regions.json";
@@ -40,9 +52,10 @@ public class LocalStorageService {
     private final static String ENTITY_RECORDS_FILE_NAME = "entityRecords.json";
 
     private final JsonWriterReader jsonWriterReader = new JsonWriterReader();
+    private final String dataDirectory = getDataDirectory();
 
     public LocalStorageService(ActorFactory actorFactory, WorldFactory worldFactory, RegionFactory regionFactory, SquareFactory squareFactory, TimePartitionFactory timePartitionFactory, ActionRecordFactory actionRecordFactory, EntityRecordFactory entityRecordFactory, Logger logger, PersistentData persistentData) {
-        jsonWriterReader.initialize(FILE_PATH);
+        jsonWriterReader.initialize(dataDirectory);
         this.actorFactory = actorFactory;
         this.worldFactory = worldFactory;
         this.regionFactory = regionFactory;
@@ -52,6 +65,44 @@ public class LocalStorageService {
         this.entityRecordFactory = entityRecordFactory;
         this.logger = logger;
         this.persistentData = persistentData;
+    }
+
+    /**
+     * The directory the data files, the log file and the usage reporting settings are kept in. The
+     * {@value #DATA_DIRECTORY_PROPERTY} system property wins, then the
+     * {@value #DATA_DIRECTORY_ENVIRONMENT_VARIABLE} environment variable, then
+     * {@value #DEFAULT_DATA_DIRECTORY}.
+     * @return The directory, always ending in a separator so that a file name can be appended to it.
+     */
+    public static String getDataDirectory() {
+        return resolveDataDirectory(System.getProperty(DATA_DIRECTORY_PROPERTY), System.getenv(DATA_DIRECTORY_ENVIRONMENT_VARIABLE));
+    }
+
+    /**
+     * The rule behind {@link #getDataDirectory()}, separated from where the values come from so
+     * that it can be tested without touching the environment.
+     * @param property The value of the system property, or null if it is not set.
+     * @param environmentVariable The value of the environment variable, or null if it is not set.
+     * @return The directory to use, always ending in a separator.
+     */
+    public static String resolveDataDirectory(String property, String environmentVariable) {
+        String directory = firstNonBlank(property, environmentVariable);
+        if (directory == null) {
+            return DEFAULT_DATA_DIRECTORY;
+        }
+        if (directory.endsWith("/") || directory.endsWith(File.separator)) {
+            return directory;
+        }
+        return directory + File.separator;
+    }
+
+    private static String firstNonBlank(String... candidates) {
+        for (String candidate : candidates) {
+            if (candidate != null && !candidate.trim().isEmpty()) {
+                return candidate.trim();
+            }
+        }
+        return null;
     }
 
     public void save() {
@@ -148,7 +199,7 @@ public class LocalStorageService {
 
     private void loadActors() {
         persistentData.getActors().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTORS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + ACTORS_FILE_NAME);
         for (Map<String, String> actorData : data){
             actorFactory.createActorWithData(actorData);
         }
@@ -156,7 +207,7 @@ public class LocalStorageService {
 
     private void loadWorlds() {
         persistentData.getWorlds().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + WORLDS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + WORLDS_FILE_NAME);
         for (Map<String, String> worldData : data){
             worldFactory.createWorld(worldData);
         }
@@ -164,7 +215,7 @@ public class LocalStorageService {
 
     private void loadRegions() {
         persistentData.getRegions().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + REGIONS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + REGIONS_FILE_NAME);
         for (Map<String, String> regionData : data){
             regionFactory.createRegion(regionData);
         }
@@ -172,7 +223,7 @@ public class LocalStorageService {
 
     private void loadSquares() {
         persistentData.getSquares().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + SQUARES_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + SQUARES_FILE_NAME);
         for (Map<String, String> squareData : data){
             squareFactory.createSquare(squareData);
         }
@@ -180,7 +231,7 @@ public class LocalStorageService {
 
     private void loadTimePartitions() {
         persistentData.getTimePartitions().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + TIME_PARTITIONS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + TIME_PARTITIONS_FILE_NAME);
         for (Map<String, String> timePartitionData : data){
             timePartitionFactory.createTimePartition(timePartitionData);
         }
@@ -188,7 +239,7 @@ public class LocalStorageService {
 
     private void loadActionRecords() {
         persistentData.getActionRecords().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ACTION_RECORDS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + ACTION_RECORDS_FILE_NAME);
         for (Map<String, String> actionRecordData : data){
             actionRecordFactory.createActionRecord(actionRecordData);
         }
@@ -196,7 +247,7 @@ public class LocalStorageService {
 
     private void loadEntityRecords() {
         persistentData.getEntityRecords().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + ENTITY_RECORDS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + ENTITY_RECORDS_FILE_NAME);
         for (Map<String, String> entityRecordData : data){
             entityRecordFactory.createEntityRecord(entityRecordData);
         }
