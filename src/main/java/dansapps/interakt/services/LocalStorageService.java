@@ -199,7 +199,7 @@ public class LocalStorageService {
 
     private void loadActors() {
         persistentData.getActors().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory +ACTORS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + ACTORS_FILE_NAME);
         for (Map<String, String> actorData : data){
             actorFactory.createActorWithData(actorData);
         }
@@ -207,7 +207,7 @@ public class LocalStorageService {
 
     private void loadWorlds() {
         persistentData.getWorlds().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory +WORLDS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + WORLDS_FILE_NAME);
         for (Map<String, String> worldData : data){
             worldFactory.createWorld(worldData);
         }
@@ -215,7 +215,7 @@ public class LocalStorageService {
 
     private void loadRegions() {
         persistentData.getRegions().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory +REGIONS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + REGIONS_FILE_NAME);
         for (Map<String, String> regionData : data){
             regionFactory.createRegion(regionData);
         }
@@ -223,7 +223,7 @@ public class LocalStorageService {
 
     private void loadSquares() {
         persistentData.getSquares().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory +SQUARES_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + SQUARES_FILE_NAME);
         for (Map<String, String> squareData : data){
             squareFactory.createSquare(squareData);
         }
@@ -231,7 +231,7 @@ public class LocalStorageService {
 
     private void loadTimePartitions() {
         persistentData.getTimePartitions().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory +TIME_PARTITIONS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + TIME_PARTITIONS_FILE_NAME);
         for (Map<String, String> timePartitionData : data){
             timePartitionFactory.createTimePartition(timePartitionData);
         }
@@ -239,7 +239,7 @@ public class LocalStorageService {
 
     private void loadActionRecords() {
         persistentData.getActionRecords().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory +ACTION_RECORDS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + ACTION_RECORDS_FILE_NAME);
         for (Map<String, String> actionRecordData : data){
             actionRecordFactory.createActionRecord(actionRecordData);
         }
@@ -247,7 +247,7 @@ public class LocalStorageService {
 
     private void loadEntityRecords() {
         persistentData.getEntityRecords().clear();
-        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory +ENTITY_RECORDS_FILE_NAME);
+        ArrayList<HashMap<String, String>> data = jsonWriterReader.loadDataFromFilename(dataDirectory + ENTITY_RECORDS_FILE_NAME);
         for (Map<String, String> entityRecordData : data){
             entityRecordFactory.createEntityRecord(entityRecordData);
         }
