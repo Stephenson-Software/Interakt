@@ -65,6 +65,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
+                    <!-- Keep the log file and any data the tests write inside target/ instead of
+                         the application's real data directory (/Interakt/ by default). -->
+                    <systemPropertyVariables>
+                        <interakt.data.dir>${project.build.directory}/interakt-test-data</interakt.data.dir>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>

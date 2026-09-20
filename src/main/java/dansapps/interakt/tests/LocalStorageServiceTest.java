@@ -8,6 +8,7 @@ import dansapps.interakt.utils.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,58 @@ import java.util.Set;
 
 public class LocalStorageServiceTest {
     private final List<String> loggedErrors = new ArrayList<>();
+
+    @Test
+    public void testDataDirectoryDefaultsToInteraktAtTheRoot() {
+        Assert.assertEquals("/Interakt/", LocalStorageService.DEFAULT_DATA_DIRECTORY);
+        Assert.assertEquals("/Interakt/", LocalStorageService.resolveDataDirectory(null, null));
+        Assert.assertEquals("/Interakt/", LocalStorageService.resolveDataDirectory("", "  "));
+    }
+
+    @Test
+    public void testSystemPropertyWinsOverEnvironmentVariable() {
+        Assert.assertEquals("/from-property/", LocalStorageService.resolveDataDirectory("/from-property/", "/from-environment/"));
+        Assert.assertEquals("/from-environment/", LocalStorageService.resolveDataDirectory(null, "/from-environment/"));
+        Assert.assertEquals("/from-environment/", LocalStorageService.resolveDataDirectory(" ", "/from-environment/"));
+    }
+
+    @Test
+    public void testResolvedDataDirectoryAlwaysEndsInASeparator() {
+        Assert.assertEquals("/no-slash" + File.separator, LocalStorageService.resolveDataDirectory("/no-slash", null));
+        Assert.assertEquals("/trailing-slash/", LocalStorageService.resolveDataDirectory("/trailing-slash/", null));
+        Assert.assertEquals("/trimmed" + File.separator, LocalStorageService.resolveDataDirectory("  /trimmed  ", null));
+    }
+
+    @Test
+    public void testGetDataDirectoryReadsTheSystemProperty() {
+        String previous = System.getProperty(LocalStorageService.DATA_DIRECTORY_PROPERTY);
+        try {
+            System.setProperty(LocalStorageService.DATA_DIRECTORY_PROPERTY, "/overridden");
+            Assert.assertEquals("/overridden" + File.separator, LocalStorageService.getDataDirectory());
+        } finally {
+            restoreDataDirectoryProperty(previous);
+        }
+    }
+
+    /**
+     * The test run is pointed at a directory under target/ by the surefire configuration in the pom,
+     * so nothing a test does can land in the real data directory. This pins that configuration.
+     */
+    @Test
+    public void testTestRunIsPointedAwayFromTheRealDataDirectory() {
+        String dataDirectory = LocalStorageService.getDataDirectory();
+        Assert.assertFalse("surefire must set -D" + LocalStorageService.DATA_DIRECTORY_PROPERTY,
+                LocalStorageService.DEFAULT_DATA_DIRECTORY.equals(dataDirectory));
+        Assert.assertTrue(dataDirectory, new File(dataDirectory).getAbsolutePath().contains("target"));
+    }
+
+    static void restoreDataDirectoryProperty(String previous) {
+        if (previous == null) {
+            System.clearProperty(LocalStorageService.DATA_DIRECTORY_PROPERTY);
+        } else {
+            System.setProperty(LocalStorageService.DATA_DIRECTORY_PROPERTY, previous);
+        }
+    }
 
     @Test
     public void testEverySaveOperationIsAttemptedAndNamedWhenItFails() {

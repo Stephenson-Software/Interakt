@@ -14,26 +14,39 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
-import static dansapps.interakt.services.LocalStorageService.FILE_PATH;
+import static dansapps.interakt.services.LocalStorageService.getDataDirectory;
 
 /**
  * @author Daniel McCoy Stephenson
  * @since January 7th, 2022
  */
 public class Logger {
+    public static final String LOG_FILE_NAME = "log.txt";
     private Interakt interakt;
     private boolean localDebugFlag = false;
-    private static String PATH = FILE_PATH + "log.txt";
-    private File file = new File(PATH);
+    // Resolved per instance rather than once per class so that the data directory can be pointed
+    // elsewhere (see LocalStorageService#getDataDirectory) before a logger is constructed.
+    private final File file = new File(getDataDirectory(), LOG_FILE_NAME);
 
     public Logger(Interakt interakt) {
         this.interakt = interakt;
 
         try {
+            File directory = file.getParentFile();
+            if (directory != null) {
+                directory.mkdirs();
+            }
             file.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * @return The file events are written to, inside the data directory.
+     */
+    public File getFile() {
+        return file;
     }
 
     /**
