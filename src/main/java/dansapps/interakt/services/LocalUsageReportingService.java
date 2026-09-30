@@ -17,7 +17,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Properties;
 
 /**
@@ -90,7 +89,7 @@ public class LocalUsageReportingService {
         boolean firstRun = !settingsFile.exists();
         Properties settings = readSettings();
         String endpoint = settings.getProperty(ENDPOINT_KEY, defaultEndpoint);
-        traceClient = TraceClient.builder(endpoint, APPLICATION_NAME)
+        traceClient = TraceClient.builder(endpoint, APPLICATION_NAME, getVersion())
                 .key(settings.getProperty(KEY_KEY, DEFAULT_KEY))
                 .enabled(Boolean.parseBoolean(settings.getProperty(ENABLED_KEY, "true")))
                 .build();
@@ -101,7 +100,7 @@ public class LocalUsageReportingService {
         }
         if (traceClient.isEnabled()) {
             logger.logInfo("Reporting startup to " + endpoint);
-            traceClient.report("startup", null, Collections.singletonMap("version", getVersion()));
+            traceClient.report("startup");
         }
         else {
             logger.logInfo("Usage reporting is off (" + getDisabledReason() + "). Details: " + DETAILS_URL);
