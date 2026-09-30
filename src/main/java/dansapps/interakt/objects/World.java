@@ -45,10 +45,12 @@ public class World extends Environment implements Savable {
         sender.sendMessage("UUID: " + getUUID());
         sender.sendMessage("Number of entities: " + getNumEntities());
         sender.sendMessage("Created: " + getCreationDate().toString());
-        try {
-            sender.sendMessage("Grid:\n" + getGrid());
-        } catch (Exception e) {
+        Region grid = getGrid();
+        if (grid == null) {
             sender.sendMessage("Grid: N/A");
+        }
+        else {
+            sender.sendMessage("Grid:\n" + grid);
         }
     }
 
@@ -109,10 +111,14 @@ public class World extends Environment implements Savable {
     }
 
     public Square getRandomSquare() {
+        Region grid = getGrid();
+        if (grid == null) {
+            return null;
+        }
         Random random = new Random();
-        int row = random.nextInt(getGrid().getRows());
-        int column = random.nextInt(getGrid().getColumns());
-        return getGrid().getLocation(row, column);
+        int row = random.nextInt(grid.getRows());
+        int column = random.nextInt(grid.getColumns());
+        return grid.getLocation(row, column);
     }
 
     private int getNumSquares() {
