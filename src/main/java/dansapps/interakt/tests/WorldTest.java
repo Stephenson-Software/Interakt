@@ -120,6 +120,18 @@ public class WorldTest {
 
         Assert.assertNull(orphan.getGrid());
         Assert.assertNull(orphan.getFirstSquare());
+        Assert.assertNull(orphan.getRandomSquare());
+    }
+
+    @Test
+    public void testPlacementFailsWhenTheRegionIsMissing() {
+        World world = createWorld("Earth");
+        PersistentData emptyData = new PersistentData();
+        World orphan = new World(world.save(), logger, emptyData);
+        Actor actor = createActor("Gerald");
+
+        Assert.assertFalse(emptyData.placeIntoEnvironment(orphan, actor));
+        Assert.assertEquals(0, orphan.getNumEntities());
     }
 
     @Test
@@ -137,14 +149,13 @@ public class WorldTest {
     }
 
     @Test
-    public void testSendInfoPrintsNullGridWhenTheRegionIsMissing() {
-        // The "Grid: N/A" fallback is never reached: getGrid() returns null instead of throwing,
-        // and string concatenation renders it as "null".
+    public void testSendInfoPrintsGridNotAvailableWhenTheRegionIsMissing() {
         World world = createWorld("Earth");
         World orphan = new World(world.save(), logger, new PersistentData());
 
         List<String> messages = sendInfo(orphan);
 
-        Assert.assertEquals("Grid:\nnull", messages.get(4));
+        Assert.assertEquals(5, messages.size());
+        Assert.assertEquals("Grid: N/A", messages.get(4));
     }
 }
