@@ -6,6 +6,7 @@ package dansapps.interakt.services;
 
 import dansapps.interakt.Interakt;
 import dansapps.interakt.trace.TraceClient;
+import dansapps.interakt.trace.TraceInstallId;
 import dansapps.interakt.utils.Logger;
 
 import java.io.File;
@@ -22,7 +23,10 @@ import java.util.Properties;
 /**
  * Reports that Interakt was started to the trace service, so that it is known whether anybody runs
  * the program. Exactly one event is sent per start: its name is {@code startup} and its only tag is
- * the program version. No usernames, hostnames, paths, actor names or world names are ever sent.
+ * the program version, plus a random installation ID ({@value TraceInstallId#FILE_NAME} in the
+ * same directory as the settings file, written the first time reporting runs; delete it to get a
+ * new one, or set {@code TRACE_INSTALL_ID} to pin one). No usernames, hostnames, paths, actor
+ * names or world names are ever sent.
  * <p>
  * The report is handed to {@link TraceClient}, which sends it from a daemon thread, never throws,
  * and drops the report rather than waiting if the service cannot be reached. Reporting is on by
@@ -92,6 +96,9 @@ public class LocalUsageReportingService {
         traceClient = TraceClient.builder(endpoint, APPLICATION_NAME, getVersion())
                 .key(settings.getProperty(KEY_KEY, DEFAULT_KEY))
                 .enabled(Boolean.parseBoolean(settings.getProperty(ENABLED_KEY, "true")))
+                // Resolved by the client only once it knows reporting is on.
+                .installId(TraceInstallId.fromEnvironment())
+                .installIdFile(getInstallIdFile())
                 .build();
         if (firstRun && traceClient.isEnabled()) {
             // Printed after the client is built so that an environment that has already turned
@@ -159,9 +166,15 @@ public class LocalUsageReportingService {
      * The text a user sees once, the first time the application starts after this feature was
      * added, telling them what is sent and how to turn it off.
      */
+    /** The installation ID file, kept next to the settings file in the data directory. */
+    public File getInstallIdFile() {
+        return new File(settingsFile.getAbsoluteFile().getParentFile(), TraceInstallId.FILE_NAME);
+    }
+
     public String getFirstRunNotice() {
-        return "Usage reporting is on: " + APPLICATION_NAME + " sends its name and version (one startup event) to "
-                + "https://trace.danielstephenson.dev - nothing about you, your actors, your worlds or this machine. "
+        return "Usage reporting is on: " + APPLICATION_NAME + " sends its name, version and a random installation ID"
+                + " (one startup event) to https://trace.danielstephenson.dev - nothing about you, your actors or your"
+                + " worlds. "
                 + "Turn it off with " + ENABLED_KEY + "=false in " + settingsFile.getPath()
                 + ", or with TRACE_USAGE_REPORTING=off in the environment. Details: " + DETAILS_URL;
     }
@@ -209,7 +222,8 @@ public class LocalUsageReportingService {
         }
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(settingsFile), StandardCharsets.UTF_8)) {
             writer.write("# Usage reporting for " + APPLICATION_NAME + ".\n");
-            writer.write("# When enabled, one 'startup' event carrying only the program name and version is sent\n");
+            writer.write("# When enabled, one 'startup' event carrying only the program name and version, and a\n");
+            writer.write("# random installation ID kept in " + TraceInstallId.FILE_NAME + " next to this file, is sent\n");
             writer.write("# to the endpoint each time the application starts. Nothing else is ever sent.\n");
             writer.write("# Set " + ENABLED_KEY + " to false to turn it off. TRACE_USAGE_REPORTING=off or\n");
             writer.write("# DO_NOT_TRACK=1 in the environment turns it off too, whatever this file says.\n");
