@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import dansapps.interakt.Interakt;
 import dansapps.interakt.services.LocalUsageReportingService;
 import dansapps.interakt.trace.TraceClient;
+import dansapps.interakt.trace.TraceInstallId;
 import dansapps.interakt.utils.Logger;
 import org.junit.After;
 import org.junit.Assert;
@@ -103,9 +104,11 @@ public class LocalUsageReportingServiceTest {
         }
     }
 
-    private static String expectedStartupBody() {
+    private String expectedStartupBody() throws IOException {
+        File idFile = new File(settingsDirectory, TraceInstallId.FILE_NAME);
+        String id = new String(Files.readAllBytes(idFile.toPath()), StandardCharsets.UTF_8).trim();
         return "{\"application\":\"Interakt\",\"name\":\"startup\",\"tags\":{\"version\":\""
-                + LocalUsageReportingService.getVersion() + "\"}}";
+                + LocalUsageReportingService.getVersion() + "\",\"install\":\"" + id + "\"}}";
     }
 
     private void writeSettings(String contents) throws IOException {
@@ -136,7 +139,7 @@ public class LocalUsageReportingServiceTest {
 
             String printed = console.toString("UTF-8");
             Assert.assertEquals(service.getFirstRunNotice() + System.lineSeparator(), printed);
-            Assert.assertTrue(printed, printed.startsWith("Usage reporting is on: Interakt sends its name and version (one startup event) to https://trace.danielstephenson.dev - nothing about you, your actors, your worlds or this machine. Turn it off with usage_reporting.enabled=false in "));
+            Assert.assertTrue(printed, printed.startsWith("Usage reporting is on: Interakt sends its name, version and a random installation ID (one startup event) to https://trace.danielstephenson.dev - nothing about you, your actors or your worlds. Turn it off with usage_reporting.enabled=false in "));
             Assert.assertTrue(printed, printed.contains("TRACE_USAGE_REPORTING=off"));
             Assert.assertTrue(printed, printed.contains("Details: https://github.com/Stephenson-Software/trace#usage-reporting"));
             Assert.assertTrue(settings, settings.contains("TRACE_USAGE_REPORTING=off"));
@@ -170,6 +173,7 @@ public class LocalUsageReportingServiceTest {
         Assert.assertEquals(LocalUsageReportingService.ENABLED_KEY + "=false in " + service.getSettingsFile().getPath(),
                 service.getDisabledReason());
         Assert.assertEquals("", console.toString("UTF-8"));
+        Assert.assertFalse("a disabled client never writes an installation ID", service.getInstallIdFile().exists());
     }
 
     @Test
@@ -182,6 +186,28 @@ public class LocalUsageReportingServiceTest {
 
         Assert.assertFalse(service.isEnabled());
         Assert.assertEquals("no key", service.getDisabledReason());
+        Assert.assertFalse(service.getInstallIdFile().exists());
+    }
+
+    @Test
+    public void testInstallationIdIsKeptNextToTheSettingsAndReused() throws Exception {
+        try (StubTraceServer stub = new StubTraceServer()) {
+            LocalUsageReportingService first = newService(stub.endpoint());
+            first.start();
+            Assert.assertTrue(stub.received.await(10, TimeUnit.SECONDS));
+            first.close();
+            File idFile = new File(settingsDirectory, TraceInstallId.FILE_NAME);
+            Assert.assertEquals(idFile.getAbsoluteFile(), first.getInstallIdFile());
+            String id = new String(Files.readAllBytes(idFile.toPath()), StandardCharsets.UTF_8).trim();
+            Assert.assertTrue(id, id.matches("[0-9a-f-]{36}"));
+            Assert.assertTrue(stub.body.get(), stub.body.get().contains("\"install\":\"" + id + "\""));
+
+            LocalUsageReportingService second = newService();
+            second.start();
+            second.close();
+            Assert.assertEquals("a later start reuses it", id,
+                    new String(Files.readAllBytes(idFile.toPath()), StandardCharsets.UTF_8).trim());
+        }
     }
 
     /**
