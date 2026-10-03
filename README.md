@@ -12,6 +12,18 @@ The inspiration for this application is [Kreatures](https://github.com/McCoy-Sof
 ## Running the Project
 Check out how to run the project [here](https://github.com/Stephenson-Software/Interakt/wiki/Running-the-Project).
 
+## Play in your browser
+Interakt's console mode also runs in the browser, with [CheerpJ](https://cheerpj.com) (a Java runtime compiled to WebAssembly, by Leaning Technologies), at https://interakt.play.danielstephenson.dev, alongside the other games at https://danielstephenson.dev/play. Nothing needs to be installed. The page explains a first session (`help`, `generatetestdata`, `elapse`, `list`) and offers those commands as buttons, so it can be played on a phone without much typing. The data directory is `/files/interakt/`, CheerpJ's writable filesystem, which the browser keeps, so saved actors and worlds are still there after a reload. Usage reporting is off in the browser build: `web/java/BrowserMain.java` writes `usage_reporting.enabled=false` before Interakt starts.
+
+To build and serve it locally (Java 17 and Maven):
+```
+./web/build.sh
+python3 -m http.server 8000 --directory build/web
+```
+then open http://localhost:8000. `web/build.sh` compiles the application with Maven, unpacks the vendored Ponder, EnvironmentLib and Gson jars next to it, adds the browser entry point `web/java/BrowserMain.java` (which connects `System.in` and `System.out` to the page) and packs one `build/web/interakt.jar`, which `web/index.html` downloads and runs in console mode. EnvironmentLib is compiled for Java 16, so the page uses CheerpJ's Java 17 runtime. The build output in `build/` is not committed.
+
+`.github/workflows/browser.yml` runs on every pull request and every push to `main`: it runs `mvn test`, builds the site, checks the jar's contents and the page's CheerpJ credit, and runs a short console session from the built jar. On a manual run (`workflow_dispatch`), or on a push to `main` once the repository variable `ARCADE_ENABLED` is `true`, it deploys the site to [arcade](https://github.com/Stephenson-Software/arcade) with [arcade-deploy](https://github.com/Stephenson-Software/arcade-deploy) as version `<version.txt>+g<short commit>`; the upload token is the `ARCADE_TOKEN` secret.
+
 ## Data directory
 Save files (`actors.json`, `worlds.json`, and so on), `log.txt` and `usage-reporting.properties` are all kept in one data directory. By default that is `/Interakt/` - a rooted path, so `C:\Interakt\` on Windows and a directory at the filesystem root on Linux and macOS, which normally needs elevated privileges to create. To keep the data somewhere else, set either of these before starting the application (the system property wins if both are set):
 

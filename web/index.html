@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interakt</title>
+<meta name="description" content="Interakt, a Java console sandbox of worlds and actors, running in the browser with CheerpJ.">
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --panel: #ffffff;
+    --text: #1d1d1b;
+    --muted: #5d5d58;
+    --border: #d6d4cc;
+    --accent: #2f6f4f;
+    --accent-text: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151614;
+      --panel: #1f201d;
+      --text: #e8e6df;
+      --muted: #a3a199;
+      --border: #3a3b36;
+      --accent: #5fb38a;
+      --accent-text: #0e110f;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  .lede { margin: 0 0 16px; color: var(--muted); }
+  #terminal {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 0;
+    height: 380px;
+    max-height: 60vh;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font: 16px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  form {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  #move {
+    flex: 1;
+    min-width: 0;
+    font: 16px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--panel);
+    color: var(--text);
+  }
+  button {
+    font: inherit;
+    font-size: 16px;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--accent);
+    color: var(--accent-text);
+    cursor: pointer;
+  }
+  button:disabled, #move:disabled { opacity: 0.5; cursor: default; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 8px 0 0; }
+  .intro { margin: 0 0 16px; }
+  .intro ul { margin: 8px 0 0; padding-left: 20px; }
+  .intro li { margin: 2px 0; }
+  code { font: 0.95em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .quick button {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    font: 15px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  footer {
+    margin-top: 32px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  footer p { margin: 4px 0; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Interakt</h1>
+  <p class="lede">A Java console sandbox: you create worlds and actors, let time pass, and watch the actors move, meet, befriend each other and have children. The original program runs unchanged in your browser, in its console mode.</p>
+
+  <div class="intro">
+    <p>Type a command and press Enter (or tap a shortcut below). A good first session:</p>
+    <ul>
+      <li><code>help</code> lists every command.</li>
+      <li><code>generatetestdata</code> creates a world called <code>Test</code> with 25 actors in it.</li>
+      <li><code>elapse</code> makes time pass once; time also passes on its own once a minute.</li>
+      <li><code>list</code> shows the actors and worlds, <code>view &lt;name&gt;</code> one of them, <code>relations &lt;actor&gt;</code> its friendships, <code>stats</code> the totals.</li>
+      <li><code>create actor &lt;name&gt;</code>, <code>create world &lt;name&gt;</code> and <code>place &lt;actor&gt; &lt;world&gt;</code> build your own.</li>
+    </ul>
+    <p class="hint">Your data is saved in this browser (it is also saved every few minutes and by <code>save</code>), so it is still there after a reload. <code>wipe</code> deletes it.</p>
+  </div>
+
+  <pre id="terminal" aria-live="polite">Loading Java (the first visit downloads the runtime, which can take a little while)...
+</pre>
+
+  <form id="input-form" autocomplete="off">
+    <input id="command" name="command" type="text" inputmode="text" autocapitalize="none"
+           autocorrect="off" spellcheck="false" enterkeyhint="send"
+           placeholder="A command, like help" aria-label="Command" disabled>
+    <button id="send" type="submit" disabled>Enter</button>
+  </form>
+  <div class="quick" aria-label="Shortcuts">
+    <button type="button" data-command="help" disabled>help</button>
+    <button type="button" data-command="generatetestdata" disabled>generatetestdata</button>
+    <button type="button" data-command="elapse" disabled>elapse</button>
+    <button type="button" data-command="list" disabled>list</button>
+    <button type="button" data-command="stats" disabled>stats</button>
+  </div>
+
+  <footer>
+    <p>Runs in your browser with <a href="https://cheerpj.com" target="_blank" rel="noopener">CheerpJ (Leaning Technologies)</a>.</p>
+    <p>Source: <a href="https://github.com/Stephenson-Software/Interakt">Stephenson-Software/Interakt</a></p>
+    <p>More by Daniel Stephenson &rarr; <a href="https://danielstephenson.dev/play">danielstephenson.dev/play</a></p>
+  </footer>
+</main>
+
+<script src="https://cjrtnc.leaningtech.com/4.3/loader.js"></script>
+<script>
+  (function () {
+    var terminal = document.getElementById("terminal");
+    var form = document.getElementById("input-form");
+    var input = document.getElementById("command");
+    var send = document.getElementById("send");
+    var shortcuts = Array.prototype.slice.call(document.querySelectorAll(".quick button"));
+
+    var loaded = false;
+    var queuedLines = [];   // lines submitted before Java asked for one
+    var waiting = null;     // resolves the pending readLine() call
+
+    function append(text) {
+      if (!loaded) {
+        terminal.textContent = "";
+        loaded = true;
+      }
+      terminal.textContent += text;
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function setInputEnabled(enabled) {
+      input.disabled = !enabled;
+      send.disabled = !enabled;
+      shortcuts.forEach(function (button) { button.disabled = !enabled; });
+    }
+
+    // Natives for BrowserMain (web/java/BrowserMain.java). CheerpJ suspends the Java
+    // thread until the returned promise resolves, so readLine() blocks like a console.
+    async function Java_BrowserMain_readLine(lib) {
+      if (queuedLines.length > 0) {
+        return queuedLines.shift();
+      }
+      return new Promise(function (resolve) { waiting = resolve; });
+    }
+
+    async function Java_BrowserMain_write(lib, text) {
+      append(text);
+    }
+
+    function submit(line) {
+      append("> " + line + "\n");
+      if (waiting) {
+        var resolve = waiting;
+        waiting = null;
+        resolve(line);
+      } else {
+        queuedLines.push(line);
+      }
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var line = input.value;
+      input.value = "";
+      submit(line);
+      input.focus();
+    });
+
+    shortcuts.forEach(function (button) {
+      button.addEventListener("click", function () {
+        submit(button.getAttribute("data-command"));
+      });
+    });
+
+    async function start() {
+      try {
+        // EnvironmentLib is compiled for Java 16, so the Java 17 runtime is used. The data
+        // directory is CheerpJ's /files/, which the browser keeps in IndexedDB.
+        await cheerpjInit({
+          version: 17,
+          status: "none",
+          javaProperties: ["interakt.data.dir=/files/interakt/"],
+          natives: { Java_BrowserMain_readLine: Java_BrowserMain_readLine, Java_BrowserMain_write: Java_BrowserMain_write }
+        });
+        // CheerpJ fetches files under /app/ with HTTP Range requests, which a plain
+        // static host may not support. The jar is downloaded whole here and handed to
+        // CheerpJ through its in-memory /str/ filesystem instead.
+        var response = await fetch("interakt.jar");
+        if (!response.ok) {
+          throw new Error("interakt.jar could not be downloaded (HTTP " + response.status + ")");
+        }
+        cheerpOSAddStringFile("/str/interakt.jar", new Uint8Array(await response.arrayBuffer()));
+        setInputEnabled(true);
+        var exitCode = await cheerpjRunMain("BrowserMain", "/str/interakt.jar");
+        append("\n[Interakt exited with code " + exitCode + ". Reload the page to start it again.]\n");
+      } catch (error) {
+        append("\n[Java could not be started: " + error + "]\n");
+      }
+      setInputEnabled(false);
+    }
+
+    start();
+  })();
+</script>
+</body>
+</html>
