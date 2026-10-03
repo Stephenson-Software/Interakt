@@ -1,4 +1,7 @@
 # Interakt
+
+[![Play in your browser](https://img.shields.io/badge/Play-in%20your%20browser-2ea44f)](https://danielstephenson.dev/play/interakt)
+
 This application is intended to allow the user to create and manage environments and entities that can exist within those environments. 
 
 # Inspiration
