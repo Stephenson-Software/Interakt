@@ -1,6 +1,7 @@
 package dansapps.interakt.tests;
 
 import dansapps.interakt.Interakt;
+import dansapps.interakt.users.Console;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,6 +19,15 @@ public class InteraktTest {
         Set<Thread> after = getLiveApplicationThreads();
         after.removeAll(before);
         Assert.assertTrue("Constructing Interakt started background threads: " + after, after.isEmpty());
+    }
+
+    @Test
+    public void testElapseCommandIsWiredToTheTimeService() {
+        // The elapse command used to be built before the time service was assigned, so typing
+        // elapse at the console threw a NullPointerException and ended the application.
+        Interakt interakt = new Interakt();
+
+        Assert.assertTrue(interakt.onCommand(new Console(), "elapse", new String[0]));
     }
 
     /**

@@ -63,8 +63,10 @@ public class Interakt extends PonderApplication {
     // services
     private final LocalStorageService storageService = new LocalStorageService(actorFactory, worldFactory, regionFactory, squareFactory, timePartitionFactory, actionRecordFactory, entityRecordFactory, logger, persistentData);
     private final LocalAutoSaveService autoSaveService = new LocalAutoSaveService(this, storageService, logger);
-    private final LocalCommandService commandService = new LocalCommandService(getCommands());
+    // Declared before the command service: getCommands() hands the time service to the elapse
+    // command, and a field initialised later would still be null at that point.
     private final LocalTimeService timeService = new LocalTimeService(this, timePartitionFactory, logger, persistentData);
+    private final LocalCommandService commandService = new LocalCommandService(getCommands());
     private final LocalUsageReportingService usageReportingService = new LocalUsageReportingService(new File(LocalStorageService.getDataDirectory()), logger, System.out);
 
     /**

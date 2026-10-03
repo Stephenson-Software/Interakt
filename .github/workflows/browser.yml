@@ -1,0 +1,76 @@
+name: Browser build
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # The whole suite runs first, so a browser build is never made from a broken commit.
+      - name: Run the tests
+        run: mvn -B test
+
+      - name: Build the browser site
+        run: ./web/build.sh
+
+      - name: Check the site
+        shell: bash
+        run: |
+          test -s build/web/index.html
+          test -s build/web/interakt.jar
+          unzip -l build/web/interakt.jar | grep -q 'BrowserMain.class'
+          unzip -l build/web/interakt.jar | grep -q 'dansapps/interakt/Interakt.class'
+          unzip -l build/web/interakt.jar | grep -q 'preponderous/environmentlib/EnvironmentLib.class'
+          unzip -l build/web/interakt.jar | grep -q 'preponderous/ponder/'
+          unzip -l build/web/interakt.jar | grep -q 'com/google/gson/Gson.class'
+          if unzip -l build/web/interakt.jar | grep -q 'dansapps/interakt/tests/'; then
+            echo "the test classes must not be shipped in the browser jar"
+            exit 1
+          fi
+          grep -Fq 'https://cjrtnc.leaningtech.com/' build/web/index.html
+          grep -Fq 'https://cheerpj.com' build/web/index.html
+          grep -Fq 'https://danielstephenson.dev/play' build/web/index.html
+
+      # The browser entry point is started on a real JVM with commands on standard input,
+      # which exercises the console adapter's command path without a browser. The natives
+      # are not available here, so Interakt itself is started the same way BrowserMain does.
+      - name: Smoke-run the console
+        shell: bash
+        env:
+          TRACE_USAGE_REPORTING: 'off'
+        run: |
+          printf 'generatetestdata\nelapse\nstats\nquit\n' | timeout 60 java -Dinterakt.data.dir="$RUNNER_TEMP/interakt" -cp build/web/interakt.jar dansapps.interakt.Interakt console | tee console.log
+          grep -Fq 'Test data has been generated.' console.log
+          grep -Fq 'Forcing time elapse.' console.log
+          grep -Fq 'Number of actors:' console.log
+
+      # arcade versions are immutable, so every deployed commit gets its own version
+      - name: Write the deploy version
+        id: version
+        shell: bash
+        run: |
+          base=$(cat version.txt 2>/dev/null || echo 0.1.0)
+          file="$RUNNER_TEMP/version.txt"
+          echo "${base}+g${GITHUB_SHA::7}" > "$file"
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+          cat "$file"
+
+      - name: Deploy to arcade
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && vars.ARCADE_ENABLED == 'true')
+        uses: Stephenson-Software/arcade-deploy@v1
+        with:
+          slug: interakt
+          token: ${{ secrets.ARCADE_TOKEN }}
+          site-dir: build/web
+          version-file: ${{ steps.version.outputs.file }}
