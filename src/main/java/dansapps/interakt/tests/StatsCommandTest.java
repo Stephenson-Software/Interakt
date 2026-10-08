@@ -20,13 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Characterization tests for StatsCommand. These assert the behavior the command has today,
- * including that it stops partway through and reports failure whenever no actor has acted or
- * explored, because the PersistentData lookups it relies on throw in that case.
+ * Tests for StatsCommand, including that actor lines with no qualifying actor are reported
+ * as N/A instead of failing the command.
  */
 public class StatsCommandTest {
-    private static final String FAILURE_MESSAGE = "Something went wrong when printing stats.";
-
     private final PersistentData persistentData = new PersistentData();
     private final TestUtilities testUtilities = new TestUtilities(persistentData);
     private final ActionRecordFactory actionRecordFactory = new ActionRecordFactory(persistentData);
@@ -113,39 +110,54 @@ public class StatsCommandTest {
     }
 
     @Test
-    public void testStatsWithNoActorsFailsAfterPrintingTheCounts() {
+    public void testStatsWithNoActorsReportsNotApplicableForEveryActorLine() {
         boolean success = statsCommand.execute(console);
 
-        Assert.assertFalse(success);
-        Assert.assertEquals(Arrays.asList(FAILURE_MESSAGE), loggedErrors);
-        Assert.assertEquals(7, messages.size());
-        Assert.assertEquals("Number of actors: 0", messages.get(0));
-        Assert.assertEquals("Number of entity records: 0", messages.get(6));
+        Assert.assertTrue(success);
+        Assert.assertTrue(loggedErrors.isEmpty());
+        Assert.assertEquals(Arrays.asList(
+                "Number of actors: 0",
+                "Number of worlds: 0",
+                "Number of regions: 0",
+                "Number of squares: 0",
+                "Number of elapsed time partitions: 0",
+                "Number of action records: 0",
+                "Number of entity records: 0",
+                "Most active actor: N/A",
+                "Least active actor: N/A",
+                "Most well travelled: N/A",
+                "Most friendly actor: N/A",
+                "Minutes elapsed: 0"
+        ), messages);
     }
 
     @Test
-    public void testStatsFailsWhenActorsExistButNoneHasActed() {
+    public void testStatsReportsNotApplicableWhenActorsExistButNoneHasActed() {
         createActor("Newcomer");
 
         boolean success = statsCommand.execute(console);
 
-        Assert.assertFalse(success);
-        Assert.assertEquals(Arrays.asList(FAILURE_MESSAGE), loggedErrors);
-        Assert.assertEquals("Number of actors: 1", messages.get(0));
-        Assert.assertFalse(messages.contains("Most active actor: Newcomer"));
+        Assert.assertTrue(success);
+        Assert.assertTrue(loggedErrors.isEmpty());
+        Assert.assertTrue(messages.contains("Most active actor: N/A"));
+        Assert.assertTrue(messages.contains("Least active actor: Newcomer"));
+        Assert.assertTrue(messages.contains("Most well travelled: N/A"));
+        Assert.assertEquals("Minutes elapsed: 0", messages.get(messages.size() - 1));
     }
 
     @Test
-    public void testStatsFailsWhenActorsHaveActedButNoneHasExplored() {
+    public void testStatsReportsNotApplicableWhenActorsHaveActedButNoneHasExplored() {
         Actor actor = createActor("Homebody");
         actionRecordFactory.createActionRecord(actor, ACTIONTYPE.REST);
 
         boolean success = statsCommand.execute(console);
 
-        Assert.assertFalse(success);
-        Assert.assertEquals(Arrays.asList(FAILURE_MESSAGE), loggedErrors);
+        Assert.assertTrue(success);
+        Assert.assertTrue(loggedErrors.isEmpty());
+        Assert.assertTrue(messages.contains("Most active actor: Homebody"));
         Assert.assertTrue(messages.contains("Least active actor: Homebody"));
-        Assert.assertFalse(messages.contains("Most well travelled: Homebody"));
+        Assert.assertTrue(messages.contains("Most well travelled: N/A"));
+        Assert.assertEquals("Minutes elapsed: 0", messages.get(messages.size() - 1));
     }
 
     @Test
