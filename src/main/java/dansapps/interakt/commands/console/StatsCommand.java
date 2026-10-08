@@ -3,11 +3,13 @@ package dansapps.interakt.commands.console;
 import dansapps.interakt.commands.abs.InteraktCommand;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.exceptions.ZeroFriendshipsExistentException;
+import dansapps.interakt.objects.Actor;
 import dansapps.interakt.utils.Logger;
 import preponderous.ponder.system.abs.CommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class StatsCommand extends InteraktCommand {
     private final Logger logger;
@@ -29,9 +31,9 @@ public class StatsCommand extends InteraktCommand {
             sender.sendMessage("Number of elapsed time partitions: " + persistentData.getTimePartitions().size());
             sender.sendMessage("Number of action records: " + persistentData.getActionRecords().size());
             sender.sendMessage("Number of entity records: " + persistentData.getEntityRecords().size());
-            sender.sendMessage("Most active actor: " + persistentData.getActorWithMostActionRecords().getName());
-            sender.sendMessage("Least active actor: " + persistentData.getActorWithLeastActionRecords().getName());
-            sender.sendMessage("Most well travelled: " + persistentData.getMostWellTravelledActor().getName());
+            sender.sendMessage("Most active actor: " + getNameOrNotApplicable(persistentData::getActorWithMostActionRecords));
+            sender.sendMessage("Least active actor: " + getNameOrNotApplicable(persistentData::getActorWithLeastActionRecords));
+            sender.sendMessage("Most well travelled: " + getNameOrNotApplicable(persistentData::getMostWellTravelledActor));
 
             try {
                 sender.sendMessage("Most friendly actor: " + persistentData.getMostFriendlyActor().getName());
@@ -51,5 +53,17 @@ public class StatsCommand extends InteraktCommand {
     @Override
     public boolean execute(CommandSender sender, String[] strings) {
         return execute(sender);
+    }
+
+    /**
+     * The PersistentData actor lookups throw a NullPointerException when no actor qualifies,
+     * e.g. when no actor has acted or explored yet. Report that as N/A rather than failing.
+     */
+    private String getNameOrNotApplicable(Supplier<Actor> lookup) {
+        try {
+            return lookup.get().getName();
+        } catch (NullPointerException e) {
+            return "N/A";
+        }
     }
 }
