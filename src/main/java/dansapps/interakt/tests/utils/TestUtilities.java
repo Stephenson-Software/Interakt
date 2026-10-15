@@ -36,8 +36,12 @@ public class TestUtilities {
         return "\"" + toWrap + "\"";
     }
 
+    public CreateCommand createCreateCommand() {
+        return new CreateCommand(actorFactory, worldFactory);
+    }
+
     public void createActor(String name) {
-        CreateCommand createCommand = new CreateCommand(actorFactory, worldFactory);
+        CreateCommand createCommand = createCreateCommand();
         Console console = new Console();
         String[] args = new String[2];
         args[0] = wrapInQuotationMarks("actor");
@@ -46,7 +50,7 @@ public class TestUtilities {
     }
 
     public void createWorld(String name) {
-        CreateCommand createCommand = new CreateCommand(actorFactory, worldFactory);
+        CreateCommand createCommand = createCreateCommand();
         Console console = new Console();
         String[] args = new String[2];
         args[0] = wrapInQuotationMarks("world");

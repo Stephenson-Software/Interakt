@@ -47,6 +47,11 @@ public class DeleteCommand extends InteraktCommand {
             return false;
         }
 
+        if (doubleQuoteArgs.size() < 2) {
+            sender.sendMessage("Arguments must be designated in between quotation marks.");
+            return false;
+        }
+
         String type = doubleQuoteArgs.get(0);
         String name = doubleQuoteArgs.get(1);
 
