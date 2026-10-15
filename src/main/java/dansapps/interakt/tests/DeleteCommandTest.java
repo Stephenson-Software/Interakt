@@ -7,6 +7,10 @@ import dansapps.interakt.users.Console;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class DeleteCommandTest {
     private final PersistentData persistentData = new PersistentData();
     private final TestUtilities testUtilities = new TestUtilities(persistentData);
@@ -49,5 +53,25 @@ public class DeleteCommandTest {
         } catch(Exception ignored) {
 
         }
+    }
+
+    @Test
+    public void testPartiallyQuotedArgumentsAreRejected() {
+        String name = "Gerald";
+        testUtilities.createActor(name);
+        List<String> messages = new ArrayList<>();
+        Console console = new Console() {
+            @Override
+            public void sendMessage(String message) {
+                messages.add(message);
+            }
+        };
+
+        DeleteCommand deleteCommand = new DeleteCommand(persistentData);
+        boolean success = deleteCommand.execute(console, new String[]{testUtilities.wrapInQuotationMarks("actor"), name});
+
+        Assert.assertFalse(success);
+        Assert.assertEquals(Collections.singletonList("Arguments must be designated in between quotation marks."), messages);
+        Assert.assertEquals(1, persistentData.getActors().size());
     }
 }

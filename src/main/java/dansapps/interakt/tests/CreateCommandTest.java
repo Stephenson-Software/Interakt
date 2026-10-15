@@ -1,9 +1,15 @@
 package dansapps.interakt.tests;
 
+import dansapps.interakt.commands.console.CreateCommand;
 import dansapps.interakt.data.PersistentData;
 import dansapps.interakt.tests.utils.TestUtilities;
+import dansapps.interakt.users.Console;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CreateCommandTest {
     private final PersistentData persistentData = new PersistentData();
@@ -29,6 +35,24 @@ public class CreateCommandTest {
         } catch (Exception e) {
             Assert.fail();
         }
+    }
+
+    @Test
+    public void testPartiallyQuotedArgumentsAreRejected() {
+        CreateCommand createCommand = testUtilities.createCreateCommand();
+        List<String> messages = new ArrayList<>();
+        Console console = new Console() {
+            @Override
+            public void sendMessage(String message) {
+                messages.add(message);
+            }
+        };
+
+        boolean success = createCommand.execute(console, new String[]{testUtilities.wrapInQuotationMarks("actor"), "Gerald"});
+
+        Assert.assertFalse(success);
+        Assert.assertEquals(Collections.singletonList("Arguments must be designated in between quotation marks."), messages);
+        Assert.assertTrue(persistentData.getActors().isEmpty());
     }
 
 }

@@ -120,15 +120,13 @@ public class ViewCommandTest {
         Assert.assertEquals(Collections.singletonList("That type isn't supported. Supported types include actor and world."), messages);
     }
 
-    /**
-     * Characterizes current behavior: only one quoted argument is extracted, and the name lookup
-     * indexes past the end of the list. This is a bug (issue #128); once it is fixed, this test
-     * should instead assert that the command is rejected with a message.
-     */
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testPartiallyQuotedArgumentsCurrentlyThrow() {
+    @Test
+    public void testPartiallyQuotedArgumentsAreRejected() {
         testUtilities.createActor("Gerald");
 
-        viewCommand.execute(console, new String[]{testUtilities.wrapInQuotationMarks("actor"), "Gerald"});
+        boolean success = viewCommand.execute(console, new String[]{testUtilities.wrapInQuotationMarks("actor"), "Gerald"});
+
+        Assert.assertFalse(success);
+        Assert.assertEquals(Collections.singletonList("Arguments must be designated in between quotation marks."), messages);
     }
 }
