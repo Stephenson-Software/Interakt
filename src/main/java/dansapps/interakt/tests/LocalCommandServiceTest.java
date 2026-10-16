@@ -43,7 +43,7 @@ public class LocalCommandServiceTest {
 
             @Override
             public boolean execute(CommandSender sender, String[] args) {
-                invocations.add(names[0] + String.join(",", args));
+                invocations.add(names[0] + "(" + String.join(",", args) + ")");
                 return result;
             }
         };
@@ -71,7 +71,7 @@ public class LocalCommandServiceTest {
         boolean success = service.interpretCommand(console, "info", new String[]{"a", "b"});
 
         Assert.assertTrue(success);
-        Assert.assertEquals(Collections.singletonList("infoa,b"), invocations);
+        Assert.assertEquals(Collections.singletonList("info(a,b)"), invocations);
     }
 
     @Test
