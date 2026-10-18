@@ -59,10 +59,14 @@
         <plugins>
             <!-- Test classes live under src/main/java/dansapps/interakt/tests/ rather than the
                  standard src/test/java split, so they compile into the main output directory.
-                 Point surefire there so `mvn test` discovers them. -->
+                 Point surefire there so `mvn test` discovers them.
+                 The version is pinned because surefire 3.6.0 and later refuse to run JUnit
+                 versions below 4.12, and the checked-in jar is JUnit 4.10. Left unpinned, the
+                 version follows whichever Maven runs the build. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.4</version>
                 <configuration>
                     <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
                     <!-- Keep the log file and any data the tests write inside target/ instead of
