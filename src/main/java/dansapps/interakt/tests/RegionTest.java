@@ -146,12 +146,20 @@ public class RegionTest {
         Assert.assertFalse(lines[1], lines[1].contains("[G]"));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testToStringThrowsWhenTheSquaresAreMissing() {
+    @Test
+    public void testToStringShowsNotAvailableCellsWhenTheSquaresAreMissing() {
         Region grid = createWorld("Earth").getGrid();
         Region orphan = new Region(grid.save(), logger, new PersistentData());
 
-        // getLocation returns null instead of throwing, so the "[N/A]" branch is never reached (#135).
-        orphan.toString();
+        StringBuilder row = new StringBuilder();
+        for (int i = 0; i < CONFIG.GRID_SIZE; i++) {
+            row.append("[N/A] ");
+        }
+        String[] lines = orphan.toString().split("\n");
+
+        Assert.assertEquals(CONFIG.GRID_SIZE, lines.length);
+        for (String line : lines) {
+            Assert.assertEquals(row.toString(), line);
+        }
     }
 }

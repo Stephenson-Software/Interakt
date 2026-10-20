@@ -100,10 +100,8 @@ public class Region extends Grid implements Savable {
         StringBuilder toReturn = new StringBuilder();
         for (int x = 0; x < getColumns(); x++) {
             for (int y = 0; y < getRows(); y++) {
-                Square square;
-                try {
-                    square = getLocation(x, y);
-                } catch (Exception e) {
+                Square square = getLocation(x, y);
+                if (square == null) {
                     toReturn.append("[N/A] ");
                     continue;
                 }
