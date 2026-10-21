@@ -21,7 +21,7 @@ import java.util.UUID;
 /**
  * Characterization tests for Region's grid generation, coordinate lookup, persistence round trip
  * and text rendering. These assert the behavior the code has today, including that rendering a
- * region whose squares are missing throws rather than printing "[N/A]".
+ * region whose squares or occupying actors are missing prints "[N/A]" or "[?]" cells rather than throwing.
  */
 public class RegionTest {
     private final PersistentData persistentData = new PersistentData();
@@ -144,6 +144,21 @@ public class RegionTest {
         Assert.assertEquals("[ ] [ ] [ ] [G] ", lines[2].substring(0, 16));
         Assert.assertFalse(lines[3], lines[3].contains("[G]"));
         Assert.assertFalse(lines[1], lines[1].contains("[G]"));
+    }
+
+    @Test
+    public void testToStringShowsAPlaceholderWhenAnOccupyingActorIsMissing() {
+        Region grid = createWorld("Earth").getGrid();
+        Actor gerald = createActor("Gerald");
+        grid.getLocation(2, 3).addActor(gerald);
+        // Bypass removeActor, which would also clear the square, to leave an orphaned UUID behind.
+        persistentData.getActors().remove(gerald);
+
+        String[] lines = grid.toString().split("\n");
+
+        Assert.assertEquals(CONFIG.GRID_SIZE, lines.length);
+        Assert.assertEquals("[ ] [ ] [ ] [?] ", lines[2].substring(0, 16));
+        Assert.assertFalse(lines[2], lines[2].contains("[G]"));
     }
 
     @Test
