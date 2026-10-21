@@ -112,11 +112,13 @@ public class Region extends Grid implements Savable {
                             break;
                         case CHARACTER_AT_INDEX_ZERO:
                             UUID entityUUID = square.getEntityUUIDs().iterator().next();
-                            Actor actor = null;
+                            Actor actor;
                             try {
                                 actor = persistentData.getActor(entityUUID);
                             } catch (ActorNotFoundException actorNotFoundException) {
-                                // this shouldn't happen
+                                logger.logError("Actor " + entityUUID + " on a square of a region wasn't found.");
+                                toReturn.append("[?] ");
+                                break;
                             }
                             toReturn.append("[").append(actor.getName().charAt(0)).append("] ");
                             break;
