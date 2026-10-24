@@ -22,7 +22,7 @@ public class EntityRecordFactory {
     }
 
     public void createEntityRecord(Map<String, String> data) {
-        EntityRecord entityRecord = new EntityRecord(data);
+        EntityRecord entityRecord = new EntityRecord(data, logger);
         persistentData.addEntityRecord(entityRecord);
     }
 }
