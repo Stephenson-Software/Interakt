@@ -20,7 +20,8 @@ public class EntityRecord implements Savable {
         this.logger = logger;
     }
 
-    public EntityRecord(Map<String, String> data) {
+    public EntityRecord(Map<String, String> data, Logger logger) {
+        this.logger = logger;
         this.load(data);
     }
 
