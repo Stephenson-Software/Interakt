@@ -62,9 +62,8 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
     public Actor(Map<String, String> data, Logger logger, EventFactory eventFactory, Interakt interakt, ActionRecordFactory actionRecordFactory, ActorFactory actorFactory, PersistentData persistentData, FoodItemFactory foodItemFactory) {
         super("temp");
-        this.load(data);
 
-        // dependencies
+        // dependencies are assigned before loading so that load can log errors
         this.logger = logger;
         this.eventFactory = eventFactory;
         this.interakt = interakt;
@@ -72,6 +71,8 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         this.actorFactory = actorFactory;
         this.persistentData = persistentData;
         this.foodItemFactory = foodItemFactory;
+
+        this.load(data);
     }
 
     public void sendInfo(CommandSender sender) {
