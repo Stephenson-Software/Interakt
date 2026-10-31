@@ -9,6 +9,10 @@ import dansapps.interakt.utils.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class GenerateTestDataCommandTest {
     private final Interakt interakt = new Interakt();
     private final Logger logger = new Logger(interakt);
@@ -31,5 +35,28 @@ public class GenerateTestDataCommandTest {
 
         Assert.assertTrue(persistentData.getNumWorlds() > 0);
         Assert.assertTrue(persistentData.getNumActors() > 0);
+    }
+
+    @Test
+    public void testGenerateTestDataCommandReusesExistingTestWorld() {
+        GenerateTestDataCommand generateTestDataCommand = new GenerateTestDataCommand(worldFactory, actorFactory, persistentData);
+        generateTestDataCommand.execute(new Console());
+        int numActors = persistentData.getNumActors();
+        List<String> messages = new ArrayList<>();
+        Console console = new Console() {
+            @Override
+            public void sendMessage(String message) {
+                messages.add(message);
+            }
+        };
+
+        boolean success = generateTestDataCommand.execute(console);
+
+        // Every test actor's name is already taken on a second run, so each is skipped and the command
+        // still reports success rather than "Test data has already been generated.".
+        Assert.assertTrue(success);
+        Assert.assertEquals(Collections.singletonList("Test data has been generated."), messages);
+        Assert.assertEquals(1, persistentData.getNumWorlds());
+        Assert.assertEquals(numActors, persistentData.getNumActors());
     }
 }

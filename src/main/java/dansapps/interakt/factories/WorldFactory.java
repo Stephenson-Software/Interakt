@@ -5,6 +5,7 @@
 package dansapps.interakt.factories;
 
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.exceptions.NameTakenException;
 import dansapps.interakt.objects.World;
 import dansapps.interakt.utils.Logger;
 
@@ -25,9 +26,9 @@ public class WorldFactory {
         this.persistentData = persistentData;
     }
 
-    public void createWorld(String name) {
+    public void createWorld(String name) throws NameTakenException {
         if (isNameTaken(name)) {
-            return;
+            throw new NameTakenException();
         }
         World world = new World(name, regionFactory, logger, persistentData);
         persistentData.addWorld(world);

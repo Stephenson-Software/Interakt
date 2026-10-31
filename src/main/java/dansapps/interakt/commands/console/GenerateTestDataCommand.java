@@ -36,7 +36,11 @@ public class GenerateTestDataCommand extends InteraktCommand {
 
     @Override
     public boolean execute(CommandSender sender) {
-        worldFactory.createWorld("Test");
+        try {
+            worldFactory.createWorld("Test");
+        } catch (NameTakenException e) {
+            // The test world already exists, so the actors are placed into it.
+        }
         World world;
         try {
             world = persistentData.getWorld("Test");

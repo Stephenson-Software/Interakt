@@ -68,7 +68,12 @@ public class CreateCommand extends InteraktCommand {
             return true;
         }
         else if (type.equalsIgnoreCase("world")) {
-            worldFactory.createWorld(name);
+            try {
+                worldFactory.createWorld(name);
+            } catch (NameTakenException e) {
+                sender.sendMessage("That name was taken.");
+                return false;
+            }
             sender.sendMessage("World created.");
             return true;
         }
