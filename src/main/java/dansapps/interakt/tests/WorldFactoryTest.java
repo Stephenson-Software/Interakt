@@ -2,6 +2,7 @@ package dansapps.interakt.tests;
 
 import dansapps.interakt.Interakt;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.exceptions.NameTakenException;
 import dansapps.interakt.factories.RegionFactory;
 import dansapps.interakt.factories.SquareFactory;
 import dansapps.interakt.factories.WorldFactory;
@@ -18,7 +19,7 @@ import java.util.UUID;
 /**
  * Characterization tests for WorldFactory's name handling and the registration it performs for new
  * and loaded worlds. These assert the behavior the code has today, including that a taken name is
- * ignored silently when creating by name but not checked at all when creating from saved data.
+ * rejected when creating by name but not checked at all when creating from saved data.
  */
 public class WorldFactoryTest {
     private final PersistentData persistentData = new PersistentData();
@@ -42,12 +43,17 @@ public class WorldFactoryTest {
     }
 
     @Test
-    public void testCreateWorldWithTakenNameIsIgnoredSilently() throws Exception {
+    public void testCreateWorldWithTakenNameThrowsAndLeavesDataUnchanged() throws Exception {
         worldFactory.createWorld("Earth");
         World original = persistentData.getWorld("Earth");
 
         // The name check is case-insensitive and runs before construction, so no grid is generated either.
-        worldFactory.createWorld("EARTH");
+        try {
+            worldFactory.createWorld("EARTH");
+            Assert.fail("Expected NameTakenException");
+        } catch (NameTakenException expected) {
+            // expected
+        }
 
         Assert.assertEquals(1, persistentData.getNumWorlds());
         Assert.assertSame(original, persistentData.getWorld("Earth"));

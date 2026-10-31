@@ -55,4 +55,23 @@ public class CreateCommandTest {
         Assert.assertTrue(persistentData.getActors().isEmpty());
     }
 
+    @Test
+    public void testCreateWorldWithTakenNameIsRejected() {
+        testUtilities.createWorld("Earth");
+        CreateCommand createCommand = testUtilities.createCreateCommand();
+        List<String> messages = new ArrayList<>();
+        Console console = new Console() {
+            @Override
+            public void sendMessage(String message) {
+                messages.add(message);
+            }
+        };
+
+        boolean success = createCommand.execute(console, new String[]{testUtilities.wrapInQuotationMarks("world"), testUtilities.wrapInQuotationMarks("EARTH")});
+
+        Assert.assertFalse(success);
+        Assert.assertEquals(Collections.singletonList("That name was taken."), messages);
+        Assert.assertEquals(1, persistentData.getNumWorlds());
+    }
+
 }
