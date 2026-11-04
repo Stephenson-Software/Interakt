@@ -36,8 +36,10 @@ public class GenerateTestDataCommand extends InteraktCommand {
 
     @Override
     public boolean execute(CommandSender sender) {
+        boolean generated = false;
         try {
             worldFactory.createWorld("Test");
+            generated = true;
         } catch (NameTakenException e) {
             // The test world already exists, so the actors are placed into it.
         }
@@ -62,11 +64,12 @@ public class GenerateTestDataCommand extends InteraktCommand {
                 sender.sendMessage("There was a problem accessing an actor after it was generated.");
                 continue;
             }
-            if (actor.getWorld() != null) {
-                sender.sendMessage("Test data has already been generated.");
-                return false;
-            }
             persistentData.placeIntoEnvironment(world, sender, actor);
+            generated = true;
+        }
+        if (!generated) {
+            sender.sendMessage("Test data has already been generated.");
+            return false;
         }
         sender.sendMessage("Test data has been generated.");
         return true;

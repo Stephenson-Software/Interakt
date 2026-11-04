@@ -38,25 +38,70 @@ public class GenerateTestDataCommandTest {
     }
 
     @Test
-    public void testGenerateTestDataCommandReusesExistingTestWorld() {
+    public void testGenerateTestDataCommandReportsAlreadyGeneratedOnSecondRun() {
         GenerateTestDataCommand generateTestDataCommand = new GenerateTestDataCommand(worldFactory, actorFactory, persistentData);
         generateTestDataCommand.execute(new Console());
         int numActors = persistentData.getNumActors();
         List<String> messages = new ArrayList<>();
-        Console console = new Console() {
+
+        boolean success = generateTestDataCommand.execute(recordingConsole(messages));
+
+        Assert.assertFalse(success);
+        Assert.assertEquals(Collections.singletonList("Test data has already been generated."), messages);
+        Assert.assertEquals(1, persistentData.getNumWorlds());
+        Assert.assertEquals(numActors, persistentData.getNumActors());
+    }
+
+    @Test
+    public void testGenerateTestDataCommandReportsAlreadyGeneratedAfterTestActorIsDeleted() throws Exception {
+        GenerateTestDataCommand generateTestDataCommand = new GenerateTestDataCommand(worldFactory, actorFactory, persistentData);
+        generateTestDataCommand.execute(new Console());
+        persistentData.removeActor(persistentData.getActor("Adam"));
+        int numActors = persistentData.getNumActors();
+        List<String> messages = new ArrayList<>();
+
+        boolean success = generateTestDataCommand.execute(recordingConsole(messages));
+
+        // The entity record keeps a deleted actor's name taken, so the actor is not regenerated.
+        Assert.assertFalse(success);
+        Assert.assertEquals(Collections.singletonList("Test data has already been generated."), messages);
+        Assert.assertEquals(numActors, persistentData.getNumActors());
+    }
+
+    @Test
+    public void testGenerateTestDataCommandPlacesActorsIntoExistingTestWorld() throws Exception {
+        GenerateTestDataCommand generateTestDataCommand = new GenerateTestDataCommand(worldFactory, actorFactory, persistentData);
+        worldFactory.createWorld("Test");
+        List<String> messages = new ArrayList<>();
+
+        boolean success = generateTestDataCommand.execute(recordingConsole(messages));
+
+        Assert.assertTrue(success);
+        Assert.assertEquals("Test data has been generated.", messages.get(messages.size() - 1));
+        Assert.assertEquals(1, persistentData.getNumWorlds());
+        Assert.assertEquals(persistentData.getWorld("Test"), persistentData.getActor("Adam").getWorld());
+    }
+
+    @Test
+    public void testGenerateTestDataCommandReportsGeneratedWhenOnlyTestWorldIsCreated() throws Exception {
+        GenerateTestDataCommand generateTestDataCommand = new GenerateTestDataCommand(worldFactory, actorFactory, persistentData);
+        generateTestDataCommand.execute(new Console());
+        persistentData.removeWorld(persistentData.getWorld("Test"));
+        List<String> messages = new ArrayList<>();
+
+        boolean success = generateTestDataCommand.execute(recordingConsole(messages));
+
+        Assert.assertTrue(success);
+        Assert.assertEquals(Collections.singletonList("Test data has been generated."), messages);
+        Assert.assertTrue(persistentData.isWorld("Test"));
+    }
+
+    private Console recordingConsole(List<String> messages) {
+        return new Console() {
             @Override
             public void sendMessage(String message) {
                 messages.add(message);
             }
         };
-
-        boolean success = generateTestDataCommand.execute(console);
-
-        // Every test actor's name is already taken on a second run, so each is skipped and the command
-        // still reports success rather than "Test data has already been generated.".
-        Assert.assertTrue(success);
-        Assert.assertEquals(Collections.singletonList("Test data has been generated."), messages);
-        Assert.assertEquals(1, persistentData.getNumWorlds());
-        Assert.assertEquals(numActors, persistentData.getNumActors());
     }
 }
