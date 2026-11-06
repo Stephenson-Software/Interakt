@@ -9,6 +9,7 @@ import dansapps.interakt.factories.EventFactory;
 import dansapps.interakt.factories.FoodItemFactory;
 import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.objects.Actor;
+import dansapps.interakt.objects.World;
 import dansapps.interakt.tests.utils.TestUtilities;
 import dansapps.interakt.utils.Logger;
 import org.junit.Assert;
@@ -16,6 +17,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Characterization tests for Actor's health and relation logic. These assert the behavior the code
@@ -190,5 +192,35 @@ public class ActorTest {
                 loggedErrors.add(errorMessage);
             }
         };
+    }
+
+    @Test
+    public void testToStringReportsNoWorldWhenItsWorldNoLongerExists() {
+        Actor actor = createActor("StrandedActor");
+        actor.setEnvironmentUUID(UUID.randomUUID());
+
+        Assert.assertTrue(actor.toString().contains("World: N/A"));
+    }
+
+    @Test
+    public void testReproduceCreatesNoOffspringWhenItsWorldNoLongerExists() throws Exception {
+        testUtilities.createWorld("Earth");
+        World world = persistentData.getWorld("Earth");
+        Actor parent = createActor("StrandedParent");
+        Actor partner = createActor("StrandedPartner");
+        persistentData.placeIntoEnvironment(world, parent);
+        persistentData.placeIntoEnvironment(world, partner);
+        parent.getSquare().removeActor(parent);
+        partner.getSquare().addActor(parent);
+        parent.increaseRelation(partner, 100);
+        parent.setEnvironmentUUID(UUID.randomUUID());
+        int actorsBefore = persistentData.getActors().size();
+
+        // The partner is picked at random from the square, so give every attempt a chance to find them.
+        for (int attempt = 0; attempt < 200; attempt++) {
+            parent.reproduce();
+        }
+
+        Assert.assertEquals(actorsBefore, persistentData.getActors().size());
     }
 }

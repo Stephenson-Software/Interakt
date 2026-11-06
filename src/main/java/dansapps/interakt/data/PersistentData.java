@@ -95,7 +95,24 @@ public class PersistentData {
     }
 
     public void removeWorld(World world) {
+        unplaceActorsIn(world);
+        removeGridOf(world);
         worlds.remove(world);
+    }
+
+    private void unplaceActorsIn(World world) {
+        for (Actor actor : actors) {
+            if (world.getUUID().equals(actor.getEnvironmentUUID())) {
+                actor.setEnvironmentUUID(null);
+                actor.setLocationUUID(null);
+            }
+        }
+    }
+
+    private void removeGridOf(World world) {
+        UUID gridUUID = world.getGridUUID();
+        squares.removeIf(square -> gridUUID.equals(square.getParentGridUUID()));
+        regions.removeIf(region -> gridUUID.equals(region.getUUID()));
     }
 
     public World getWorld(String name) throws Exception {

@@ -1,7 +1,9 @@
 package dansapps.interakt.tests;
 
 import dansapps.interakt.commands.console.DeleteCommand;
+import dansapps.interakt.commands.console.PlaceCommand;
 import dansapps.interakt.data.PersistentData;
+import dansapps.interakt.objects.Actor;
 import dansapps.interakt.tests.utils.TestUtilities;
 import dansapps.interakt.users.Console;
 import org.junit.Assert;
@@ -73,5 +75,23 @@ public class DeleteCommandTest {
         Assert.assertFalse(success);
         Assert.assertEquals(Collections.singletonList("Arguments must be designated in between quotation marks."), messages);
         Assert.assertEquals(1, persistentData.getActors().size());
+    }
+
+    @Test
+    public void testActorsOfADeletedWorldCanBeViewedAndPlacedElsewhere() throws Exception {
+        testUtilities.createWorld("Earth");
+        testUtilities.createWorld("Mars");
+        testUtilities.createActor("Gerald");
+        Actor actor = persistentData.getActor("Gerald");
+        Console console = new Console();
+        new PlaceCommand(persistentData).execute(console, new String[]{testUtilities.wrapInQuotationMarks("Gerald"), testUtilities.wrapInQuotationMarks("Earth")});
+
+        boolean deleted = new DeleteCommand(persistentData).execute(console, new String[]{testUtilities.wrapInQuotationMarks("world"), testUtilities.wrapInQuotationMarks("Earth")});
+
+        Assert.assertTrue(deleted);
+        Assert.assertTrue(actor.toString().contains("World: N/A"));
+        boolean placed = new PlaceCommand(persistentData).execute(console, new String[]{testUtilities.wrapInQuotationMarks("Gerald"), testUtilities.wrapInQuotationMarks("Mars")});
+        Assert.assertTrue(placed);
+        Assert.assertSame(persistentData.getWorld("Mars"), actor.getWorld());
     }
 }
