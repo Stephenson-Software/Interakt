@@ -334,8 +334,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (!isFriend(target)) {
             return;
         }
-        Actor offspring = actorFactory.createActorFromParents(this, target);
         World world = getWorld();
+        if (world == null) {
+            logger.logError(getName() + " wanted to reproduce, but their world wasn't found.");
+            return;
+        }
+        Actor offspring = actorFactory.createActorFromParents(this, target);
         boolean success = persistentData.placeIntoEnvironment(world, offspring); // TODO: place in same square as parents
 
         if (!success) {
@@ -558,11 +562,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     }
 
     private String getWorldInfo() {
-        if (getEnvironmentUUID() == null) {
+        World world = getWorld();
+        if (world == null) {
             return "World: N/A";
         }
         else {
-            return "World: " + getWorld().getName();
+            return "World: " + world.getName();
         }
     }
 

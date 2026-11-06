@@ -47,44 +47,40 @@ public class PlaceCommand extends InteraktCommand {
             return false;
         }
 
+        if (doubleQuoteArgs.size() < 2) {
+            sender.sendMessage("Arguments must be designated in between quotation marks.");
+            return false;
+        }
+
         String actorName = doubleQuoteArgs.get(0);
+        String worldName = doubleQuoteArgs.get(1);
+
         Actor actor;
         try {
             actor = persistentData.getActor(actorName);
         }
         catch (Exception e) {
-            sender.sendMessage("That entity wasn't found.");
+            sender.sendMessage("That actor wasn't found.");
             return false;
         }
 
         if (actorIsAlreadyInAWorld(actor)) {
-            sender.sendMessage("That entity is already in an environment.");
+            sender.sendMessage("That actor is already in a world.");
             return false;
         }
 
         World world;
-
         try {
-            world = getWorld(doubleQuoteArgs, sender);
+            world = persistentData.getWorld(worldName);
         } catch (Exception e) {
-            sender.sendMessage("That environment wasn't found.");
+            sender.sendMessage("That world wasn't found.");
             return false;
         }
 
         return persistentData.placeIntoEnvironment(world, sender, actor);
     }
 
-    private World getWorld(ArrayList<String> doubleQuoteArgs, CommandSender sender) throws Exception {
-        String environmentName = doubleQuoteArgs.get(1);
-        try {
-            return persistentData.getWorld(environmentName);
-        } catch (Exception e) {
-            sender.sendMessage("That world wasn't found.");
-            throw new Exception();
-        }
-    }
-
     private boolean actorIsAlreadyInAWorld(Actor actor) {
-        return actor.getEnvironmentUUID() != null;
+        return actor.getWorld() != null;
     }
 }

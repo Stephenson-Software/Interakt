@@ -5,6 +5,7 @@ import dansapps.interakt.exceptions.ActorNotFoundException;
 import dansapps.interakt.exceptions.EntityRecordNotFoundException;
 import dansapps.interakt.exceptions.ZeroFriendshipsExistentException;
 import dansapps.interakt.factories.ActionRecordFactory;
+import dansapps.interakt.misc.CONFIG;
 import dansapps.interakt.misc.enums.ACTIONTYPE;
 import dansapps.interakt.objects.Actor;
 import dansapps.interakt.objects.Square;
@@ -295,5 +296,46 @@ public class PersistentDataTest {
         Assert.assertTrue(persistentData.getActionRecords().isEmpty());
         Assert.assertTrue(persistentData.getEntityRecords().isEmpty());
         Assert.assertFalse(persistentData.isActor("Gerald"));
+    }
+
+    @Test
+    public void testRemoveWorldUnplacesTheActorsInIt() {
+        World world = createWorld("Earth");
+        Actor actor = createActor("Gerald");
+        persistentData.placeIntoEnvironment(world, actor);
+
+        persistentData.removeWorld(world);
+
+        Assert.assertNull(actor.getEnvironmentUUID());
+        Assert.assertNull(actor.getLocationUUID());
+        Assert.assertNull(actor.getWorld());
+    }
+
+    @Test
+    public void testRemoveWorldLeavesActorsInOtherWorldsPlaced() {
+        World removed = createWorld("Earth");
+        World kept = createWorld("Mars");
+        Actor actor = createActor("Gerald");
+        persistentData.placeIntoEnvironment(kept, actor);
+
+        persistentData.removeWorld(removed);
+
+        Assert.assertSame(kept, actor.getWorld());
+        Assert.assertNotNull(actor.getSquare());
+    }
+
+    @Test
+    public void testRemoveWorldRemovesOnlyItsOwnRegionAndSquares() {
+        World removed = createWorld("Earth");
+        World kept = createWorld("Mars");
+
+        persistentData.removeWorld(removed);
+
+        Assert.assertEquals(1, persistentData.getRegions().size());
+        Assert.assertSame(kept.getGrid(), persistentData.getRegions().iterator().next());
+        Assert.assertEquals(CONFIG.GRID_SIZE * CONFIG.GRID_SIZE, persistentData.getSquares().size());
+        for (Square square : persistentData.getSquares()) {
+            Assert.assertEquals(kept.getGridUUID(), square.getParentGridUUID());
+        }
     }
 }
