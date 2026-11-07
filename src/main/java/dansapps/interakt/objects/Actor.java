@@ -84,12 +84,12 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     }
 
     /**
-     * @return The square this actor is on, or null if there isn't one. Having no location at all is
-     * normal for an actor that hasn't been placed in a world, so only a location that can't be found
-     * is logged as an error.
+     * @return The square this actor is on, or null if there isn't one. Having neither a world nor a
+     * location is normal for an actor that hasn't been placed, so only a location that should exist
+     * but can't be found is logged as an error.
      */
     public Location getLocation() {
-        if (getLocationUUID() == null) {
+        if (getEnvironmentUUID() == null && getLocationUUID() == null) {
             return null;
         }
         try {
@@ -604,7 +604,10 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
     private void attemptToLoadWorld(Gson gson, Map<String, String> data) {
         try {
-            setEnvironmentUUID(UUID.fromString(gson.fromJson(data.get("environmentUUID"), String.class)));
+            String environmentUUID = gson.fromJson(data.get("environmentUUID"), String.class);
+            if (environmentUUID != null) {
+                setEnvironmentUUID(UUID.fromString(environmentUUID));
+            }
         }
         catch(Exception ignored) {
             logger.logError("An environment wasn't found for " + getName());
@@ -613,7 +616,10 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
     private void attemptToLoadSquare(Gson gson, Map<String, String> data) {
         try {
-            setLocationUUID(UUID.fromString(gson.fromJson(data.get("locationUUID"), String.class)));
+            String locationUUID = gson.fromJson(data.get("locationUUID"), String.class);
+            if (locationUUID != null) {
+                setLocationUUID(UUID.fromString(locationUUID));
+            }
         }
         catch(Exception ignored) {
             logger.logError("A location wasn't found for " + getName());

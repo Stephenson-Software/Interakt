@@ -22,6 +22,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -167,9 +168,23 @@ public class ActorTest {
         Assert.assertEquals(unplaced.getUUID(), loaded.getUUID());
         Assert.assertNull(loaded.getEnvironmentUUID());
         Assert.assertNull(loaded.getLocationUUID());
+        Assert.assertEquals(Collections.emptyList(), loggedErrors);
+    }
+
+    @Test
+    public void testMalformedPlacementInSavedDataIsLogged() throws Exception {
+        Map<String, String> data = createActor("MalformedActor").save();
+        data.put("environmentUUID", "\"not-a-uuid\"");
+        data.put("locationUUID", "\"not-a-uuid\"");
+        PersistentData loadedData = new PersistentData();
+        List<String> loggedErrors = new ArrayList<>();
+
+        createActorFactory(loadedData, getRecordingLogger(loggedErrors)).createActorWithData(data);
+
+        Assert.assertNull(loadedData.getActor("MalformedActor").getLocationUUID());
         Assert.assertEquals(2, loggedErrors.size());
-        Assert.assertEquals("An environment wasn't found for UnplacedActor", loggedErrors.get(0));
-        Assert.assertEquals("A location wasn't found for UnplacedActor", loggedErrors.get(1));
+        Assert.assertEquals("An environment wasn't found for MalformedActor", loggedErrors.get(0));
+        Assert.assertEquals("A location wasn't found for MalformedActor", loggedErrors.get(1));
     }
 
     @Test
@@ -186,7 +201,10 @@ public class ActorTest {
     }
 
     private ActorFactory createActorFactory(PersistentData data, Logger logger) {
-        Interakt interakt = new Interakt();
+        return createActorFactory(data, logger, new Interakt());
+    }
+
+    private ActorFactory createActorFactory(PersistentData data, Logger logger, Interakt interakt) {
         return new ActorFactory(new EntityRecordFactory(logger, data), logger, new EventFactory(), interakt,
                 new ActionRecordFactory(data), data, new FoodItemFactory(logger));
     }
@@ -210,14 +228,9 @@ public class ActorTest {
 
     @Test
     public void testReproduceCreatesNoOffspringWhenItsWorldNoLongerExists() throws Exception {
-        testUtilities.createWorld("Earth");
-        World world = persistentData.getWorld("Earth");
         Actor parent = createActor("StrandedParent");
         Actor partner = createActor("StrandedPartner");
-        persistentData.placeIntoEnvironment(world, parent);
-        persistentData.placeIntoEnvironment(world, partner);
-        parent.getSquare().removeActor(parent);
-        partner.getSquare().addActor(parent);
+        placeOnSameSquare(parent, partner);
         parent.increaseRelation(partner, 100);
         parent.setEnvironmentUUID(UUID.randomUUID());
         int actorsBefore = persistentData.getActors().size();
@@ -269,6 +282,21 @@ public class ActorTest {
         }
 
         Assert.assertEquals(0, mourner.getNumActionRecords());
+        Assert.assertEquals(0, mourner.getRelation(corpse));
+        Assert.assertEquals(0, corpse.getRelation(mourner));
+    }
+
+    @Test
+    public void testBefriendStillReachesALivingTarget() throws Exception {
+        Actor friendly = createActor("Friendly");
+        Actor target = createActor("Target");
+        placeOnSameSquare(friendly, target);
+
+        for (int attempt = 0; attempt < 200 && friendly.getNumActionRecords() == 0; attempt++) {
+            friendly.befriend();
+        }
+
+        Assert.assertEquals(1, friendly.getNumActionRecords());
     }
 
     @Test
@@ -303,7 +331,7 @@ public class ActorTest {
     @Test
     public void testUnplacedActorIsReportedWithoutAnError() {
         List<String> loggedErrors = new ArrayList<>();
-        Actor actor = createActorFactoryActor("Unplaced", persistentData, getRecordingLogger(loggedErrors), new Interakt());
+        Actor actor = createActor("Unplaced", getRecordingLogger(loggedErrors), new Interakt());
 
         String details = actor.toString();
 
@@ -314,7 +342,7 @@ public class ActorTest {
     @Test
     public void testUnplacedActorTakesItsTurnWithoutAnError() {
         List<String> loggedErrors = new ArrayList<>();
-        Actor actor = createActorFactoryActor("Unplaced", persistentData, getRecordingLogger(loggedErrors), new Interakt());
+        Actor actor = createActor("Unplaced", getRecordingLogger(loggedErrors), new Interakt());
 
         actor.move();
         actor.befriend();
@@ -328,7 +356,7 @@ public class ActorTest {
     @Test
     public void testLocationOfASquareThatDoesNotExistIsStillAnError() {
         List<String> loggedErrors = new ArrayList<>();
-        Actor actor = createActorFactoryActor("Stranded", persistentData, getRecordingLogger(loggedErrors), new Interakt());
+        Actor actor = createActor("Stranded", getRecordingLogger(loggedErrors), new Interakt());
         actor.setLocationUUID(UUID.randomUUID());
 
         String details = actor.toString();
@@ -338,12 +366,23 @@ public class ActorTest {
     }
 
     @Test
+    public void testActorInAWorldWithoutALocationIsStillAnError() {
+        List<String> loggedErrors = new ArrayList<>();
+        Actor actor = createActor("Lost", getRecordingLogger(loggedErrors), new Interakt());
+        actor.setEnvironmentUUID(UUID.randomUUID());
+
+        actor.move();
+
+        Assert.assertEquals(Collections.singletonList("Location for Lost was not found."), loggedErrors);
+    }
+
+    @Test
     public void testPlayerIsToldWhoAttackedThem() throws Exception {
         List<String> messages = new ArrayList<>();
         Interakt interakt = getInteraktWithPlayer("Hero", messages);
         Logger logger = new Logger(interakt);
-        Actor attacker = createActorFactoryActor("Villain", persistentData, logger, interakt);
-        Actor hero = createActorFactoryActor("Hero", persistentData, logger, interakt);
+        Actor attacker = createActor("Villain", logger, interakt);
+        Actor hero = createActor("Hero", logger, interakt);
         placeOnSameSquare(attacker, hero);
 
         for (int attempt = 0; attempt < 200 && messages.isEmpty(); attempt++) {
@@ -359,8 +398,8 @@ public class ActorTest {
         List<String> messages = new ArrayList<>();
         Interakt interakt = getInteraktWithPlayer("Hero", messages);
         Logger logger = new Logger(interakt);
-        Actor partner = createActorFactoryActor("Partner", persistentData, logger, interakt);
-        Actor hero = createActorFactoryActor("Hero", persistentData, logger, interakt);
+        Actor partner = createActor("Partner", logger, interakt);
+        Actor hero = createActor("Hero", logger, interakt);
         placeOnSameSquare(partner, hero);
         partner.increaseRelation(hero, 100);
 
@@ -372,11 +411,9 @@ public class ActorTest {
         Assert.assertTrue(messages.get(0), messages.get(0).matches("Partner reproduced with you, resulting in [a-z]+ coming into existence\\."));
     }
 
-    private Actor createActorFactoryActor(String name, PersistentData data, Logger logger, Interakt interakt) {
-        ActorFactory factory = new ActorFactory(new EntityRecordFactory(logger, data), logger, new EventFactory(), interakt,
-                new ActionRecordFactory(data), data, new FoodItemFactory(logger));
+    private Actor createActor(String name, Logger logger, Interakt interakt) {
         try {
-            return factory.createActorWithName(name);
+            return createActorFactory(persistentData, logger, interakt).createActorWithName(name);
         } catch (NameTakenException e) {
             Assert.fail("The name " + name + " was already taken.");
             return null;
