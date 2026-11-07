@@ -83,7 +83,15 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         return persistentData.getWorld(getEnvironmentUUID());
     }
 
+    /**
+     * @return The square this actor is on, or null if there isn't one. Having neither a world nor a
+     * location is normal for an actor that hasn't been placed, so only a location that should exist
+     * but can't be found is logged as an error.
+     */
     public Location getLocation() {
+        if (getEnvironmentUUID() == null && getLocationUUID() == null) {
+            return null;
+        }
         try {
             return persistentData.getSquare(getLocationUUID());
         } catch (Exception e) {
@@ -122,11 +130,8 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     }
 
     public void move() {
-        Square currentSquare;
-        try {
-            currentSquare = getSquare();
-        } catch (Exception e) {
-            logger.logError(getName() + " wanted to move, but their location wasn't found.");
+        Square currentSquare = getSquare();
+        if (currentSquare == null) {
             return;
         }
 
@@ -203,7 +208,6 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     public void befriend() {
         Square square = getSquare();
         if (square == null) {
-            logger.logError("A square was unexpectedly null.");
             return;
         }
         if (square.getNumActors() < 2) {
@@ -219,6 +223,9 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             return;
         }
         if (target.getUUID().equals(getUUID())) {
+            return;
+        }
+        if (target.isDead()) {
             return;
         }
         Event event = eventFactory.createEvent(getName() + " was friendly to " + target.getName());
@@ -272,6 +279,9 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (target.getUUID().equals(getUUID())) {
             return;
         }
+        if (target.isDead()) {
+            return;
+        }
         if (isFriend(target)) {
             return;
         }
@@ -287,7 +297,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         }
 
         if (target.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
-            interakt.getCommandSender().sendMessage(getName() + " attacked you and and dealt " + damage + " damage.");
+            interakt.getCommandSender().sendMessage(getName() + " attacked you and dealt " + damage + " damage.");
         }
 
         actionRecordFactory.createActionRecord(this, ACTIONTYPE.ATTACK);
@@ -331,6 +341,9 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         if (target.getUUID().equals(getUUID())) {
             return;
         }
+        if (target.isDead()) {
+            return;
+        }
         if (!isFriend(target)) {
             return;
         }
@@ -355,7 +368,7 @@ public class Actor extends AbstractFamilialEntity implements Savable {
         }
 
         if (target.getName().equalsIgnoreCase(interakt.getPlayerActorName())) {
-            interakt.getCommandSender().sendMessage(target.getName() + " reproduced with you, resulting in " + offspring.getName() + " coming into existence.");
+            interakt.getCommandSender().sendMessage(getName() + " reproduced with you, resulting in " + offspring.getName() + " coming into existence.");
         }
 
         actionRecordFactory.createActionRecord(this, ACTIONTYPE.REPRODUCE);
@@ -572,12 +585,11 @@ public class Actor extends AbstractFamilialEntity implements Savable {
     }
 
     private String getSquareInfo() {
-        try {
-            Square square = getSquare();
-            return "Square: " + square;
-        } catch (Exception e) {
+        Square square = getSquare();
+        if (square == null) {
             return "Square: N/A";
         }
+        return "Square: " + square;
     }
 
     private int getNumTimesMoved() {
@@ -592,7 +604,10 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
     private void attemptToLoadWorld(Gson gson, Map<String, String> data) {
         try {
-            setEnvironmentUUID(UUID.fromString(gson.fromJson(data.get("environmentUUID"), String.class)));
+            String environmentUUID = gson.fromJson(data.get("environmentUUID"), String.class);
+            if (environmentUUID != null) {
+                setEnvironmentUUID(UUID.fromString(environmentUUID));
+            }
         }
         catch(Exception ignored) {
             logger.logError("An environment wasn't found for " + getName());
@@ -601,7 +616,10 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
     private void attemptToLoadSquare(Gson gson, Map<String, String> data) {
         try {
-            setLocationUUID(UUID.fromString(gson.fromJson(data.get("locationUUID"), String.class)));
+            String locationUUID = gson.fromJson(data.get("locationUUID"), String.class);
+            if (locationUUID != null) {
+                setLocationUUID(UUID.fromString(locationUUID));
+            }
         }
         catch(Exception ignored) {
             logger.logError("A location wasn't found for " + getName());
