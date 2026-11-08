@@ -277,8 +277,14 @@ public class PersistentData {
     }
 
     public boolean placeIntoEnvironment(World world, Actor actor) {
-        Square square = world.getRandomSquare();
+        return placeIntoEnvironment(world, world.getRandomSquare(), actor);
+    }
 
+    /**
+     * Places an actor on a square that has already been picked, for a caller that needs to know a
+     * square is available before it creates the actor.
+     */
+    public boolean placeIntoEnvironment(World world, Square square, Actor actor) {
         if (square == null) {
             return false;
         }

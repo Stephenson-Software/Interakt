@@ -243,6 +243,45 @@ public class ActorTest {
         Assert.assertEquals(actorsBefore, persistentData.getActors().size());
     }
 
+    @Test
+    public void testReproduceLeavesNoOffspringWhenItsWorldHasNoGrid() throws Exception {
+        Actor parent = createActor("GridlessParent");
+        Actor partner = createActor("GridlessPartner");
+        placeOnSameSquare(parent, partner);
+        parent.increaseRelation(partner, 100);
+        persistentData.getRegions().clear();
+        int actorsBefore = persistentData.getActors().size();
+        int entityRecordsBefore = persistentData.getEntityRecords().size();
+
+        for (int attempt = 0; attempt < 200; attempt++) {
+            parent.reproduce();
+        }
+
+        Assert.assertEquals(actorsBefore, persistentData.getActors().size());
+        Assert.assertEquals(entityRecordsBefore, persistentData.getEntityRecords().size());
+        Assert.assertTrue(parent.getChildUUIDs().isEmpty());
+        Assert.assertTrue(partner.getChildUUIDs().isEmpty());
+    }
+
+    @Test
+    public void testDeathLeavesFoodOnTheSquareOfTheAttackWhenTheVictimWasUnplacedMeanwhile() throws Exception {
+        Actor attacker = createActor("Attacker");
+        Actor victim = createActor("Victim");
+        placeOnSameSquare(attacker, victim);
+        Square square = attacker.getSquare();
+        // The victim is still listed on the square, but is no longer placed, as after a console delete.
+        victim.setEnvironmentUUID(null);
+        victim.setLocationUUID(null);
+        victim.setHealth(1);
+
+        for (int attempt = 0; attempt < 200 && !victim.isDead(); attempt++) {
+            attacker.attack();
+        }
+
+        Assert.assertTrue(victim.isDead());
+        Assert.assertEquals("A food item is expected next to the two actors.", 3, square.getNumEntities());
+    }
+
     private void placeOnSameSquare(Actor first, Actor second) throws Exception {
         testUtilities.createWorld("Earth");
         World world = persistentData.getWorld("Earth");
