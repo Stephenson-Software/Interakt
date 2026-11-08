@@ -302,12 +302,16 @@ public class Actor extends AbstractFamilialEntity implements Savable {
 
         actionRecordFactory.createActionRecord(this, ACTIONTYPE.ATTACK);
 
-        checkForDeath(target);
+        checkForDeath(target, square);
 
         target.decreaseRelation(this, (int) (damage * 0.10));
     }
 
-    private void checkForDeath(Actor victim) {
+    /**
+     * @param square The square the attack happened on. The victim's own square isn't looked up again,
+     * because a console command can unplace the victim while the attack is in progress.
+     */
+    private void checkForDeath(Actor victim, Square square) {
         if (victim.isDead()) {
             Event deathEvent = new Event(victim.getName() + " has died.");
             logger.logEvent(deathEvent);
@@ -316,7 +320,6 @@ public class Actor extends AbstractFamilialEntity implements Savable {
                 interakt.getCommandSender().sendMessage("You have died. Type 'quit' to quit the application.");
             }
 
-            Square square = victim.getSquare();
             foodItemFactory.createFoodItemAt(victim.getName(), square);
         }
     }
@@ -352,13 +355,14 @@ public class Actor extends AbstractFamilialEntity implements Savable {
             logger.logError(getName() + " wanted to reproduce, but their world wasn't found.");
             return;
         }
-        Actor offspring = actorFactory.createActorFromParents(this, target);
-        boolean success = persistentData.placeIntoEnvironment(world, offspring); // TODO: place in same square as parents
-
-        if (!success) {
+        // The square is picked first, so that no offspring is created when there's nowhere to put it.
+        Square birthplace = world.getRandomSquare(); // TODO: place in same square as parents
+        if (birthplace == null) {
             logger.logError("Something went wrong placing a new offspring into their environment.");
             return;
         }
+        Actor offspring = actorFactory.createActorFromParents(this, target);
+        persistentData.placeIntoEnvironment(world, birthplace, offspring);
 
         Event event = eventFactory.createEvent(getName() + " reproduced with " + target.getName() + ", resulting in " + offspring.getName() + " coming into existence.");
         logger.logEvent(event);
