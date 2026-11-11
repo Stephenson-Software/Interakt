@@ -29,6 +29,7 @@ import preponderous.ponder.system.abs.CommandSender;
 import preponderous.ponder.system.abs.PonderApplication;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -72,7 +73,7 @@ public class Interakt extends PonderApplication {
     /**
      * Initializes values. The onStartup method is deliberately not called here so that the object
      * graph can be constructed without loading saved data or starting background services. Callers
-     * that want a running application are expected to call onStartup themselves - see main.
+     * that want a running application are expected to call onStartup themselves - see start.
      */
     public Interakt() {
         super("Interakt", "This application is intended to allow the user to create and manage environments and entities that can exist within those environments.");
@@ -286,25 +287,45 @@ public class Interakt extends PonderApplication {
      * @param args The arguments given to the program.
      */
     public static void main(String[] args) {
-        if (args.length == 0) {
-            System.out.println("Missing required argument: <console|player>");
+        CommandSenderImpl user = createUser(args, System.out);
+        if (user == null) {
             return;
         }
+        new Interakt().start(user);
+    }
+
+    /**
+     * Picks the user for the mode given on the command line. This runs before the application is
+     * constructed, so a missing or unsupported mode loads no data and starts no services.
+     * @param args The arguments given to the program; the first one is the mode.
+     * @param out Where the reason is printed when there is no usable mode.
+     * @return A Console for "console", a Player for "player" (in any case), or null otherwise.
+     */
+    public static CommandSenderImpl createUser(String[] args, PrintStream out) {
+        if (args.length == 0) {
+            out.println("Missing required argument: <console|player>");
+            return null;
+        }
         String mode = args[0];
-
-        Interakt application = new Interakt();
-        application.onStartup();
-
         if (mode.equalsIgnoreCase("console")) {
-            Console console = new Console();
-            application.run(console);
+            return new Console();
         }
-        else if (mode.equalsIgnoreCase("player")) {
-            Player player = new Player();
-            application.run(player);
+        if (mode.equalsIgnoreCase("player")) {
+            return new Player();
         }
-        else {
-            System.out.println("Unsupported mode entered. Supported modes: console, player");
-        }
+        out.println("Unsupported mode entered. Supported modes: console, player");
+        return null;
+    }
+
+    /**
+     * Starts the application, runs it for the given user and shuts it down once run returns (at
+     * the end of input, or when player mode cannot place the player's actor), so that the data is
+     * saved and the background services do not keep the process alive.
+     * @param user The user of the application.
+     */
+    public void start(CommandSenderImpl user) {
+        onStartup();
+        run(user);
+        shutdownApplication();
     }
 }
