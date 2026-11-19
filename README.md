@@ -52,7 +52,7 @@ Every switch fails closed, so an opt-out is never read as "on": `usage_reporting
 
 `usage_reporting.endpoint` and `usage_reporting.key` in the same file are the service address and the write key issued to Interakt; the key can only add usage events and is not secret.
 
-Details on what trace collects and why: https://github.com/Stephenson-Software/trace#usage-reporting
+Details on what trace collects and why: https://danielstephenson.dev/usage-reporting
 
 # Support
 You can find the support discord server [here](https://discord.gg/49J4RHQxhy).

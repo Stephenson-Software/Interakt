@@ -141,9 +141,9 @@ public class LocalUsageReportingServiceTest {
             Assert.assertEquals(service.getFirstRunNotice() + System.lineSeparator(), printed);
             Assert.assertTrue(printed, printed.startsWith("Usage reporting is on: Interakt sends its name, version and a random installation ID (one startup event) to https://trace.danielstephenson.dev - nothing about you, your actors or your worlds. Turn it off with usage_reporting.enabled=false in "));
             Assert.assertTrue(printed, printed.contains("TRACE_USAGE_REPORTING=off"));
-            Assert.assertTrue(printed, printed.contains("Details: https://github.com/Stephenson-Software/trace#usage-reporting"));
+            Assert.assertTrue(printed, printed.contains("Details: https://danielstephenson.dev/usage-reporting"));
             Assert.assertTrue(settings, settings.contains("TRACE_USAGE_REPORTING=off"));
-            Assert.assertTrue(settings, settings.contains("https://github.com/Stephenson-Software/trace#usage-reporting"));
+            Assert.assertTrue(settings, settings.contains("https://danielstephenson.dev/usage-reporting"));
 
             // second run: the settings exist, so the notice is not printed again
             console.reset();

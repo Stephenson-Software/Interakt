@@ -53,7 +53,7 @@ public class LocalUsageReportingService {
     public static final String DEFAULT_KEY = "lguRpjWpYkg9ESt5Q0YBcf4X-xih9inROo46l-vPsrA";
     public static final String APPLICATION_NAME = "Interakt";
     /** The public page describing what trace collects and every way to turn it off. */
-    public static final String DETAILS_URL = "https://github.com/Stephenson-Software/trace#usage-reporting";
+    public static final String DETAILS_URL = "https://danielstephenson.dev/usage-reporting";
     private static final String VERSION_RESOURCE = "/interakt.properties";
 
     private final File settingsFile;
