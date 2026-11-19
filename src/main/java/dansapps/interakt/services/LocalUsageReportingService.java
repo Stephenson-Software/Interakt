@@ -34,7 +34,11 @@ import java.util.Properties;
  * application's data files and is written with its defaults the first time the application
  * starts, or with the environment variables every trace client honours,
  * {@code TRACE_USAGE_REPORTING=off} and {@code DO_NOT_TRACK=1}, which the client checks before
- * the settings file. Details: {@value #DETAILS_URL}
+ * the settings file. Every switch fails closed, so an opt-out is never read as on:
+ * {@value #ENABLED_KEY} is read through {@link TraceClient#allowsReporting(Object)}, so only
+ * {@code true}, {@code on}, {@code yes} or {@code 1} keeps reporting on, and {@code false},
+ * {@code off}, a blank value, a typo or a missing key turns it off; a settings file that exists but
+ * cannot be read turns it off too, and is never rewritten. Details: {@value #DETAILS_URL}
  *
  * @author Daniel McCoy Stephenson
  * @since September 11th, 2026
@@ -49,7 +53,7 @@ public class LocalUsageReportingService {
     public static final String DEFAULT_KEY = "lguRpjWpYkg9ESt5Q0YBcf4X-xih9inROo46l-vPsrA";
     public static final String APPLICATION_NAME = "Interakt";
     /** The public page describing what trace collects and every way to turn it off. */
-    public static final String DETAILS_URL = "https://github.com/Stephenson-Software/trace#usage-reporting";
+    public static final String DETAILS_URL = "https://danielstephenson.dev/usage-reporting";
     private static final String VERSION_RESOURCE = "/interakt.properties";
 
     private final File settingsFile;
@@ -57,6 +61,7 @@ public class LocalUsageReportingService {
     private final PrintStream out;
     private final String defaultEndpoint;
     private TraceClient traceClient = TraceClient.disabled();
+    private boolean settingsUnreadable;
 
     /**
      * @param settingsDirectory The directory the settings file is read from and, on the first run,
@@ -92,10 +97,19 @@ public class LocalUsageReportingService {
     public void start() {
         boolean firstRun = !settingsFile.exists();
         Properties settings = readSettings();
+        settingsUnreadable = settings == null;
+        if (settingsUnreadable) {
+            settings = new Properties();
+        }
         String endpoint = settings.getProperty(ENDPOINT_KEY, defaultEndpoint);
+        // Fails closed. On a first run there is no file yet, so the default (on) applies; after
+        // that only a clear "on" in the file keeps reporting on, and a file that cannot be read
+        // may say off, so it counts as off.
+        boolean enabled = !settingsUnreadable
+                && TraceClient.allowsReporting(firstRun ? "true" : settings.getProperty(ENABLED_KEY));
         traceClient = TraceClient.builder(endpoint, APPLICATION_NAME, getVersion())
                 .key(settings.getProperty(KEY_KEY, DEFAULT_KEY))
-                .enabled(Boolean.parseBoolean(settings.getProperty(ENABLED_KEY, "true")))
+                .enabled(enabled)
                 // Resolved by the client only once it knows reporting is on.
                 .installId(TraceInstallId.fromEnvironment())
                 .installIdFile(getInstallIdFile())
@@ -128,7 +142,10 @@ public class LocalUsageReportingService {
             return "environment: " + TraceClient.ENV_USAGE_REPORTING + " or " + TraceClient.ENV_DO_NOT_TRACK;
         }
         if (TraceClient.REASON_CONFIG.equals(reason)) {
-            return ENABLED_KEY + "=false in " + settingsFile.getPath();
+            if (settingsUnreadable) {
+                return settingsFile.getPath() + " cannot be read";
+            }
+            return ENABLED_KEY + " is not true in " + settingsFile.getPath();
         }
         return reason;
     }
@@ -200,6 +217,7 @@ public class LocalUsageReportingService {
         return version;
     }
 
+    /** The settings, or null when the file exists but cannot be read (it is then left alone). */
     private Properties readSettings() {
         Properties settings = new Properties();
         if (!settingsFile.exists()) {
@@ -208,8 +226,9 @@ public class LocalUsageReportingService {
         }
         try (InputStream in = new FileInputStream(settingsFile)) {
             settings.load(in);
-        } catch (IOException e) {
-            logger.logError("Could not read " + settingsFile.getPath() + ", so usage reporting keeps its defaults: " + e);
+        } catch (IOException | RuntimeException e) {
+            logger.logError("Could not read " + settingsFile.getPath() + ", so usage reporting is off until it can be: " + e);
+            return null;
         }
         return settings;
     }
@@ -225,7 +244,8 @@ public class LocalUsageReportingService {
             writer.write("# When enabled, one 'startup' event carrying only the program name and version, and a\n");
             writer.write("# random installation ID kept in " + TraceInstallId.FILE_NAME + " next to this file, is sent\n");
             writer.write("# to the endpoint each time the application starts. Nothing else is ever sent.\n");
-            writer.write("# Set " + ENABLED_KEY + " to false to turn it off. TRACE_USAGE_REPORTING=off or\n");
+            writer.write("# Set " + ENABLED_KEY + " to false to turn it off (anything but true, on, yes or 1 is\n");
+            writer.write("# off). TRACE_USAGE_REPORTING=off or\n");
             writer.write("# DO_NOT_TRACK=1 in the environment turns it off too, whatever this file says.\n");
             writer.write("# Details: " + DETAILS_URL + "\n");
             writer.write(ENABLED_KEY + "=true\n");

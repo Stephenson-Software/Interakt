@@ -141,9 +141,9 @@ public class LocalUsageReportingServiceTest {
             Assert.assertEquals(service.getFirstRunNotice() + System.lineSeparator(), printed);
             Assert.assertTrue(printed, printed.startsWith("Usage reporting is on: Interakt sends its name, version and a random installation ID (one startup event) to https://trace.danielstephenson.dev - nothing about you, your actors or your worlds. Turn it off with usage_reporting.enabled=false in "));
             Assert.assertTrue(printed, printed.contains("TRACE_USAGE_REPORTING=off"));
-            Assert.assertTrue(printed, printed.contains("Details: https://github.com/Stephenson-Software/trace#usage-reporting"));
+            Assert.assertTrue(printed, printed.contains("Details: https://danielstephenson.dev/usage-reporting"));
             Assert.assertTrue(settings, settings.contains("TRACE_USAGE_REPORTING=off"));
-            Assert.assertTrue(settings, settings.contains("https://github.com/Stephenson-Software/trace#usage-reporting"));
+            Assert.assertTrue(settings, settings.contains("https://danielstephenson.dev/usage-reporting"));
 
             // second run: the settings exist, so the notice is not printed again
             console.reset();
@@ -170,10 +170,57 @@ public class LocalUsageReportingServiceTest {
         service.close();
 
         Assert.assertFalse(service.isEnabled());
-        Assert.assertEquals(LocalUsageReportingService.ENABLED_KEY + "=false in " + service.getSettingsFile().getPath(),
+        Assert.assertEquals(LocalUsageReportingService.ENABLED_KEY + " is not true in " + service.getSettingsFile().getPath(),
                 service.getDisabledReason());
         Assert.assertEquals("", console.toString("UTF-8"));
         Assert.assertFalse("a disabled client never writes an installation ID", service.getInstallIdFile().exists());
+    }
+
+    /** Only a clear "on" keeps reporting on; every other value, a blank one or a missing key is off. */
+    @Test
+    public void testTheSettingFailsClosed() throws IOException {
+        String[] offSettings = {
+                LocalUsageReportingService.ENABLED_KEY + "=off\n",
+                LocalUsageReportingService.ENABLED_KEY + "=no\n",
+                LocalUsageReportingService.ENABLED_KEY + "=0\n",
+                LocalUsageReportingService.ENABLED_KEY + "=FALSE\n",
+                LocalUsageReportingService.ENABLED_KEY + "=\n",
+                LocalUsageReportingService.ENABLED_KEY + "=disabled\n",
+                LocalUsageReportingService.ENABLED_KEY + "=\"false\"\n",
+                "# the enabled line was removed\n" + LocalUsageReportingService.KEY_KEY + "=k\n",
+        };
+        for (String settings : offSettings) {
+            writeSettings(settings);
+            LocalUsageReportingService service = newService();
+            service.start();
+            service.close();
+            Assert.assertFalse("should be off: " + settings, service.isEnabled());
+            Assert.assertEquals("", console.toString("UTF-8"));
+        }
+        for (String on : new String[] {"true", "TRUE", "on", "yes", "1"}) {
+            writeSettings(LocalUsageReportingService.ENABLED_KEY + "=" + on + "\n");
+            LocalUsageReportingService service = newService();
+            service.start();
+            Assert.assertTrue("should be on: " + on, service.isEnabled());
+            Assert.assertEquals("an existing file is not a first run", "", console.toString("UTF-8"));
+            service.close();
+        }
+    }
+
+    /** A settings file that exists but cannot be read may say off, so reporting is off and the file is left alone. */
+    @Test
+    public void testAnUnreadableSettingsFileTurnsReportingOffAndIsNotRewritten() {
+        File settings = new File(settingsDirectory, LocalUsageReportingService.SETTINGS_FILE_NAME);
+        Assert.assertTrue(settings.mkdir()); // a directory: it exists, but cannot be read as a file
+
+        LocalUsageReportingService service = newService();
+        service.start();
+        service.close();
+
+        Assert.assertFalse(service.isEnabled());
+        Assert.assertEquals(settings.getPath() + " cannot be read", service.getDisabledReason());
+        Assert.assertTrue("the settings are not replaced by defaults", settings.isDirectory());
+        Assert.assertFalse(service.getInstallIdFile().exists());
     }
 
     @Test
