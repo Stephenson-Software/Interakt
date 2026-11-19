@@ -106,7 +106,8 @@ public class LocalUsageReportingService {
         // that only a clear "on" in the file keeps reporting on, and a file that cannot be read
         // may say off, so it counts as off.
         boolean enabled = !settingsUnreadable
-                && TraceClient.allowsReporting(firstRun ? "true" : settings.getProperty(ENABLED_KEY));
+                && TraceClient.allowsReporting(firstRun ? "true" : settings.getProperty(ENABLED_KEY))
+                && !hasNearMissOptOut(settings);
         traceClient = TraceClient.builder(endpoint, APPLICATION_NAME, getVersion())
                 .key(settings.getProperty(KEY_KEY, DEFAULT_KEY))
                 .enabled(enabled)
@@ -215,6 +216,41 @@ public class LocalUsageReportingService {
             return "unknown";
         }
         return version;
+    }
+
+    /**
+     * Whether the settings hold an attempt to turn reporting off that is not written exactly as
+     * {@value #ENABLED_KEY}. Such a line used to be ignored, so next to the default
+     * {@code usage_reporting.enabled=true} reporting stayed on. A user who wrote any of these did
+     * not ask for reporting, so each counts as off: a key that spells "enabled" another way
+     * ({@code usage-reporting.enabled}, {@code usageReporting.Enabled}, {@code usage_reporting.enable},
+     * ...) whose value is not clearly on; one that spells "disabled" ({@code usage_reporting.disabled},
+     * ...) whose value is on; and {@code usage_reporting=} (any spelling) given a value that is not
+     * clearly on.
+     */
+    public static boolean hasNearMissOptOut(Properties settings) {
+        for (String key : settings.stringPropertyNames()) {
+            if (key.equals(ENABLED_KEY)) {
+                continue; // the switch itself
+            }
+            String name = normalise(key);
+            String value = settings.getProperty(key);
+            if (name.contains("disabl")) {
+                if (TraceClient.allowsReporting(value)) {
+                    return true;
+                }
+            } else if (name.contains("enabl") || name.endsWith("usagereporting")) {
+                if (!TraceClient.allowsReporting(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** The key in lower case with everything but letters and digits dropped. */
+    private static String normalise(String key) {
+        return key.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9]", "");
     }
 
     /** The settings, or null when the file exists but cannot be read (it is then left alone). */
