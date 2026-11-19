@@ -207,6 +207,61 @@ public class LocalUsageReportingServiceTest {
         }
     }
 
+    /** An opt-out written under another spelling of the key, or as "disabled", is an opt-out. */
+    @Test
+    public void testAnOptOutWrittenUnderANearMissNameIsAnOptOut() throws IOException {
+        String on = LocalUsageReportingService.ENABLED_KEY + "=true\n";
+        String[] nearMisses = {
+                "usage-reporting.enabled=false\n",
+                "usageReporting.enabled=off\n",
+                "Usage_Reporting.Enabled=false\n",
+                on + "usage_reporting.enable=false\n",
+                on + "usage_reporting.disabled=true\n",
+                on + "usage_reporting.disable=yes\n",
+                on + "usage-reporting=false\n",
+                on + "enabled=false\n",
+        };
+        for (String settings : nearMisses) {
+            writeSettings(settings);
+            LocalUsageReportingService service = newService();
+            service.start();
+            service.close();
+            Assert.assertFalse("should be off: " + settings, service.isEnabled());
+            Assert.assertEquals("", console.toString("UTF-8"));
+            Assert.assertFalse(service.getInstallIdFile().exists());
+        }
+    }
+
+    @Test
+    public void testNearMissNamesThatSayOnAreNotAnOptOut() throws IOException {
+        String on = LocalUsageReportingService.ENABLED_KEY + "=true\n";
+        String[] onSettings = {
+                on + "usage_reporting.enable=yes\n",
+                on + "usage_reporting.disabled=false\n",
+                on + "usage-reporting=on\n",
+                on + LocalUsageReportingService.ENDPOINT_KEY + "=http://127.0.0.1:9\n",
+        };
+        for (String settings : onSettings) {
+            writeSettings(settings);
+            LocalUsageReportingService service = newService();
+            service.start();
+            Assert.assertTrue("should be on: " + settings, service.isEnabled());
+            service.close();
+        }
+    }
+
+    /** A near-miss opt-out leaves the settings file exactly as the user wrote it. */
+    @Test
+    public void testANearMissOptOutIsNotRewritten() throws IOException {
+        String settings = "usage-reporting.enabled=false\n";
+        writeSettings(settings);
+        LocalUsageReportingService service = newService();
+        service.start();
+        service.close();
+        Assert.assertFalse(service.isEnabled());
+        Assert.assertEquals(settings, new String(Files.readAllBytes(service.getSettingsFile().toPath()), StandardCharsets.UTF_8));
+    }
+
     /** A settings file that exists but cannot be read may say off, so reporting is off and the file is left alone. */
     @Test
     public void testAnUnreadableSettingsFileTurnsReportingOffAndIsNotRewritten() {
