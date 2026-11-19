@@ -48,6 +48,8 @@ To turn it off, any one of these is enough:
 - `TRACE_USAGE_REPORTING=off` (also `false`, `0`, `no`) in the environment — the switch every trace client honours, checked before the settings file
 - `DO_NOT_TRACK=1` (also `true`, `yes`) in the environment, per [consoledonottrack.com](https://consoledonottrack.com)
 
+Every switch fails closed, so an opt-out is never read as "on": `usage_reporting.enabled` keeps reporting on only for `true`, `on`, `yes` or `1` (any case), and `false`, `off`, a blank value, a typo or a missing line turns it off; a settings file that exists but cannot be read turns it off too and is never rewritten with the defaults. `TRACE_USAGE_REPORTING` set to anything but blank or one of those on-values turns it off, and so does `DO_NOT_TRACK` set to anything but blank, `0`, `false`, `off` or `no`.
+
 `usage_reporting.endpoint` and `usage_reporting.key` in the same file are the service address and the write key issued to Interakt; the key can only add usage events and is not secret.
 
 Details on what trace collects and why: https://github.com/Stephenson-Software/trace#usage-reporting
